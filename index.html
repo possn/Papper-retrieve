@@ -177,6 +177,52 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 .chat-suggestion{font-size:11px;padding:6px 11px;border-radius:20px;border:1px solid var(--border);background:var(--cream2);color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
 .chat-suggestion:active{border-color:var(--accent);color:var(--accent);}
 .chat-empty{padding:20px 16px;text-align:center;color:var(--text3);font-size:13px;}
+
+/* FORMATTED AI OUTPUT */
+.ai-output h1,.ai-output h2,.ai-output h3{font-family:'Fraunces',serif;color:var(--text);margin:14px 0 6px;}
+.ai-output h1{font-size:16px;border-bottom:1px solid var(--sand);padding-bottom:6px;}
+.ai-output h2{font-size:14px;color:var(--accent);}
+.ai-output h3{font-size:13px;color:var(--blue);}
+.ai-output p{font-size:13px;line-height:1.8;color:var(--text2);margin-bottom:8px;}
+.ai-output strong{color:var(--text);font-weight:600;}
+.ai-output em{color:var(--text2);font-style:italic;}
+.ai-output ul,.ai-output ol{padding-left:18px;margin-bottom:8px;}
+.ai-output li{font-size:13px;line-height:1.8;color:var(--text2);margin-bottom:2px;}
+.ai-output .score-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.ai-output .score-label{font-size:12px;color:var(--text2);width:160px;flex-shrink:0;}
+.ai-output .score-bar{flex:1;height:6px;background:var(--sand);border-radius:3px;overflow:hidden;}
+.ai-output .score-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 0.5s;}
+.ai-output .score-val{font-size:12px;font-weight:600;color:var(--accent);width:20px;}
+.ai-output .expert-block{background:var(--cream2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:10px;}
+.ai-output .expert-name{font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+.ai-output .debate-block{background:var(--blue-light);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:8px;}
+.ai-output .section-badge{display:inline-block;font-size:10px;padding:3px 8px;border-radius:20px;background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);margin-bottom:8px;font-weight:500;}
+
+/* EXPORT BUTTON */
+.btn-export{display:flex;align-items:center;gap:6px;padding:9px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
+
+/* JOURNAL CLUB */
+.jclub-session{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;}
+.jclub-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.jclub-title{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);}
+.jclub-date{font-size:11px;color:var(--text3);margin-top:2px;}
+.jclub-papers{margin-bottom:12px;}
+.jclub-paper{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--sand);}
+.jclub-paper:last-child{border-bottom:none;}
+.jclub-paper-num{font-size:12px;font-weight:600;color:var(--accent);width:20px;flex-shrink:0;margin-top:1px;}
+.jclub-paper-title{font-size:12px;color:var(--text);line-height:1.4;flex:1;}
+.jclub-paper-meta{font-size:10px;color:var(--text3);margin-top:2px;}
+.jclub-paper-remove{font-size:14px;color:var(--text3);background:none;border:none;cursor:pointer;padding:0 4px;}
+.jclub-add-row{display:flex;gap:8px;margin-bottom:12px;}
+.jclub-add-input{flex:1;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;-webkit-appearance:none;}
+.jclub-add-input:focus{outline:none;border-color:var(--accent);}
+.btn-jclub-add{padding:9px 14px;background:var(--accent);border:none;border-radius:10px;color:white;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.jclub-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-jclub-action{padding:8px 14px;border-radius:10px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:1.5px solid var(--border);background:var(--cream2);color:var(--text2);}
+.btn-jclub-analyze{background:var(--accent);border-color:var(--accent);color:white;}
+.jclub-analysis{margin-top:12px;padding:14px;background:var(--cream2);border-radius:12px;font-size:13px;line-height:1.8;color:var(--text2);display:none;}
+.jclub-empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px;}
+.jclub-share-box{margin-top:10px;padding:12px;background:var(--blue-light);border:1px solid var(--blue);border-radius:10px;font-size:12px;color:var(--blue);line-height:1.7;}
 ```
 
   </style>
@@ -202,6 +248,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div class="tabs">
   <button class="tab active" onclick="switchTab('search')">🔍 Pesquisa</button>
   <button class="tab" onclick="switchTab('library')">📚 Biblioteca</button>
+  <button class="tab" onclick="switchTab('jclub')">🎓 Journal Club</button>
   <button class="tab" onclick="switchTab('history')">🕐 Histórico</button>
 </div>
 
@@ -272,8 +319,9 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
     <div class="article-actions">
       <button class="btn-analyze" onclick="openAnalysis()">🧠 Analisar com IA</button>
       <a class="btn-dl hidden" id="oaLink" href="#" target="_blank">↓ PDF</a>
-      <button class="btn-sm" onclick="saveToLibrary()">🔖</button>
-      <button class="btn-sm" onclick="shareArticle()">↗</button>
+      <button class="btn-sm" onclick="saveToLibrary()" title="Guardar na biblioteca">🔖</button>
+      <button class="btn-sm" onclick="addCurrentToJclub()" title="Adicionar ao Journal Club">🎓</button>
+      <button class="btn-sm" onclick="shareArticle()" title="Partilhar">↗</button>
     </div>
     <div class="email-section" id="emailSection" style="display:none;">
       <div class="find-email-box">
@@ -314,6 +362,15 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
   <div id="libraryContent"></div>
 </div>
 
+<!-- JOURNAL CLUB PANEL -->
+<div class="panel" id="panelJclub">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Journal Club</div>
+    <button class="btn-icon" onclick="newJclubSession()" style="font-size:13px;padding:7px 12px;">+ Nova sessão</button>
+  </div>
+  <div id="jclubContent"></div>
+</div>
+
 <!-- HISTORY PANEL -->
 <div class="panel" id="panelHistory">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -338,7 +395,10 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
   <div class="analysis-header">
     <button class="btn-back" onclick="closeAnalysis()">← Voltar</button>
     <div class="analysis-header-title" id="analysisHeaderTitle">Análise do artigo</div>
-    <button class="btn-icon" onclick="saveToLibrary()">🔖</button>
+    <div style="display:flex;gap:6px;">
+      <button class="btn-icon" onclick="exportAnalysis()" title="Exportar">↗</button>
+      <button class="btn-icon" onclick="saveToLibrary()">🔖</button>
+    </div>
   </div>
   <div class="analysis-body">
 
@@ -356,7 +416,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
     <div class="dot-pulse"><span></span><span></span><span></span></div>
     <span>Painel de revisores a analisar…</span>
   </div>
-  <div class="summary-text" id="analysisSummaryText" style="display:none;"></div>
+  <div class="summary-text ai-output" id="analysisSummaryText" style="display:none;"></div>
 </div>
 
 <!-- PDF UPLOAD -->
@@ -450,13 +510,16 @@ function toggleTheme(){
 
 // TABS
 function switchTab(tab){
-  var tabs=['search','library','history'];
+  var tabs=['search','library','jclub','history'];
   tabs.forEach(function(t,i){
     document.querySelectorAll('.tab')[i].classList.toggle('active',t===tab);
-    g('panel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active',t===tab);
+    var panelId='panel'+t.charAt(0).toUpperCase()+t.slice(1);
+    var panelEl=g(panelId);
+    if(panelEl) panelEl.classList.toggle('active',t===tab);
   });
   if(tab==='library') renderLibrary();
   if(tab==='history') renderHistory();
+  if(tab==='jclub') renderJclub();
 }
 
 // LANG
@@ -532,6 +595,23 @@ function loadFromHistory(i){
 // LIBRARY
 function getLibrary(){try{return JSON.parse(localStorage.getItem('pq_library')||'[]');}catch(e){return[];}}
 function saveLibraryData(lib){try{localStorage.setItem('pq_library',JSON.stringify(lib));}catch(e){}}
+function addCurrentToJclub(){
+  if(!currentArticle){ alert('Pesquisa um artigo primeiro.'); return; }
+  var sessions = getJclubSessions();
+  if(!sessions.length){
+    if(!confirm('Sem sessões de Journal Club. Criar uma nova?')) return;
+    var name = prompt('Nome da sessão:', 'Journal Club '+new Date().toLocaleDateString('pt-PT',{month:'long',year:'numeric'}))||'';
+    if(!name) return;
+    sessions.unshift({ id: Date.now(), name: name, date: new Date().toISOString().split('T')[0], papers: [], analysis: '' });
+  }
+  var s = sessions[0];
+  var exists = s.papers.find(function(p){ return p.doi && p.doi===currentArticle.doi; });
+  if(exists){ alert('Já está na sessão mais recente!'); return; }
+  s.papers.push({ doi: currentArticle.doi, title: currentArticle.title, journal: currentArticle.journal, year: currentArticle.year });
+  saveJclubSessions(sessions);
+  alert('✓ Adicionado ao Journal Club: '+s.name);
+}
+
 function saveToLibrary(){
   if(!currentArticle)return;
   var lib=getLibrary();
@@ -811,7 +891,7 @@ Be intellectually rigorous and avoid polite or superficial praise.`;
     streamClaude(sysP,usrP,function(full){
       g('analysisSummaryLoading').style.display='none';
       g('analysisSummaryText').style.display='block';
-      g('analysisSummaryText').innerHTML=full.replace(/\n/g,'<br/>');
+      g('analysisSummaryText').innerHTML=formatAIOutput(full);
     },function(status){
       if(status!=='ok'){
         g('analysisSummaryLoading').style.display='none';
@@ -940,7 +1020,7 @@ Be intellectually rigorous and avoid polite or superficial praise.`;
             full+=p.delta.text;
             g('analysisSummaryLoading').style.display='none';
             g('analysisSummaryText').style.display='block';
-            g('analysisSummaryText').innerHTML=full.replace(/\n/g,'<br/>');
+            g('analysisSummaryText').innerHTML=formatAIOutput(full);
           }}catch(e){}
         }
       }
@@ -1121,6 +1201,174 @@ async function selectResult(i){
   g('resultsList').style.display='none';setRunning(true);await processArticle(items[i]);
 }
 
+// ── FORMAT AI OUTPUT ──
+function formatAIOutput(text){
+  if(!text) return '';
+  var html = text;
+  html = html.replace(/^(SECTION [0-9]+[^\n]*)/gm, '<h1>$1</h1>');
+  html = html.replace(/[-*]\s*([A-Za-z][\w\s\/]{2,30}?):\s*([1-5])\/5/g, function(m, label, score){
+    var fill = (parseInt(score)/5*100)+'%';
+    return '<div class="score-row"><span class="score-label">'+label.trim()+'</span><div class="score-bar"><div class="score-fill" style="width:'+fill+'"></div></div><span class="score-val">'+score+'/5</span></div>';
+  });
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  html = html.replace(/^[\-*]\s+(.+)$/gm, '<li>$1</li>');
+  html = html.replace(/\n/g, '<br/>');
+  return '<div class="ai-output">'+html+'</div>';
+}
+
+// ── EXPORT ANALYSIS ──
+function exportAnalysis(){
+  var title = currentArticle ? currentArticle.title : 'Artigo';
+  var summary = g('analysisSummaryText').innerText || '';
+  var text = 'PAPERQUEST — REVISÃO CIENTÍFICA\n\n'+title+'\n'+(currentArticle?currentArticle.journal+' - '+currentArticle.year:'')+' \n\n'+summary;
+  if(navigator.share){
+    navigator.share({title:'PaperQuest: '+title.substring(0,50), text:text});
+  } else {
+    navigator.clipboard.writeText(text);
+    alert('Análise copiada para a área de transferência!');
+  }
+}
+
+// ── JOURNAL CLUB ──
+function getJclubSessions(){ try{ return JSON.parse(localStorage.getItem('pq_jclub')||'[]'); }catch(e){ return []; } }
+function saveJclubSessions(s){ try{ localStorage.setItem('pq_jclub', JSON.stringify(s)); }catch(e){} }
+
+function newJclubSession(){
+  var name = prompt('Nome da sessão (ex: Journal Club Março 2026):', 'Journal Club '+new Date().toLocaleDateString('pt-PT',{month:'long',year:'numeric'}))||'';
+  if(!name) return;
+  var sessions = getJclubSessions();
+  sessions.unshift({ id: Date.now(), name: name, date: new Date().toISOString().split('T')[0], papers: [], analysis: '' });
+  saveJclubSessions(sessions);
+  renderJclub();
+}
+
+function addPaperToSession(sessionId){
+  var sessions = getJclubSessions();
+  var s = sessions.find(function(x){ return x.id===sessionId; });
+  if(!s) return;
+  var doi = g('jclub-input-'+sessionId).value.trim();
+  if(!doi) return;
+  // If current article matches, use it
+  if(currentArticle && (currentArticle.doi===doi || currentArticle.title.toLowerCase().includes(doi.toLowerCase()))){
+    s.papers.push({ doi: currentArticle.doi, title: currentArticle.title, journal: currentArticle.journal, year: currentArticle.year });
+    saveJclubSessions(sessions); renderJclub(); return;
+  }
+  // Otherwise just store the DOI/title as-is
+  s.papers.push({ doi: doi, title: doi, journal: '', year: '' });
+  saveJclubSessions(sessions); renderJclub();
+}
+
+function removePaperFromSession(sessionId, paperIdx){
+  var sessions = getJclubSessions();
+  var s = sessions.find(function(x){ return x.id===sessionId; });
+  if(!s) return;
+  s.papers.splice(paperIdx,1);
+  saveJclubSessions(sessions); renderJclub();
+}
+
+function deleteSession(sessionId){
+  if(!confirm('Eliminar esta sessão?')) return;
+  var sessions = getJclubSessions().filter(function(x){ return x.id!==sessionId; });
+  saveJclubSessions(sessions); renderJclub();
+}
+
+async function analyzeSession(sessionId){
+  if(!CLAUDE_KEY){ alert('Adiciona a tua API Key primeiro.'); return; }
+  var sessions = getJclubSessions();
+  var s = sessions.find(function(x){ return x.id===sessionId; });
+  if(!s||!s.papers.length){ alert('Adiciona artigos à sessão primeiro.'); return; }
+  var analysisEl = g('jclub-analysis-'+sessionId);
+  analysisEl.style.display='block';
+  analysisEl.innerHTML='<div class="dot-pulse" style="justify-content:center;padding:10px;"><span></span><span></span><span></span></div>';
+  var paperList = s.papers.map(function(p,i){ return (i+1)+'. '+p.title+(p.journal?' ['+p.journal+']':'')+(p.year?' ('+p.year+')':''); }).join('\n');
+  var sysP = emailLang==='pt'
+    ? 'És um moderador de Journal Club especializado em medicina intensiva pediátrica. Analisa conjuntos de artigos e facilita discussão científica crítica em Português.'
+    : 'You are a Journal Club moderator specialised in paediatric intensive care medicine. Analyse sets of papers and facilitate critical scientific discussion in English.';
+  var usrPT = 'Prepara uma sessão de Journal Club para os seguintes artigos:\n\n'+paperList+'\n\nPara cada artigo:\n1. Resumo em 3 linhas\n2. Ponto-chave para discussão\n3. Relevância clínica\n\nDebate transversal e 5 perguntas para a equipa.';
+  var usrEN = 'Prepare a Journal Club session for the following papers:\n\n'+paperList+'\n\nFor each paper:\n1. 3-line summary\n2. Key point\n3. Clinical relevance\n\nCross-paper debate and 5 questions for the team.';
+  var usrP = emailLang==='pt' ? usrPT : usrEN;
+  var full='';
+  var resp = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,stream:true,system:sysP,messages:[{role:'user',content:usrP}]})
+  });
+  if(!resp.ok){ analysisEl.innerHTML='Erro ao analisar.'; return; }
+  var reader=resp.body.getReader(); var decoder=new TextDecoder();
+  while(true){
+    var res=await reader.read(); if(res.done) break;
+    var lines=decoder.decode(res.value,{stream:true}).split('\n');
+    for(var i=0;i<lines.length;i++){
+      var line=lines[i].trim();
+      if(line.startsWith('data: ')){
+        var data=line.slice(6); if(data==='[DONE]') continue;
+        try{ var p=JSON.parse(data); if(p.type==='content_block_delta'&&p.delta&&p.delta.text){
+          full+=p.delta.text;
+          analysisEl.innerHTML=formatAIOutput(full);
+        }}catch(e){}
+      }
+    }
+  }
+  s.analysis=full; saveJclubSessions(sessions);
+}
+
+function shareSession(sessionId){
+  var sessions = getJclubSessions();
+  var s = sessions.find(function(x){ return x.id===sessionId; });
+  if(!s) return;
+  var text = '🎓 Journal Club: '+s.name+'
+
+'
+    +s.papers.map(function(p,i){ return (i+1)+'. '+p.title; }).join('
+')
+    +(s.analysis?'
+
+'+s.analysis.substring(0,500)+'…':'');
+  if(navigator.share){ navigator.share({title:'Journal Club: '+s.name, text:text}); }
+  else { navigator.clipboard.writeText(text); alert('Sessão copiada!'); }
+}
+
+function renderJclub(){
+  var sessions = getJclubSessions();
+  var el = g('jclubContent');
+  if(!sessions.length){
+    el.innerHTML='<div class="jclub-empty">Sem sessões ainda.<br>Cria uma sessão e adiciona artigos para discutir com a equipa.</div>';
+    return;
+  }
+  el.innerHTML = sessions.map(function(s){
+    var papersHtml = s.papers.length
+      ? s.papers.map(function(p,i){
+          return '<div class="jclub-paper">'
+            +'<span class="jclub-paper-num">'+(i+1)+'</span>'
+            +'<div style="flex:1;"><div class="jclub-paper-title">'+esc(p.title.substring(0,80))+(p.title.length>80?'…':'')+'</div>'
+            +'<div class="jclub-paper-meta">'+esc(p.journal||'')+(p.year?' · '+p.year:'')+'</div></div>'
+            +'<button class="jclub-paper-remove" onclick="removePaperFromSession('+s.id+','+i+')">✕</button>'
+            +'</div>';
+        }).join('')
+      : '<div style="font-size:12px;color:var(--text3);padding:8px 0;">Sem artigos ainda.</div>';
+
+    return '<div class="jclub-session">'
+      +'<div class="jclub-header">'
+      +'<div><div class="jclub-title">'+esc(s.name)+'</div><div class="jclub-date">'+esc(s.date)+'</div></div>'
+      +'<button class="small-btn" onclick="deleteSession('+s.id+')">✕ Eliminar</button>'
+      +'</div>'
+      +'<div class="jclub-papers">'+papersHtml+'</div>'
+      +'<div class="jclub-add-row">'
+      +'<input class="jclub-add-input" id="jclub-input-'+s.id+'" placeholder="DOI, PMID ou título…"/>'
+      +'<button class="btn-jclub-add" onclick="addPaperToSession('+s.id+')">+ Adicionar</button>'
+      +'</div>'
+      +'<div class="jclub-actions">'
+      +'<button class="btn-jclub-action btn-jclub-analyze" onclick="analyzeSession('+s.id+')">🧠 Analisar sessão</button>'
+      +'<button class="btn-jclub-action" onclick="shareSession('+s.id+')">↗ Partilhar</button>'
+      +'</div>'
+      +'<div class="jclub-analysis ai-output" id="jclub-analysis-'+s.id+'" style="display:'+(s.analysis?'block':'none')+';">'
+      +(s.analysis?formatAIOutput(s.analysis):'')+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+// ── PATCH switchTab to include jclub ──
 // INIT
 initTheme();loadProfile();loadApiKey();restoreState();
 </script>
