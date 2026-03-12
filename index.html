@@ -18,218 +18,160 @@
     [data-theme="dark"]{--cream:#1a1612;--cream2:#22201c;--sand:#2e2b26;--border:#3d3930;--text:#f0ede6;--text2:#b8b0a4;--text3:#7a7368;--accent:#e07a56;--accent-light:#2d1f18;--blue:#4a9fd4;--blue-light:#1a2a38;--green:#2ecc71;--green-light:#1a2e22;--card-bg:#22201c;--body-bg:#1a1612;}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
     body{background:var(--body-bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;transition:background 0.3s,color 0.3s;}
-
-```
-/* PAGES */
-.page{display:none;min-height:100vh;}
-.page.active{display:block;}
-
-/* ======================== MAIN PAGE ======================== */
-#pageMain{padding:env(safe-area-inset-top,0) 0 80px;}
-.container{max-width:600px;margin:0 auto;padding:0 16px;}
-.header{display:flex;align-items:center;gap:12px;padding:24px 0 20px;border-bottom:1px solid var(--border);margin-bottom:20px;}
-.logo{width:42px;height:42px;border-radius:10px;}
-.header-text{flex:1;}
-.brand{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--text);}
-.brand-sub{font-size:11px;color:var(--text3);margin-top:1px;}
-.btn-icon{background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:16px;color:var(--text2);font-family:'DM Sans',sans-serif;}
-.tabs{display:flex;gap:4px;background:var(--cream2);border-radius:12px;padding:4px;margin-bottom:18px;}
-.tab{flex:1;padding:8px;text-align:center;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text3);transition:all 0.2s;border:none;background:none;font-family:'DM Sans',sans-serif;}
-.tab.active{background:var(--card-bg);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,0.1);}
-.panel{display:none;}.panel.active{display:block;}
-.card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
-.card-title{font-family:'Fraunces',serif;font-size:13px;font-style:italic;color:var(--text3);margin-bottom:10px;}
-.field{margin-bottom:10px;}
-label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:5px;letter-spacing:0.5px;text-transform:uppercase;}
-input,textarea{width:100%;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;transition:border-color 0.2s;-webkit-appearance:none;}
-input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,100,66,0.1);background:var(--card-bg);}
-input::placeholder,textarea::placeholder{color:var(--text3);}
-.divider{border:none;border-top:1px solid var(--sand);margin:14px 0;}
-.grid-3{display:grid;grid-template-columns:1fr;gap:8px;}
-@media(min-width:480px){.grid-3{grid-template-columns:1fr 1fr 1fr;}}
-.lang-row{display:flex;gap:6px;margin-bottom:12px;}
-.btn-lang{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--cream2);color:var(--text3);font-family:'DM Sans',sans-serif;transition:all 0.2s;}
-.btn-lang.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent);}
-.btn-row{display:flex;gap:10px;margin-top:12px;}
-.btn-primary{flex:1;padding:13px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn-primary:active{transform:scale(0.98);}
-.btn-primary:disabled{background:var(--border);color:var(--text3);cursor:not-allowed;}
-.btn-secondary{padding:13px 16px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
-.results-list{margin-bottom:14px;display:none;}
-.results-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
-.result-item{background:var(--card-bg);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;}
-.result-item:active{border-color:var(--accent);background:var(--accent-light);}
-.result-item-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:4px;}
-.result-item-meta{font-size:11px;color:var(--text3);}
-.article-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;margin-bottom:14px;overflow:hidden;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.07);}
-.article-header{padding:18px 18px 14px;}
-.article-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;border-radius:20px;padding:4px 10px;margin-bottom:10px;border:1px solid;}
-.status-oa{background:var(--green-light);color:var(--green);border-color:var(--green);}
-.status-closed{background:var(--accent-light);color:var(--accent);border-color:var(--accent);}
-.article-title{font-family:'Fraunces',serif;font-size:16px;color:var(--text);line-height:1.4;margin-bottom:6px;}
-.article-meta{font-size:12px;color:var(--text2);line-height:1.6;}
-.article-divider{border:none;border-top:1px solid var(--sand);}
-.article-actions{padding:14px 18px;display:flex;gap:8px;flex-wrap:wrap;}
-.btn-analyze{flex:1;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn-dl{flex:1;padding:12px;background:var(--green);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn-sm{padding:10px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
-.email-section{padding:0 18px 18px;}
-.find-email-box{padding:13px;background:var(--blue-light);border:1px solid var(--blue);border-radius:12px;margin-bottom:10px;}
-.find-email-label{font-size:11px;font-weight:500;color:var(--blue);margin-bottom:9px;text-transform:uppercase;letter-spacing:0.5px;}
-.find-email-btns{display:flex;gap:6px;flex-wrap:wrap;}
-.btn-find{display:inline-flex;align-items:center;padding:6px 11px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;text-decoration:none;border:1.5px solid;cursor:pointer;}
-.btn-find-scholar{background:var(--card-bg);border-color:#4285f4;color:#4285f4;}
-.btn-find-pubmed{background:var(--card-bg);border-color:#2e86c1;color:#2e86c1;}
-.btn-find-google{background:var(--card-bg);border-color:#c0392b;color:#c0392b;}
-.btn-find-linkedin{background:var(--card-bg);border-color:#0077b5;color:#0077b5;}
-.email-header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.email-author{font-size:13px;font-weight:500;color:var(--text);}
-.email-found{font-size:12px;color:var(--accent);margin-top:1px;}
-.btn-copy{padding:6px 12px;background:var(--cream2);border:1.5px solid var(--border);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
-.btn-copy.copied{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
-textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:1.8;color:var(--text);background:var(--cream2);}
-.action-row{display:flex;gap:8px;margin-top:10px;}
-.btn-mail{flex:1;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn-sent{padding:12px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
-.sent-confirm{margin-top:8px;padding:10px;background:var(--accent-light);border:1px solid var(--accent);border-radius:10px;font-size:13px;color:var(--accent);text-align:center;display:none;}
-.lib-empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px;}
-.lib-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
-.lib-item-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;}
-.lib-item-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;flex:1;}
-.lib-item-meta{font-size:11px;color:var(--text3);margin-bottom:8px;}
-.lib-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
-.lib-tag{font-size:10px;padding:3px 8px;border-radius:20px;background:var(--cream2);color:var(--text2);border:1px solid var(--border);}
-.lib-note{font-size:12px;color:var(--text2);line-height:1.6;padding:8px;background:var(--cream2);border-radius:8px;margin-bottom:8px;}
-.lib-actions{display:flex;gap:6px;}
-.btn-lib-action{padding:5px 10px;border-radius:8px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--cream2);color:var(--text2);font-family:'DM Sans',sans-serif;}
-.btn-lib-delete{border-color:#fca5a5;color:#991b1b;background:var(--card-bg);}
-.history-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
-.history-item:active{background:var(--cream2);}
-.history-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:2px;}
-.history-meta{font-size:11px;color:var(--text3);}
-.h-badge{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:500;flex-shrink:0;}
-.h-badge-oa{background:var(--green-light);color:var(--green);border:1px solid var(--green);}
-.h-badge-email{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue);}
-.restore-banner{background:var(--accent-light);border:1px solid var(--accent);border-radius:12px;padding:11px 14px;margin-bottom:14px;display:none;align-items:center;justify-content:space-between;gap:8px;}
-.coffee-bar{position:fixed;bottom:env(safe-area-inset-bottom,0);left:0;right:0;background:rgba(248,246,241,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;z-index:100;}
-[data-theme="dark"] .coffee-bar{background:rgba(26,22,18,0.95);}
-.coffee-text{font-size:12px;color:var(--text3);}
-.coffee-text strong{color:var(--text2);}
-.btn-coffee{display:flex;align-items:center;gap:6px;padding:7px 14px;background:#fff8e1;border:1.5px solid #f59e0b;border-radius:20px;color:#92400e;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;text-decoration:none;}
-.footer{font-size:11px;color:var(--text3);text-align:center;margin-top:16px;}
-.hidden{display:none!important;}
-.small-btn{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;padding:0;}
-.profile-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-
-/* ======================== ANALYSIS PAGE ======================== */
-#pageAnalysis{padding:env(safe-area-inset-top,0) 0 40px;background:var(--body-bg);}
-.analysis-header{background:var(--card-bg);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
-.btn-back{background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:14px;color:var(--text2);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:6px;}
-.analysis-header-title{flex:1;font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-.analysis-body{max-width:680px;margin:0 auto;padding:16px;}
-
-/* SUMMARY CARD */
-.summary-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
-.summary-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.ai-badge{font-size:10px;background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:2px 8px;}
-.summary-text{font-size:14px;line-height:1.9;color:var(--text2);}
-.dot-pulse{display:flex;gap:4px;align-items:center;}
-.dot-pulse span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.2s infinite;}
-.dot-pulse span:nth-child(2){animation-delay:0.2s;}
-.dot-pulse span:nth-child(3){animation-delay:0.4s;}
-@keyframes pulse{0%,100%{opacity:0.3;transform:scale(0.8);}50%{opacity:1;transform:scale(1);}}
-
-/* PDF UPLOAD */
-.pdf-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;}
-.pdf-drop{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cream2);}
-.pdf-drop.dragover{border-color:var(--accent);background:var(--accent-light);}
-.pdf-drop-icon{font-size:28px;margin-bottom:8px;}
-.pdf-drop-text{font-size:13px;color:var(--text2);margin-bottom:4px;}
-.pdf-drop-sub{font-size:11px;color:var(--text3);}
-.pdf-loaded{display:flex;align-items:center;gap:10px;padding:12px;background:var(--green-light);border:1px solid var(--green);border-radius:10px;margin-top:10px;}
-.pdf-loaded-name{font-size:13px;color:var(--green);font-weight:500;flex:1;}
-.btn-pdf-clear{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;}
-.btn-analyze-pdf{width:100%;margin-top:10px;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn-analyze-pdf:disabled{background:var(--border);color:var(--text3);}
-
-/* RELATED */
-.related-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;}
-.related-item{padding:12px 0;border-bottom:1px solid var(--sand);cursor:pointer;}
-.related-item:last-child{border-bottom:none;padding-bottom:0;}
-.related-item:first-child{padding-top:0;}
-.related-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:3px;}
-.related-meta{font-size:11px;color:var(--text3);}
-.related-item:active .related-title{color:var(--accent);}
-
-/* CHAT */
-.chat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px;}
-.chat-messages{padding:16px;max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
-.chat-msg{max-width:85%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.7;}
-.chat-msg-user{background:var(--accent);color:white;align-self:flex-end;border-bottom-right-radius:4px;}
-.chat-msg-ai{background:var(--cream2);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;}
-.chat-msg-ai strong{color:var(--accent);}
-.chat-input-row{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--cream2);}
-.chat-input{flex:1;background:var(--card-bg);border:1.5px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;-webkit-appearance:none;}
-.chat-input:focus{outline:none;border-color:var(--accent);}
-.btn-send{padding:10px 16px;background:var(--accent);border:none;border-radius:10px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
-.btn-send:disabled{background:var(--border);}
-.chat-suggestions{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 12px;}
-.chat-suggestion{font-size:11px;padding:6px 11px;border-radius:20px;border:1px solid var(--border);background:var(--cream2);color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
-.chat-suggestion:active{border-color:var(--accent);color:var(--accent);}
-.chat-empty{padding:20px 16px;text-align:center;color:var(--text3);font-size:13px;}
-
-/* FORMATTED AI OUTPUT */
-.ai-output h1,.ai-output h2,.ai-output h3{font-family:'Fraunces',serif;color:var(--text);margin:14px 0 6px;}
-.ai-output h1{font-size:16px;border-bottom:1px solid var(--sand);padding-bottom:6px;}
-.ai-output h2{font-size:14px;color:var(--accent);}
-.ai-output h3{font-size:13px;color:var(--blue);}
-.ai-output p{font-size:13px;line-height:1.8;color:var(--text2);margin-bottom:8px;}
-.ai-output strong{color:var(--text);font-weight:600;}
-.ai-output em{color:var(--text2);font-style:italic;}
-.ai-output ul,.ai-output ol{padding-left:18px;margin-bottom:8px;}
-.ai-output li{font-size:13px;line-height:1.8;color:var(--text2);margin-bottom:2px;}
-.ai-output .score-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.ai-output .score-label{font-size:12px;color:var(--text2);width:160px;flex-shrink:0;}
-.ai-output .score-bar{flex:1;height:6px;background:var(--sand);border-radius:3px;overflow:hidden;}
-.ai-output .score-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 0.5s;}
-.ai-output .score-val{font-size:12px;font-weight:600;color:var(--accent);width:20px;}
-.ai-output .expert-block{background:var(--cream2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:10px;}
-.ai-output .expert-name{font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
-.ai-output .debate-block{background:var(--blue-light);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:8px;}
-.ai-output .section-badge{display:inline-block;font-size:10px;padding:3px 8px;border-radius:20px;background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);margin-bottom:8px;font-weight:500;}
-
-/* EXPORT BUTTON */
-.btn-export{display:flex;align-items:center;gap:6px;padding:9px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
-
-/* JOURNAL CLUB */
-.jclub-session{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;}
-.jclub-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
-.jclub-title{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);}
-.jclub-date{font-size:11px;color:var(--text3);margin-top:2px;}
-.jclub-papers{margin-bottom:12px;}
-.jclub-paper{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--sand);}
-.jclub-paper:last-child{border-bottom:none;}
-.jclub-paper-num{font-size:12px;font-weight:600;color:var(--accent);width:20px;flex-shrink:0;margin-top:1px;}
-.jclub-paper-title{font-size:12px;color:var(--text);line-height:1.4;flex:1;}
-.jclub-paper-meta{font-size:10px;color:var(--text3);margin-top:2px;}
-.jclub-paper-remove{font-size:14px;color:var(--text3);background:none;border:none;cursor:pointer;padding:0 4px;}
-.jclub-add-row{display:flex;gap:8px;margin-bottom:12px;}
-.jclub-add-input{flex:1;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;-webkit-appearance:none;}
-.jclub-add-input:focus{outline:none;border-color:var(--accent);}
-.btn-jclub-add{padding:9px 14px;background:var(--accent);border:none;border-radius:10px;color:white;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
-.jclub-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.btn-jclub-action{padding:8px 14px;border-radius:10px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:1.5px solid var(--border);background:var(--cream2);color:var(--text2);}
-.btn-jclub-analyze{background:var(--accent);border-color:var(--accent);color:white;}
-.jclub-analysis{margin-top:12px;padding:14px;background:var(--cream2);border-radius:12px;font-size:13px;line-height:1.8;color:var(--text2);display:none;}
-.jclub-empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px;}
-.jclub-share-box{margin-top:10px;padding:12px;background:var(--blue-light);border:1px solid var(--blue);border-radius:10px;font-size:12px;color:var(--blue);line-height:1.7;}
-```
-
+    .page{display:none;min-height:100vh;}.page.active{display:block;}
+    #pageMain{padding:env(safe-area-inset-top,0) 0 80px;}
+    .container{max-width:600px;margin:0 auto;padding:0 16px;}
+    .header{display:flex;align-items:center;gap:12px;padding:24px 0 20px;border-bottom:1px solid var(--border);margin-bottom:20px;}
+    .logo{width:42px;height:42px;border-radius:10px;}
+    .header-text{flex:1;}
+    .brand{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--text);}
+    .brand-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+    .btn-icon{background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:16px;color:var(--text2);font-family:'DM Sans',sans-serif;}
+    .tabs{display:flex;gap:4px;background:var(--cream2);border-radius:12px;padding:4px;margin-bottom:18px;}
+    .tab{flex:1;padding:8px;text-align:center;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text3);transition:all 0.2s;border:none;background:none;font-family:'DM Sans',sans-serif;}
+    .tab.active{background:var(--card-bg);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+    .panel{display:none;}.panel.active{display:block;}
+    .card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+    .card-title{font-family:'Fraunces',serif;font-size:13px;font-style:italic;color:var(--text3);margin-bottom:10px;}
+    .field{margin-bottom:10px;}
+    label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:5px;letter-spacing:0.5px;text-transform:uppercase;}
+    input,textarea{width:100%;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;transition:border-color 0.2s;-webkit-appearance:none;}
+    input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,100,66,0.1);background:var(--card-bg);}
+    input::placeholder,textarea::placeholder{color:var(--text3);}
+    .divider{border:none;border-top:1px solid var(--sand);margin:14px 0;}
+    .grid-3{display:grid;grid-template-columns:1fr;gap:8px;}
+    @media(min-width:480px){.grid-3{grid-template-columns:1fr 1fr 1fr;}}
+    .lang-row{display:flex;gap:6px;margin-bottom:12px;}
+    .btn-lang{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--cream2);color:var(--text3);font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+    .btn-lang.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent);}
+    .btn-row{display:flex;gap:10px;margin-top:12px;}
+    .btn-primary{flex:1;padding:13px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+    .btn-primary:active{transform:scale(0.98);}
+    .btn-primary:disabled{background:var(--border);color:var(--text3);cursor:not-allowed;}
+    .btn-secondary{padding:13px 16px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
+    .results-list{margin-bottom:14px;display:none;}
+    .results-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+    .result-item{background:var(--card-bg);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;}
+    .result-item:active{border-color:var(--accent);background:var(--accent-light);}
+    .result-item-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:4px;}
+    .result-item-meta{font-size:11px;color:var(--text3);}
+    .article-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;margin-bottom:14px;overflow:hidden;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.07);}
+    .article-header{padding:18px 18px 14px;}
+    .article-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;border-radius:20px;padding:4px 10px;margin-bottom:10px;border:1px solid;}
+    .status-oa{background:var(--green-light);color:var(--green);border-color:var(--green);}
+    .status-closed{background:var(--accent-light);color:var(--accent);border-color:var(--accent);}
+    .article-title{font-family:'Fraunces',serif;font-size:16px;color:var(--text);line-height:1.4;margin-bottom:6px;}
+    .article-meta{font-size:12px;color:var(--text2);line-height:1.6;}
+    .article-divider{border:none;border-top:1px solid var(--sand);}
+    .article-actions{padding:14px 18px;display:flex;gap:8px;flex-wrap:wrap;}
+    .btn-analyze{flex:1;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+    .btn-dl{flex:1;padding:12px;background:var(--green);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;}
+    .btn-sm{padding:10px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+    .email-section{padding:0 18px 18px;}
+    .find-email-box{padding:13px;background:var(--blue-light);border:1px solid var(--blue);border-radius:12px;margin-bottom:10px;}
+    .find-email-label{font-size:11px;font-weight:500;color:var(--blue);margin-bottom:9px;text-transform:uppercase;letter-spacing:0.5px;}
+    .find-email-btns{display:flex;gap:6px;flex-wrap:wrap;}
+    .btn-find{display:inline-flex;align-items:center;padding:6px 11px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;text-decoration:none;border:1.5px solid;cursor:pointer;}
+    .btn-find-scholar{background:var(--card-bg);border-color:#4285f4;color:#4285f4;}
+    .btn-find-pubmed{background:var(--card-bg);border-color:#2e86c1;color:#2e86c1;}
+    .btn-find-google{background:var(--card-bg);border-color:#c0392b;color:#c0392b;}
+    .btn-find-linkedin{background:var(--card-bg);border-color:#0077b5;color:#0077b5;}
+    .email-header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+    .email-author{font-size:13px;font-weight:500;color:var(--text);}
+    .email-found{font-size:12px;color:var(--accent);margin-top:1px;}
+    .btn-copy{padding:6px 12px;background:var(--cream2);border:1.5px solid var(--border);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
+    .btn-copy.copied{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+    textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:1.8;color:var(--text);background:var(--cream2);}
+    .action-row{display:flex;gap:8px;margin-top:10px;}
+    .btn-mail{flex:1;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;}
+    .btn-sent{padding:12px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
+    .sent-confirm{margin-top:8px;padding:10px;background:var(--accent-light);border:1px solid var(--accent);border-radius:10px;font-size:13px;color:var(--accent);text-align:center;display:none;}
+    .lib-empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px;}
+    .lib-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+    .lib-item-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;}
+    .lib-item-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;flex:1;}
+    .lib-item-meta{font-size:11px;color:var(--text3);margin-bottom:8px;}
+    .lib-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+    .lib-tag{font-size:10px;padding:3px 8px;border-radius:20px;background:var(--cream2);color:var(--text2);border:1px solid var(--border);}
+    .lib-note{font-size:12px;color:var(--text2);line-height:1.6;padding:8px;background:var(--cream2);border-radius:8px;margin-bottom:8px;}
+    .lib-actions{display:flex;gap:6px;}
+    .btn-lib-action{padding:5px 10px;border-radius:8px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--cream2);color:var(--text2);font-family:'DM Sans',sans-serif;}
+    .btn-lib-delete{border-color:#fca5a5;color:#991b1b;background:var(--card-bg);}
+    .history-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+    .history-item:active{background:var(--cream2);}
+    .history-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:2px;}
+    .history-meta{font-size:11px;color:var(--text3);}
+    .h-badge{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:500;flex-shrink:0;}
+    .h-badge-oa{background:var(--green-light);color:var(--green);border:1px solid var(--green);}
+    .h-badge-email{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue);}
+    .restore-banner{background:var(--accent-light);border:1px solid var(--accent);border-radius:12px;padding:11px 14px;margin-bottom:14px;display:none;align-items:center;justify-content:space-between;gap:8px;}
+    .coffee-bar{position:fixed;bottom:env(safe-area-inset-bottom,0);left:0;right:0;background:rgba(248,246,241,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;z-index:100;}
+    [data-theme="dark"] .coffee-bar{background:rgba(26,22,18,0.95);}
+    .coffee-text{font-size:12px;color:var(--text3);}
+    .coffee-text strong{color:var(--text2);}
+    .btn-coffee{display:flex;align-items:center;gap:6px;padding:7px 14px;background:#fff8e1;border:1.5px solid #f59e0b;border-radius:20px;color:#92400e;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;text-decoration:none;}
+    .footer{font-size:11px;color:var(--text3);text-align:center;margin-top:16px;}
+    .hidden{display:none!important;}
+    .small-btn{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;padding:0;}
+    .profile-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+    #pageAnalysis{padding:env(safe-area-inset-top,0) 0 40px;background:var(--body-bg);}
+    .analysis-header{background:var(--card-bg);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
+    .btn-back{background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:14px;color:var(--text2);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:6px;}
+    .analysis-header-title{flex:1;font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+    .analysis-body{max-width:680px;margin:0 auto;padding:16px;}
+    .summary-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+    .summary-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+    .ai-badge{font-size:10px;background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:2px 8px;}
+    .summary-text{font-size:14px;line-height:1.9;color:var(--text2);}
+    .dot-pulse{display:flex;gap:4px;align-items:center;}
+    .dot-pulse span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.2s infinite;}
+    .dot-pulse span:nth-child(2){animation-delay:0.2s;}
+    .dot-pulse span:nth-child(3){animation-delay:0.4s;}
+    @keyframes pulse{0%,100%{opacity:0.3;transform:scale(0.8);}50%{opacity:1;transform:scale(1);}}
+    .btn-mode{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:1.5px solid var(--border);background:var(--cream2);color:var(--text2);transition:all 0.2s;}
+    .btn-mode-active{background:var(--accent);border-color:var(--accent);color:white;}
+    .pdf-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;}
+    .pdf-drop{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cream2);}
+    .pdf-drop.dragover{border-color:var(--accent);background:var(--accent-light);}
+    .pdf-drop-icon{font-size:28px;margin-bottom:8px;}
+    .pdf-drop-text{font-size:13px;color:var(--text2);margin-bottom:4px;}
+    .pdf-drop-sub{font-size:11px;color:var(--text3);}
+    .pdf-loaded{display:flex;align-items:center;gap:10px;padding:12px;background:var(--green-light);border:1px solid var(--green);border-radius:10px;margin-top:10px;}
+    .pdf-loaded-name{font-size:13px;color:var(--green);font-weight:500;flex:1;}
+    .btn-pdf-clear{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;}
+    .btn-analyze-pdf{width:100%;margin-top:10px;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+    .btn-analyze-pdf:disabled{background:var(--border);color:var(--text3);}
+    .related-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;}
+    .related-item{padding:12px 0;border-bottom:1px solid var(--sand);cursor:pointer;}
+    .related-item:last-child{border-bottom:none;padding-bottom:0;}
+    .related-item:first-child{padding-top:0;}
+    .related-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:3px;}
+    .related-meta{font-size:11px;color:var(--text3);}
+    .related-item:active .related-title{color:var(--accent);}
+    .chat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+    .chat-messages{padding:16px;max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
+    .chat-msg{max-width:85%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.7;}
+    .chat-msg-user{background:var(--accent);color:white;align-self:flex-end;border-bottom-right-radius:4px;}
+    .chat-msg-ai{background:var(--cream2);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;}
+    .chat-input-row{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--cream2);}
+    .chat-input{flex:1;background:var(--card-bg);border:1.5px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;-webkit-appearance:none;}
+    .chat-input:focus{outline:none;border-color:var(--accent);}
+    .btn-send{padding:10px 16px;background:var(--accent);border:none;border-radius:10px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
+    .btn-send:disabled{background:var(--border);}
+    .chat-suggestions{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 12px;}
+    .chat-suggestion{font-size:11px;padding:6px 11px;border-radius:20px;border:1px solid var(--border);background:var(--cream2);color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .chat-suggestion:active{border-color:var(--accent);color:var(--accent);}
+    .chat-empty{padding:20px 16px;text-align:center;color:var(--text3);font-size:13px;}
+    .ai-output h2{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);margin:16px 0 8px;border-bottom:1px solid var(--sand);padding-bottom:6px;}
+    .ai-output h3{font-size:13px;font-weight:600;color:var(--accent);margin:12px 0 6px;}
+    .ai-output strong{color:var(--text);font-weight:600;}
+    .ai-output p{margin-bottom:8px;}
+    .score-bar{display:inline-block;height:8px;border-radius:4px;background:var(--accent);margin-left:6px;vertical-align:middle;}
   </style>
 </head>
 <body>
 
-<!-- ======================== MAIN PAGE ======================== -->
+<!-- MAIN PAGE -->
 
 <div class="page active" id="pageMain">
   <div class="container">
@@ -237,65 +179,63 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
       <img class="logo" src="icon.png" alt="PaperQuest"/>
       <div class="header-text">
         <div class="brand">PaperQuest</div>
-        <div class="brand-sub">CrossRef · Unpaywall · Claude AI</div>
+        <div class="brand-sub">CrossRef &middot; Unpaywall &middot; Claude AI</div>
       </div>
       <div style="display:flex;gap:6px;">
-        <button class="btn-icon" id="btnTheme" onclick="toggleTheme()">🌙</button>
+        <button class="btn-icon" id="btnTheme" onclick="toggleTheme()">&#127769;</button>
       </div>
     </div>
 
 ```
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('search')">🔍 Pesquisa</button>
-  <button class="tab" onclick="switchTab('library')">📚 Biblioteca</button>
-  <button class="tab" onclick="switchTab('jclub')">🎓 Journal Club</button>
-  <button class="tab" onclick="switchTab('history')">🕐 Histórico</button>
+  <button class="tab active" onclick="switchTab('search')">&#128269; Pesquisa</button>
+  <button class="tab" onclick="switchTab('library')">&#128218; Biblioteca</button>
+  <button class="tab" onclick="switchTab('history')">&#128336; Hist&oacute;rico</button>
 </div>
 
-<!-- SEARCH PANEL -->
 <div class="panel active" id="panelSearch">
   <div class="restore-banner" id="restoreBanner">
-    <span style="font-size:13px;color:var(--accent);">↩ Sessão anterior recuperada</span>
+    <span style="font-size:13px;color:var(--accent);">&#8617; Sess&atilde;o anterior recuperada</span>
     <button onclick="clearState()" class="small-btn">Limpar</button>
   </div>
 
   <div class="card">
-    <div class="card-title">Qual é o artigo que procuras?</div>
+    <div class="card-title">Qual &eacute; o artigo que procuras?</div>
     <div class="field">
-      <label>DOI, PMID ou Título</label>
-      <input type="text" id="queryInput" placeholder="10.1056/... · PMID:12345 · título..."/>
+      <label>DOI, PMID ou T&iacute;tulo</label>
+      <input type="text" id="queryInput" placeholder="10.1056/... &middot; PMID:12345 &middot; t&iacute;tulo..."/>
     </div>
     <div class="divider"></div>
     <div class="profile-header">
       <div class="card-title" style="margin-bottom:0">O teu perfil <span style="font-size:11px;color:var(--text3)">(opcional)</span></div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <span id="profileSaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">✓ Guardado</span>
+        <span id="profileSaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">&#10003; Guardado</span>
         <button id="btnClearProfile" onclick="clearProfile()" class="small-btn" style="display:none;">Limpar</button>
       </div>
     </div>
     <div class="grid-3" style="margin-top:10px;">
       <div class="field"><label>Nome</label><input type="text" id="nameInput" placeholder="Dr. Pedro Nunes"/></div>
-      <div class="field"><label>Função</label><input type="text" id="roleInput" placeholder="Intensivista Pediátrico"/></div>
-      <div class="field"><label>Instituição</label><input type="text" id="instInput" placeholder="Hospital Fernando Fonseca"/></div>
+      <div class="field"><label>Fun&ccedil;&atilde;o</label><input type="text" id="roleInput" placeholder="Intensivista Pedi&aacute;trico"/></div>
+      <div class="field"><label>Institui&ccedil;&atilde;o</label><input type="text" id="instInput" placeholder="Hospital Fernando Fonseca"/></div>
     </div>
     <div>
       <div class="card-title" style="margin-bottom:6px;">Idioma do email e resumo</div>
       <div class="lang-row">
-        <button class="btn-lang active" id="langEN" onclick="setLang('en')">🇬🇧 English</button>
-        <button class="btn-lang" id="langPT" onclick="setLang('pt')">🇵🇹 Português</button>
+        <button class="btn-lang active" id="langEN" onclick="setLang('en')">&#127468;&#127463; English</button>
+        <button class="btn-lang" id="langPT" onclick="setLang('pt')">&#127477;&#127481; Portugu&ecirc;s</button>
       </div>
     </div>
     <div class="divider"></div>
     <div>
       <div class="profile-header" style="margin-bottom:6px;">
-        <div class="card-title" style="margin-bottom:0;">Claude API Key <span style="font-size:11px;color:var(--text3)">(para resumos com IA)</span></div>
-        <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">✓ Guardada</span>
+        <div class="card-title" style="margin-bottom:0;">Claude API Key <span style="font-size:11px;color:var(--text3)">(para IA)</span></div>
+        <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">&#10003; Guardada</span>
       </div>
       <div class="field" style="margin-bottom:6px;">
         <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
       </div>
       <div style="font-size:11px;color:var(--text3);line-height:1.6;">
-        Cria a tua chave gratuita em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> → API Keys → Create Key.
+        Cria a tua chave em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> &rarr; API Keys.
       </div>
     </div>
     <div class="btn-row">
@@ -317,15 +257,14 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
     </div>
     <hr class="article-divider"/>
     <div class="article-actions">
-      <button class="btn-analyze" onclick="openAnalysis()">🧠 Analisar com IA</button>
-      <a class="btn-dl hidden" id="oaLink" href="#" target="_blank">↓ PDF</a>
-      <button class="btn-sm" onclick="saveToLibrary()" title="Guardar na biblioteca">🔖</button>
-      <button class="btn-sm" onclick="addCurrentToJclub()" title="Adicionar ao Journal Club">🎓</button>
-      <button class="btn-sm" onclick="shareArticle()" title="Partilhar">↗</button>
+      <button class="btn-analyze" onclick="openAnalysis()">&#129504; Analisar com IA</button>
+      <a class="btn-dl hidden" id="oaLink" href="#" target="_blank">&#8595; PDF</a>
+      <button class="btn-sm" onclick="saveToLibrary()">&#128278;</button>
+      <button class="btn-sm" onclick="shareArticle()">&#8599;</button>
     </div>
     <div class="email-section" id="emailSection" style="display:none;">
       <div class="find-email-box">
-        <div class="find-email-label">📧 Encontrar email do autor</div>
+        <div class="find-email-label">&#128231; Encontrar email do autor</div>
         <div class="find-email-btns">
           <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Scholar</a>
           <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
@@ -343,17 +282,16 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
         </div>
         <textarea class="email-body" id="emailBody"></textarea>
         <div class="action-row">
-          <a class="btn-mail" id="btnMailto" href="#">✉️ Abrir no Mail</a>
-          <button class="btn-sent" id="sentBtn" onclick="markSent()">✓</button>
+          <a class="btn-mail" id="btnMailto" href="#">&#9993;&#65039; Abrir no Mail</a>
+          <button class="btn-sent" id="sentBtn" onclick="markSent()">&#10003;</button>
         </div>
-        <div class="sent-confirm" id="sentConfirm">✓ Enviado! Follow-up em 7 dias.</div>
+        <div class="sent-confirm" id="sentConfirm">&#10003; Enviado! Follow-up em 7 dias.</div>
       </div>
     </div>
   </div>
-  <div class="footer">CrossRef · Unpaywall · PubMed · Pedir artigos a autores é legal</div>
+  <div class="footer">CrossRef &middot; Unpaywall &middot; PubMed &middot; Pedir artigos a autores &eacute; legal</div>
 </div>
 
-<!-- LIBRARY PANEL -->
 <div class="panel" id="panelLibrary">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
     <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">A minha biblioteca</div>
@@ -362,19 +300,9 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
   <div id="libraryContent"></div>
 </div>
 
-<!-- JOURNAL CLUB PANEL -->
-<div class="panel" id="panelJclub">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Journal Club</div>
-    <button class="btn-icon" onclick="newJclubSession()" style="font-size:13px;padding:7px 12px;">+ Nova sessão</button>
-  </div>
-  <div id="jclubContent"></div>
-</div>
-
-<!-- HISTORY PANEL -->
 <div class="panel" id="panelHistory">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Histórico</div>
+    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Hist&oacute;rico</div>
     <button class="small-btn" onclick="clearHistory()">Limpar</button>
   </div>
   <div id="historyContent"></div>
@@ -384,83 +312,81 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
   </div>
 
   <div class="coffee-bar">
-    <div class="coffee-text">Feito por <strong>um médico, para médicos</strong></div>
-    <a class="btn-coffee" href="https://buymeacoffee.com/possn" target="_blank">☕ Buy me a coffee</a>
+    <div class="coffee-text">Feito por <strong>um m&eacute;dico, para m&eacute;dicos</strong></div>
+    <a class="btn-coffee" href="https://buymeacoffee.com/possn" target="_blank">&#9749; Buy me a coffee</a>
   </div>
 </div>
 
-<!-- ======================== ANALYSIS PAGE ======================== -->
+<!-- ANALYSIS PAGE -->
 
 <div class="page" id="pageAnalysis">
   <div class="analysis-header">
-    <button class="btn-back" onclick="closeAnalysis()">← Voltar</button>
-    <div class="analysis-header-title" id="analysisHeaderTitle">Análise do artigo</div>
-    <div style="display:flex;gap:6px;">
-      <button class="btn-icon" onclick="exportAnalysis()" title="Exportar">↗</button>
-      <button class="btn-icon" onclick="saveToLibrary()">🔖</button>
-    </div>
+    <button class="btn-back" onclick="closeAnalysis()">&#8592; Voltar</button>
+    <div class="analysis-header-title" id="analysisHeaderTitle">An&aacute;lise do artigo</div>
+    <button class="btn-icon" onclick="saveToLibrary()">&#128278;</button>
   </div>
   <div class="analysis-body">
 
 ```
-<!-- ARTICLE INFO -->
-<div class="summary-card" id="analysisArticleInfo" style="margin-bottom:14px;">
+<div class="summary-card" style="margin-bottom:14px;">
   <div style="font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:6px;" id="analysisTitleFull"></div>
   <div style="font-size:12px;color:var(--text2);" id="analysisMetaFull"></div>
 </div>
 
-<!-- SUMMARY -->
+<!-- AI ANALYSIS WITH MODE TOGGLE -->
 <div class="summary-card">
-  <div class="summary-label">Revisão científica profunda <span class="ai-badge">Claude AI</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <div class="summary-label" style="margin-bottom:0;">An&aacute;lise com IA <span class="ai-badge">Claude AI</span></div>
+    <div style="display:flex;gap:6px;">
+      <button class="btn-mode" id="btnModeResume" onclick="switchMode('resume')">&#128203; Resumo</button>
+      <button class="btn-mode btn-mode-active" id="btnModeDeep" onclick="switchMode('deep')">&#128300; An&aacute;lise</button>
+    </div>
+  </div>
   <div id="analysisSummaryLoading" style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;">
     <div class="dot-pulse"><span></span><span></span><span></span></div>
-    <span>Painel de revisores a analisar…</span>
+    <span id="analysisLoadingText">Painel de revisores a analisar&hellip;</span>
   </div>
   <div class="summary-text ai-output" id="analysisSummaryText" style="display:none;"></div>
 </div>
 
-<!-- PDF UPLOAD -->
 <div class="pdf-card">
-  <div class="summary-label">Upload de PDF <span class="ai-badge">Resumo completo</span></div>
-  <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Tens o PDF? Carrega-o aqui e o Claude analisa o artigo completo — não só o abstract.</div>
+  <div class="summary-label">Upload de PDF <span class="ai-badge">An&aacute;lise completa</span></div>
+  <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Tens o PDF? Carrega-o aqui e o Claude analisa o artigo completo &mdash; n&atilde;o s&oacute; o abstract.</div>
   <div class="pdf-drop" id="pdfDrop" onclick="g('pdfInput').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
-    <div class="pdf-drop-icon">📄</div>
+    <div class="pdf-drop-icon">&#128196;</div>
     <div class="pdf-drop-text">Clica ou arrasta o PDF aqui</div>
-    <div class="pdf-drop-sub">Máximo 10MB</div>
+    <div class="pdf-drop-sub">M&aacute;ximo 10MB</div>
   </div>
   <input type="file" id="pdfInput" accept=".pdf" style="display:none;" onchange="onPdfSelected(event)"/>
   <div class="pdf-loaded hidden" id="pdfLoaded">
-    <span>📄</span>
+    <span>&#128196;</span>
     <span class="pdf-loaded-name" id="pdfName"></span>
-    <button class="btn-pdf-clear" onclick="clearPdf()">✕</button>
+    <button class="btn-pdf-clear" onclick="clearPdf()">&#10005;</button>
   </div>
   <button class="btn-analyze-pdf" id="btnAnalyzePdf" onclick="analyzePdf()" disabled>Analisar PDF completo</button>
 </div>
 
-<!-- RELATED ARTICLES -->
 <div class="related-card" id="relatedCard" style="display:none;">
   <div class="summary-label">Artigos relacionados <span class="ai-badge">PubMed</span></div>
   <div id="relatedItems"></div>
 </div>
 
-<!-- CHAT -->
 <div class="chat-card">
   <div class="summary-label" style="padding:16px 16px 0;">Perguntas ao artigo <span class="ai-badge">Claude AI</span></div>
   <div class="chat-suggestions" id="chatSuggestions">
     <button class="chat-suggestion" onclick="askSuggestion(this)">Qual o NNT/NNH?</button>
     <button class="chat-suggestion" onclick="askSuggestion(this)">Aplica-se a pediatria?</button>
-    <button class="chat-suggestion" onclick="askSuggestion(this)">Rigor metodológico?</button>
-    <button class="chat-suggestion" onclick="askSuggestion(this)">Explicações alternativas?</button>
-    <button class="chat-suggestion" onclick="askSuggestion(this)">Nível de evidência?</button>
-    <button class="chat-suggestion" onclick="askSuggestion(this)">Conclusões exageradas?</button>
+    <button class="chat-suggestion" onclick="askSuggestion(this)">Rigor metodol&oacute;gico?</button>
+    <button class="chat-suggestion" onclick="askSuggestion(this)">Explica&ccedil;&otilde;es alternativas?</button>
+    <button class="chat-suggestion" onclick="askSuggestion(this)">N&iacute;vel de evid&ecirc;ncia?</button>
     <button class="chat-suggestion" onclick="askSuggestion(this)">Aplicar na minha UCI?</button>
   </div>
   <div class="chat-messages" id="chatMessages">
-    <div class="chat-empty" id="chatEmpty">Faz uma pergunta sobre o artigo ↓</div>
+    <div class="chat-empty" id="chatEmpty">Faz uma pergunta sobre o artigo &#8595;</div>
   </div>
   <div class="chat-input-row">
-    <input class="chat-input" id="chatInput" type="text" placeholder="Pergunta sobre o artigo…" onkeydown="if(event.key==='Enter')sendChat()"/>
-    <button class="btn-send" id="btnSend" onclick="sendChat()">↑</button>
+    <input class="chat-input" id="chatInput" type="text" placeholder="Pergunta sobre o artigo&hellip;" onkeydown="if(event.key==='Enter')sendChat()"/>
+    <button class="btn-send" id="btnSend" onclick="sendChat()">&#8593;</button>
   </div>
 </div>
 ```
@@ -939,6 +865,30 @@ function showArticleCard(article, isOA) {
 }
 
 // ── CLAUDE STREAMING ──
+async function streamClaudeTokens(sysP, usrP, maxTok, onChunk, onDone) {
+  if (!CLAUDE_KEY) { onDone('no-key'); return; }
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': CLAUDE_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: maxTok, stream: true, system: sysP, messages: [{ role: 'user', content: usrP }] })
+    });
+    if (!resp.ok) { onDone('error:' + await resp.text()); return; }
+    var reader = resp.body.getReader(); var decoder = new TextDecoder(); var full = '';
+    while (true) {
+      var res = await reader.read(); if (res.done) break;
+      var lines = decoder.decode(res.value, { stream: true }).split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (line.startsWith('data: ')) {
+          var data = line.slice(6); if (data === '[DONE]') continue;
+          try { var parsed = JSON.parse(data); if (parsed.type === 'content_block_delta' && parsed.delta && parsed.delta.text) { full += parsed.delta.text; onChunk(full); } } catch(e) {}
+        }
+      }
+    }
+    onDone('ok');
+  } catch(e) { onDone('error:' + e.message); }
+}
 async function streamClaude(sysP, usrP, onChunk, onDone) {
   if (!CLAUDE_KEY) { onDone('no-key'); return; }
   try {
@@ -1007,6 +957,55 @@ async function fetchRelated(doi, title) {
   } catch(e) { return []; }
 }
 
+// ── ANALYSIS MODE TOGGLE ──
+var currentMode = 'deep';
+
+var QUICK_RESUME = 'You are a clinical expert in paediatric intensive care. Generate a concise, structured clinical summary adapted to the article type (RCT, systematic review, narrative review, meta-analysis, case report, cohort study, etc.).' +
+  '\n\nStructure your output:\n**Study type:** (one line)\n**Objective:** (one line)\n**Methods:** (2-3 lines)\n**Main findings:** (bullet points, quantitative where available)\n**Clinical bottom line:** (1-2 sentences)\n**Limitations:** (2-3 key points)\n**Applicability to PICU:** (one line)\n\nBe concise. No preamble. Max 350 words.';
+
+function switchMode(mode) {
+  currentMode = mode;
+  g('btnModeResume').classList.toggle('btn-mode-active', mode === 'resume');
+  g('btnModeDeep').classList.toggle('btn-mode-active', mode === 'deep');
+  g('analysisSummaryText').style.display = 'none';
+  g('analysisSummaryText').innerHTML = '';
+  runAnalysisMode();
+}
+
+function runAnalysisMode() {
+  if (!currentArticle) return;
+  g('analysisSummaryLoading').style.display = 'flex';
+  g('analysisSummaryText').style.display = 'none';
+  g('analysisSummaryText').innerHTML = '';
+  if (!CLAUDE_KEY) {
+    g('analysisSummaryLoading').style.display = 'none';
+    g('analysisSummaryText').style.display = 'block';
+    g('analysisSummaryText').innerHTML = '<span style="color:var(--text3);font-size:12px;">\ud83d\udca1 Adiciona a tua Claude API Key para activar a IA.</span>';
+    return;
+  }
+  var isDeep = currentMode === 'deep';
+  g('analysisLoadingText').textContent = isDeep ? 'Painel de revisores a analisar\u2026' : 'A gerar resumo cl\u00ednico\u2026';
+  var sysP = emailLang === 'pt'
+    ? (isDeep ? 'Es um painel de revisores cientificos especializados em medicina intensiva pediatrica. Responde em Portugues.'
+               : 'Es um especialista clinico em medicina intensiva pediatrica. Gera resumos concisos. Responde em Portugues.')
+    : (isDeep ? 'You are a panel of scientific expert reviewers specialised in paediatric intensive care. Conduct deep, rigorous peer reviews. Respond in English.'
+               : 'You are a clinical expert in paediatric intensive care. Generate concise clinical summaries. Respond in English.');
+  var prompt = isDeep ? DEEP_REVIEW : QUICK_RESUME;
+  var usrP = prompt + '\n\nArticle: ' + currentArticle.title + '\n' + (currentAbstract ? 'Abstract: ' + currentAbstract : '(No abstract available)');
+  var maxTok = isDeep ? 4000 : 800;
+  streamClaudeTokens(sysP, usrP, maxTok, function(full) {
+    g('analysisSummaryLoading').style.display = 'none';
+    g('analysisSummaryText').style.display = 'block';
+    g('analysisSummaryText').innerHTML = formatAIOutput(full);
+  }, function(status) {
+    if (status !== 'ok') {
+      g('analysisSummaryLoading').style.display = 'none';
+      g('analysisSummaryText').style.display = 'block';
+      g('analysisSummaryText').innerHTML = '<span style="color:var(--text3);font-size:12px;">An\u00e1lise n\u00e3o dispon\u00edvel.</span>';
+    }
+  });
+}
+
 // ── ANALYSIS PAGE ──
 async function startAnalysis() {
   if (!currentArticle) return;
@@ -1015,35 +1014,12 @@ async function startAnalysis() {
   g('analysisTitleFull').textContent = currentArticle.title;
   g('analysisMetaFull').textContent = (currentArticle.journal || '') + (currentArticle.year ? ' \u00b7 ' + currentArticle.year : '') + (currentArticle.doi ? ' \u00b7 ' + currentArticle.doi : '');
   g('analysisHeaderTitle').textContent = currentArticle.title.substring(0, 40) + '\u2026';
-  g('analysisSummaryLoading').style.display = 'flex';
-  g('analysisSummaryText').style.display = 'none';
-  g('analysisSummaryText').innerHTML = '';
   g('relatedCard').style.display = 'none';
   clearPdf();
   if (!currentAbstract && currentArticle.doi) {
     currentAbstract = await fetchAbstract(currentArticle.doi, null) || '';
   }
-  if (!CLAUDE_KEY) {
-    g('analysisSummaryLoading').style.display = 'none';
-    g('analysisSummaryText').style.display = 'block';
-    g('analysisSummaryText').innerHTML = '<span style="color:var(--text3);font-size:12px;">\ud83d\udca1 Adiciona a tua Claude API Key nas defini\u00e7\u00f5es para activar os resumos com IA.</span>';
-  } else {
-    var sysP = emailLang === 'pt'
-      ? 'És um painel de revisores científicos especializados em medicina intensiva pediátrica. Conduz revisões profundas e rigorosas. Responde em Português.'
-      : 'You are a panel of scientific expert reviewers specialised in paediatric intensive care. Conduct deep, rigorous peer reviews. Respond in English.';
-    var usrP = DEEP_REVIEW + '\n\nArticle: ' + currentArticle.title + '\n' + (currentAbstract ? 'Abstract: ' + currentAbstract : '(No abstract available)');
-    streamClaude(sysP, usrP, function(full) {
-      g('analysisSummaryLoading').style.display = 'none';
-      g('analysisSummaryText').style.display = 'block';
-      g('analysisSummaryText').innerHTML = formatAIOutput(full);
-    }, function(status) {
-      if (status !== 'ok') {
-        g('analysisSummaryLoading').style.display = 'none';
-        g('analysisSummaryText').style.display = 'block';
-        g('analysisSummaryText').innerHTML = '<span style="color:var(--text3);font-size:12px;">Resumo n\u00e3o dispon\u00edvel.</span>';
-      }
-    });
-  }
+  runAnalysisMode();
   fetchRelated(currentArticle.doi, currentArticle.title).then(function(related) {
     if (!related.length) return;
     g('relatedCard').style.display = 'block';
@@ -1055,6 +1031,7 @@ async function startAnalysis() {
     }).join('');
   });
 }
+
 function loadRelated(pmid) { g('queryInput').value = 'PMID:' + pmid; closeAnalysis(); runAgent(); }
 
 // ── PDF ──
