@@ -238,7 +238,7 @@
     const q=encodeURIComponent(authorName);
     g('btnScholar').href='https://scholar.google.com/scholar?q='+q;
     g('btnPubmed').href='https://pubmed.ncbi.nlm.nih.gov/?term='+q+'[author]';
-    g('btnRgate').href='https://www.researchgate.net/search/researcher?q='+q;
+    g('btnRgate').href='https://www.google.com/search?q='+q+'+email+researcher';
   }
 
   async function fetchByDOI(doi){
