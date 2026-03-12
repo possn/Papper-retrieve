@@ -14,146 +14,255 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    :root{--cream:#f8f6f1;--cream2:#f0ede6;--sand:#e8e3d8;--border:#d8d2c4;--text:#2c2820;--text2:#6b6358;--text3:#9e9488;--accent:#c96442;--accent2:#cc785c;--accent-light:#fdf0eb;--blue:#1d6fa4;--blue-light:#dbeafe;--warn:#92400e;--warn-light:#fef3c7;--error:#991b1b;--white:#ffffff;}
-    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-    body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;min-height:-webkit-fill-available;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,80px) 0;}
-    .container{max-width:600px;margin:0 auto;padding:0 16px 100px;}
-    .header{display:flex;align-items:center;gap:14px;padding:28px 0 24px;border-bottom:1px solid var(--border);margin-bottom:28px;}
-    .logo{width:48px;height:48px;border-radius:12px;}
-    .brand{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--text);}
-    .brand-sub{font-size:12px;color:var(--text3);margin-top:2px;}
-    .restore-banner{background:var(--accent-light);border:1px solid var(--accent);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:none;align-items:center;justify-content:space-between;gap:10px;}
-    .card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
-    .card-title{font-family:'Fraunces',serif;font-size:13px;font-style:italic;color:var(--text3);margin-bottom:14px;}
-    .profile-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
-    .field{margin-bottom:14px;}
-    label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:6px;letter-spacing:0.5px;text-transform:uppercase;}
-    input,textarea{width:100%;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;transition:border-color 0.2s;-webkit-appearance:none;}
-    input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,100,66,0.1);background:var(--white);}
-    input::placeholder,textarea::placeholder{color:var(--text3);}
-    .divider{border:none;border-top:1px solid var(--sand);margin:18px 0;}
-    .grid-3{display:grid;grid-template-columns:1fr;gap:10px;}
-    @media(min-width:480px){.grid-3{grid-template-columns:1fr 1fr 1fr;}}
-    .btn-row{display:flex;gap:10px;margin-top:16px;}
-    .btn-primary{flex:1;padding:14px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;}
-    .btn-primary:active{background:var(--accent2);}
-    .btn-primary:disabled{background:var(--border);color:var(--text3);cursor:not-allowed;}
-    .btn-secondary{padding:14px 18px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
-    .log-panel{background:var(--cream2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:16px;max-height:180px;overflow-y:auto;display:none;}
-    .log-label{font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
-    .log-line{font-size:12px;line-height:1.9;}
-    .log-info{color:var(--accent);}.log-accent{color:var(--blue);}.log-dim{color:var(--text3);}.log-warn{color:var(--warn);}.log-error{color:var(--error);}.log-white{color:var(--text);font-weight:500;}
-    .result-oa{background:var(--accent-light);border:1.5px solid var(--accent);border-radius:16px;padding:20px 22px;margin-bottom:16px;display:none;}
-    .result-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;color:var(--accent);background:white;border-radius:20px;padding:4px 10px;margin-bottom:12px;border:1px solid var(--accent);}
-    .result-title{font-family:'Fraunces',serif;font-size:15px;color:var(--text);margin-bottom:6px;line-height:1.4;}
-    .result-meta{font-size:12px;color:var(--text2);margin-bottom:16px;}
-    .btn-download{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:var(--accent);border-radius:10px;color:white;text-decoration:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;}
-    .result-email{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:16px;display:none;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
-    .email-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
-    .author-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;}
-    .author-name{font-size:14px;font-weight:500;color:var(--text);}
-    .author-affil{font-size:12px;color:var(--text3);margin-top:1px;}
-    .btn-copy{padding:7px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;}
-    .btn-copy.copied{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
-    textarea.email-body{min-height:200px;resize:vertical;font-size:13px;line-height:1.8;color:var(--text);background:var(--cream);}
-    .find-email-box{margin-top:14px;padding:14px;background:var(--blue-light);border:1px solid #bfdbfe;border-radius:12px;}
-    .find-email-label{font-size:11px;font-weight:500;color:var(--blue);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;}
-    .find-email-btns{display:flex;gap:8px;flex-wrap:wrap;}
-    .btn-find{display:inline-flex;align-items:center;padding:8px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-decoration:none;border:1.5px solid;cursor:pointer;}
-    .btn-find-scholar{background:#fff;border-color:#4285f4;color:#4285f4;}
-    .btn-find-pubmed{background:#fff;border-color:#2e86c1;color:#2e86c1;}
-    .btn-find-google{background:#fff;border-color:#c0392b;color:#c0392b;}
-    .action-row{display:flex;gap:10px;margin-top:12px;}
-    .btn-mail{flex:1;padding:13px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;}
-    .btn-sent{padding:13px 18px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;flex-shrink:0;}
-    .sent-confirm{margin-top:12px;padding:12px 14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:10px;font-size:13px;color:var(--accent);text-align:center;display:none;}
-    .coffee-bar{position:fixed;bottom:env(safe-area-inset-bottom,0);left:0;right:0;background:rgba(248,246,241,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:100;}
-    .coffee-text{font-size:12px;color:var(--text3);}
-    .coffee-text strong{color:var(--text2);}
-    .btn-coffee{display:flex;align-items:center;gap:7px;padding:9px 18px;background:#fff8e1;border:1.5px solid #f59e0b;border-radius:20px;color:#92400e;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-decoration:none;}
-    .footer{font-size:11px;color:var(--text3);text-align:center;margin-top:20px;}
-    .hidden{display:none!important;}
+    :root {
+      --cream:#f8f6f1;--cream2:#f0ede6;--sand:#e8e3d8;--border:#d8d2c4;
+      --text:#2c2820;--text2:#6b6358;--text3:#9e9488;
+      --accent:#c96442;--accent2:#cc785c;--accent-light:#fdf0eb;
+      --blue:#1d6fa4;--blue-light:#dbeafe;
+      --warn:#92400e;--warn-light:#fef3c7;--error:#991b1b;--white:#ffffff;
+      --card-bg:#ffffff;--body-bg:#f8f6f1;
+    }
+    [data-theme="dark"] {
+      --cream:#1a1612;--cream2:#22201c;--sand:#2e2b26;--border:#3d3930;
+      --text:#f0ede6;--text2:#b8b0a4;--text3:#7a7368;
+      --accent:#e07a56;--accent2:#cc785c;--accent-light:#2d1f18;
+      --blue:#4a9fd4;--blue-light:#1a2a38;
+      --warn:#d4a44a;--warn-light:#2a2010;--error:#e06060;--white:#2a2520;
+      --card-bg:#22201c;--body-bg:#1a1612;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+    body { background:var(--body-bg); font-family:'DM Sans',sans-serif; color:var(--text); min-height:100vh; min-height:-webkit-fill-available; padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,80px) 0; transition: background 0.3s, color 0.3s; }
+    .container { max-width:600px; margin:0 auto; padding:0 16px 100px; }
+
+```
+/* HEADER */
+.header { display:flex; align-items:center; gap:12px; padding:24px 0 20px; border-bottom:1px solid var(--border); margin-bottom:24px; }
+.logo { width:44px; height:44px; border-radius:10px; }
+.header-text { flex:1; }
+.brand { font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:var(--text); }
+.brand-sub { font-size:11px; color:var(--text3); margin-top:1px; }
+.header-actions { display:flex; gap:8px; align-items:center; }
+.btn-icon { background:var(--cream2); border:1px solid var(--border); border-radius:8px; padding:7px 10px; cursor:pointer; font-size:16px; color:var(--text2); transition:all 0.2s; }
+.btn-icon:active { background:var(--sand); }
+
+/* TABS */
+.tabs { display:flex; gap:4px; background:var(--cream2); border-radius:12px; padding:4px; margin-bottom:20px; }
+.tab { flex:1; padding:9px; text-align:center; border-radius:9px; font-size:13px; font-weight:500; cursor:pointer; color:var(--text3); transition:all 0.2s; border:none; background:none; font-family:'DM Sans',sans-serif; }
+.tab.active { background:var(--white); color:var(--accent); box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+
+/* PANELS */
+.panel { display:none; }
+.panel.active { display:block; }
+
+/* RESTORE BANNER */
+.restore-banner { background:var(--accent-light); border:1px solid var(--accent); border-radius:12px; padding:12px 16px; margin-bottom:16px; display:none; align-items:center; justify-content:space-between; gap:10px; }
+
+/* CARD */
+.card { background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:14px; box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+.card-title { font-family:'Fraunces',serif; font-size:13px; font-style:italic; color:var(--text3); margin-bottom:12px; }
+.profile-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.field { margin-bottom:12px; }
+label { display:block; font-size:11px; font-weight:500; color:var(--text2); margin-bottom:5px; letter-spacing:0.5px; text-transform:uppercase; }
+input, textarea { width:100%; background:var(--cream2); border:1.5px solid var(--border); border-radius:10px; padding:11px 13px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px; transition:border-color 0.2s; -webkit-appearance:none; }
+input:focus, textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(201,100,66,0.1); background:var(--card-bg); }
+input::placeholder, textarea::placeholder { color:var(--text3); }
+.divider { border:none; border-top:1px solid var(--sand); margin:16px 0; }
+.grid-3 { display:grid; grid-template-columns:1fr; gap:8px; }
+@media(min-width:480px){.grid-3{grid-template-columns:1fr 1fr 1fr;}}
+
+/* LANGUAGE TOGGLE */
+.lang-row { display:flex; gap:6px; margin-bottom:14px; }
+.btn-lang { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; border:1.5px solid var(--border); background:var(--cream2); color:var(--text3); font-family:'DM Sans',sans-serif; transition:all 0.2s; }
+.btn-lang.active { border-color:var(--accent); background:var(--accent-light); color:var(--accent); }
+
+/* BUTTONS */
+.btn-row { display:flex; gap:10px; margin-top:14px; }
+.btn-primary { flex:1; padding:13px; background:var(--accent); border:none; border-radius:12px; color:white; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:500; cursor:pointer; transition:all 0.2s; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; }
+.btn-primary:active { background:var(--accent2); transform:scale(0.99); }
+.btn-primary:disabled { background:var(--border); color:var(--text3); cursor:not-allowed; }
+.btn-secondary { padding:13px 16px; background:var(--cream2); border:1.5px solid var(--border); border-radius:12px; color:var(--text2); font-family:'DM Sans',sans-serif; font-size:14px; cursor:pointer; }
+
+/* LOG */
+.log-panel { background:var(--cream2); border:1px solid var(--border); border-radius:12px; padding:13px 15px; margin-bottom:14px; max-height:160px; overflow-y:auto; display:none; }
+.log-label { font-size:10px; font-weight:500; color:var(--text3); letter-spacing:1px; text-transform:uppercase; margin-bottom:7px; }
+.log-line { font-size:12px; line-height:1.9; }
+.log-info{color:var(--accent);}.log-accent{color:var(--blue);}.log-dim{color:var(--text3);}.log-warn{color:var(--warn);}.log-error{color:var(--error);}.log-white{color:var(--text);font-weight:500;}
+
+/* RESULTS OA */
+.result-oa { background:var(--accent-light); border:1.5px solid var(--accent); border-radius:16px; padding:18px 20px; margin-bottom:14px; display:none; }
+.result-badge { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:500; color:var(--accent); background:var(--card-bg); border-radius:20px; padding:4px 10px; margin-bottom:10px; border:1px solid var(--accent); }
+.result-title { font-family:'Fraunces',serif; font-size:15px; color:var(--text); margin-bottom:5px; line-height:1.4; }
+.result-meta { font-size:12px; color:var(--text2); margin-bottom:14px; }
+.btn-download { display:inline-flex; align-items:center; gap:8px; padding:11px 18px; background:var(--accent); border-radius:10px; color:white; text-decoration:none; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; }
+
+/* RESULT EMAIL */
+.result-email { background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:14px; display:none; box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+.email-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+.author-label { font-size:10px; font-weight:500; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px; }
+.author-name { font-size:14px; font-weight:500; color:var(--text); }
+.author-affil { font-size:12px; color:var(--accent); margin-top:2px; }
+.btn-copy { padding:7px 13px; background:var(--cream2); border:1.5px solid var(--border); border-radius:8px; color:var(--text2); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; cursor:pointer; white-space:nowrap; flex-shrink:0; }
+.btn-copy.copied { border-color:var(--accent); color:var(--accent); background:var(--accent-light); }
+textarea.email-body { min-height:190px; resize:vertical; font-size:13px; line-height:1.8; color:var(--text); background:var(--cream2); }
+.find-email-box { margin-top:12px; padding:13px; background:var(--blue-light); border:1px solid var(--blue); border-radius:12px; }
+.find-email-label { font-size:11px; font-weight:500; color:var(--blue); margin-bottom:9px; text-transform:uppercase; letter-spacing:0.5px; }
+.find-email-btns { display:flex; gap:7px; flex-wrap:wrap; }
+.btn-find { display:inline-flex; align-items:center; padding:7px 12px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; text-decoration:none; border:1.5px solid; cursor:pointer; }
+.btn-find-scholar{background:var(--card-bg);border-color:#4285f4;color:#4285f4;}
+.btn-find-pubmed{background:var(--card-bg);border-color:#2e86c1;color:#2e86c1;}
+.btn-find-google{background:var(--card-bg);border-color:#c0392b;color:#c0392b;}
+.btn-find-linkedin{background:var(--card-bg);border-color:#0077b5;color:#0077b5;}
+.action-row { display:flex; gap:8px; margin-top:12px; }
+.btn-mail { flex:1; padding:12px; background:var(--accent); border:none; border-radius:12px; color:white; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; text-decoration:none; text-align:center; display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; }
+.btn-share { padding:12px 14px; background:var(--cream2); border:1.5px solid var(--border); border-radius:12px; color:var(--text2); font-family:'DM Sans',sans-serif; font-size:14px; cursor:pointer; }
+.btn-sent { padding:12px 14px; background:var(--cream2); border:1.5px solid var(--border); border-radius:12px; color:var(--text2); font-family:'DM Sans',sans-serif; font-size:14px; cursor:pointer; flex-shrink:0; }
+.sent-confirm { margin-top:10px; padding:11px 13px; background:var(--accent-light); border:1px solid var(--accent); border-radius:10px; font-size:13px; color:var(--accent); text-align:center; display:none; }
+
+/* HISTORY */
+.history-empty { text-align:center; padding:40px 20px; color:var(--text3); font-size:14px; }
+.history-item { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:10px; cursor:pointer; transition:all 0.2s; display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.history-item:active { background:var(--cream2); }
+.history-title { font-size:13px; font-weight:500; color:var(--text); line-height:1.4; margin-bottom:3px; }
+.history-meta { font-size:11px; color:var(--text3); }
+.history-badge { font-size:10px; padding:3px 8px; border-radius:20px; font-weight:500; flex-shrink:0; }
+.badge-oa { background:var(--accent-light); color:var(--accent); border:1px solid var(--accent); }
+.badge-email { background:var(--blue-light); color:var(--blue); border:1px solid var(--blue); }
+.btn-clear-history { font-size:12px; color:var(--text3); background:none; border:none; cursor:pointer; text-decoration:underline; margin-bottom:12px; font-family:'DM Sans',sans-serif; }
+
+/* COFFEE BAR */
+.coffee-bar { position:fixed; bottom:env(safe-area-inset-bottom,0); left:0; right:0; background:rgba(248,246,241,0.95); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-top:1px solid var(--border); padding:10px 20px; display:flex; align-items:center; justify-content:space-between; z-index:100; }
+[data-theme="dark"] .coffee-bar { background:rgba(26,22,18,0.95); }
+.coffee-text { font-size:12px; color:var(--text3); }
+.coffee-text strong { color:var(--text2); }
+.btn-coffee { display:flex; align-items:center; gap:7px; padding:8px 16px; background:#fff8e1; border:1.5px solid #f59e0b; border-radius:20px; color:#92400e; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; text-decoration:none; }
+.footer { font-size:11px; color:var(--text3); text-align:center; margin-top:20px; }
+.hidden { display:none!important; }
+.small-btn { font-size:11px; color:var(--text3); background:none; border:none; cursor:pointer; text-decoration:underline; font-family:'DM Sans',sans-serif; padding:0; }
+```
+
   </style>
 </head>
 <body>
 <div class="container">
+
+  <!-- HEADER -->
+
   <div class="header">
     <img class="logo" src="icon.png" alt="PaperQuest"/>
-    <div>
+    <div class="header-text">
       <div class="brand">PaperQuest</div>
-      <div class="brand-sub">CrossRef · Unpaywall · Claude AI</div>
+      <div class="brand-sub">CrossRef · Unpaywall · PubMed</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="btnTheme" onclick="toggleTheme()" title="Modo escuro">🌙</button>
     </div>
   </div>
 
-  <div class="restore-banner" id="restoreBanner">
-    <span style="font-size:13px;color:var(--accent);">↩ Sessão anterior recuperada</span>
-    <button onclick="clearState()" style="font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;">Limpar</button>
+  <!-- TABS -->
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('search')">🔍 Pesquisa</button>
+    <button class="tab" onclick="switchTab('history')">🕐 Histórico</button>
   </div>
 
-  <div class="card">
-    <div class="card-title">Qual é o artigo que procuras?</div>
-    <div class="field">
-      <label>DOI ou Título</label>
-      <input type="text" id="queryInput" placeholder="10.1056/NEJMoa2001017  ou  título do artigo..."/>
-    </div>
-    <div class="divider"></div>
-    <div class="profile-header">
-      <div class="card-title" style="margin-bottom:0">O teu perfil <span style="font-size:11px;color:var(--text3)">(opcional)</span></div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span id="profileSaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">✓ Guardado</span>
-        <button id="btnClearProfile" onclick="clearProfile()" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;display:none;">Limpar</button>
-      </div>
-    </div>
-    <div class="grid-3" style="margin-top:14px;">
-      <div class="field"><label>Nome</label><input type="text" id="nameInput" placeholder="Dr. Pedro Nunes"/></div>
-      <div class="field"><label>Função</label><input type="text" id="roleInput" placeholder="Intensivista Pediátrico"/></div>
-      <div class="field"><label>Instituição</label><input type="text" id="instInput" placeholder="Hospital Prof Dr. Fernando Fonseca"/></div>
-    </div>
-    <div class="btn-row">
-      <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
-      <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
-    </div>
-  </div>
+  <!-- SEARCH PANEL -->
 
-  <div class="log-panel" id="logPanel">
-    <div class="log-label">A trabalhar…</div>
-    <div id="logLines"></div>
-  </div>
+  <div class="panel active" id="panelSearch">
 
-  <div class="result-oa" id="resultOA">
-    <div class="result-badge">✓ Acesso Livre Disponível</div>
-    <div class="result-title" id="oaTitle"></div>
-    <div class="result-meta" id="oaMeta"></div>
-    <a class="btn-download" id="oaLink" href="#" target="_blank">↓ Download PDF</a>
-  </div>
-
-  <div class="result-email" id="resultEmail">
-    <div class="email-header">
-      <div>
-        <div class="author-label">Email para o primeiro autor</div>
-        <div class="author-name" id="authorName"></div>
-        <div class="author-affil" id="authorAffil"></div>
-      </div>
-      <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
-    </div>
-    <textarea class="email-body" id="emailBody"></textarea>
-    <div class="find-email-box">
-      <div class="find-email-label">📧 Encontrar email do autor</div>
-      <div class="find-email-btns">
-        <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Google Scholar</a>
-        <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
-        <a class="btn-find btn-find-google" id="btnRgate" href="#" target="_blank">Google + Email</a>
-      </div>
-    </div>
-    <div class="action-row">
-      <a class="btn-mail" id="btnMailto" href="#">✉️ Abrir no Mail</a>
-      <button class="btn-sent" id="sentBtn" onclick="markSent()">✓ Enviado</button>
-    </div>
-    <div class="sent-confirm" id="sentConfirm">✓ Enviado! Se não houver resposta em 5–7 dias, tenta o Google + Email.</div>
-  </div>
-
-  <div class="footer">CrossRef · Unpaywall · Pedir artigos a autores é legal</div>
+```
+<div class="restore-banner" id="restoreBanner">
+  <span style="font-size:13px;color:var(--accent);">↩ Sessão anterior recuperada</span>
+  <button onclick="clearState()" class="small-btn">Limpar</button>
 </div>
+
+<div class="card">
+  <div class="card-title">Qual é o artigo que procuras?</div>
+  <div class="field">
+    <label>DOI, PMID ou Título</label>
+    <input type="text" id="queryInput" placeholder="10.1056/NEJMoa2001017 · PMID:12345 · título..."/>
+  </div>
+  <div class="divider"></div>
+  <div class="profile-header">
+    <div class="card-title" style="margin-bottom:0">O teu perfil <span style="font-size:11px;color:var(--text3)">(opcional)</span></div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span id="profileSaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">✓ Guardado</span>
+      <button id="btnClearProfile" onclick="clearProfile()" class="small-btn" style="display:none;">Limpar</button>
+    </div>
+  </div>
+  <div class="grid-3" style="margin-top:12px;">
+    <div class="field"><label>Nome</label><input type="text" id="nameInput" placeholder="Dr. Pedro Nunes"/></div>
+    <div class="field"><label>Função</label><input type="text" id="roleInput" placeholder="Intensivista Pediátrico"/></div>
+    <div class="field"><label>Instituição</label><input type="text" id="instInput" placeholder="Hospital Fernando Fonseca"/></div>
+  </div>
+  <div style="margin-bottom:4px;">
+    <div class="card-title" style="margin-bottom:8px;">Idioma do email</div>
+    <div class="lang-row">
+      <button class="btn-lang active" id="langEN" onclick="setLang('en')">🇬🇧 English</button>
+      <button class="btn-lang" id="langPT" onclick="setLang('pt')">🇵🇹 Português</button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
+    <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
+  </div>
+</div>
+
+<div class="log-panel" id="logPanel">
+  <div class="log-label">A trabalhar…</div>
+  <div id="logLines"></div>
+</div>
+
+<div class="result-oa" id="resultOA">
+  <div class="result-badge">✓ Acesso Livre Disponível</div>
+  <div class="result-title" id="oaTitle"></div>
+  <div class="result-meta" id="oaMeta"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <a class="btn-download" id="oaLink" href="#" target="_blank">↓ Download PDF</a>
+    <button class="btn-share" onclick="shareArticle()">↗ Partilhar</button>
+  </div>
+</div>
+
+<div class="result-email" id="resultEmail">
+  <div class="email-header">
+    <div>
+      <div class="author-label">Email para o primeiro autor</div>
+      <div class="author-name" id="authorName"></div>
+      <div class="author-affil" id="authorAffil"></div>
+    </div>
+    <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
+  </div>
+  <textarea class="email-body" id="emailBody"></textarea>
+  <div class="find-email-box">
+    <div class="find-email-label">📧 Encontrar email do autor</div>
+    <div class="find-email-btns">
+      <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Scholar</a>
+      <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
+      <a class="btn-find btn-find-google" id="btnRgate" href="#" target="_blank">Google</a>
+      <a class="btn-find btn-find-linkedin" id="btnLinkedIn" href="#" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+  <div class="action-row">
+    <a class="btn-mail" id="btnMailto" href="#">✉️ Abrir no Mail</a>
+    <button class="btn-share btn-icon" onclick="shareEmail()" style="font-size:18px;padding:12px 14px;">↗</button>
+    <button class="btn-sent" id="sentBtn" onclick="markSent()">✓</button>
+  </div>
+  <div class="sent-confirm" id="sentConfirm">✓ Enviado! Se não houver resposta em 5–7 dias, tenta o LinkedIn.</div>
+</div>
+
+<div class="footer">CrossRef · Unpaywall · PubMed · Pedir artigos a autores é legal</div>
+```
+
+  </div>
+
+  <!-- HISTORY PANEL -->
+
+  <div class="panel" id="panelHistory">
+    <div id="historyContent"></div>
+  </div>
+
+</div>
+
+<!-- COFFEE BAR -->
 
 <div class="coffee-bar">
   <div class="coffee-text">Feito por <strong>um médico, para médicos</strong></div>
@@ -162,10 +271,43 @@
 
 <script>
   var isRunning = false;
+  var emailLang = 'en';
+  var currentArticle = null;
 
   function g(id){ return document.getElementById(id); }
   function show(id){ g(id).classList.remove('hidden'); }
   function hide(id){ g(id).classList.add('hidden'); }
+
+  // --- THEME ---
+  function initTheme(){
+    var t = localStorage.getItem('pq_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    g('btnTheme').textContent = t === 'dark' ? '☀️' : '🌙';
+  }
+  function toggleTheme(){
+    var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('pq_theme', t);
+    g('btnTheme').textContent = t === 'dark' ? '☀️' : '🌙';
+  }
+
+  // --- TABS ---
+  function switchTab(tab){
+    document.querySelectorAll('.tab').forEach(function(el, i){
+      el.classList.toggle('active', (tab === 'search' && i === 0) || (tab === 'history' && i === 1));
+    });
+    g('panelSearch').classList.toggle('active', tab === 'search');
+    g('panelHistory').classList.toggle('active', tab === 'history');
+    if(tab === 'history') renderHistory();
+  }
+
+  // --- LANGUAGE ---
+  function setLang(lang){
+    emailLang = lang;
+    g('langEN').classList.toggle('active', lang === 'en');
+    g('langPT').classList.toggle('active', lang === 'pt');
+    if(currentArticle) regenerateEmail();
+  }
 
   // --- PROFILE ---
   function loadProfile(){
@@ -174,40 +316,73 @@
       if(p.name) g('nameInput').value = p.name;
       if(p.role) g('roleInput').value = p.role;
       if(p.inst) g('instInput').value = p.inst;
+      if(p.lang) { emailLang = p.lang; setLang(p.lang); }
       if(p.name || p.role || p.inst){
         g('profileSaved').style.display = 'inline';
         g('btnClearProfile').style.display = 'inline';
       }
     }catch(e){}
   }
-
   function saveProfile(){
     var name = g('nameInput').value.trim();
     var role = g('roleInput').value.trim();
     var inst = g('instInput').value.trim();
     if(name || role || inst){
       try{
-        localStorage.setItem('pq_profile', JSON.stringify({name:name, role:role, inst:inst}));
+        localStorage.setItem('pq_profile', JSON.stringify({name:name,role:role,inst:inst,lang:emailLang}));
         g('profileSaved').style.display = 'inline';
         g('btnClearProfile').style.display = 'inline';
       }catch(e){}
     }
   }
-
   function clearProfile(){
     try{ localStorage.removeItem('pq_profile'); }catch(e){}
-    g('nameInput').value = '';
-    g('roleInput').value = '';
-    g('instInput').value = '';
-    g('profileSaved').style.display = 'none';
-    g('btnClearProfile').style.display = 'none';
+    g('nameInput').value=''; g('roleInput').value=''; g('instInput').value='';
+    g('profileSaved').style.display='none'; g('btnClearProfile').style.display='none';
   }
-
   ['nameInput','roleInput','instInput'].forEach(function(id){
     g(id).addEventListener('input', saveProfile);
   });
 
-  // --- STATE (email result) ---
+  // --- HISTORY ---
+  function getHistory(){ try{ return JSON.parse(localStorage.getItem('pq_history')||'[]'); }catch(e){ return []; } }
+  function addToHistory(item){
+    var h = getHistory();
+    h.unshift(item);
+    if(h.length > 10) h = h.slice(0,10);
+    try{ localStorage.setItem('pq_history', JSON.stringify(h)); }catch(e){}
+  }
+  function renderHistory(){
+    var h = getHistory();
+    var el = g('historyContent');
+    if(!h.length){
+      el.innerHTML = '<div class="history-empty">Sem pesquisas ainda.<br>Os últimos 10 artigos aparecerão aqui.</div>';
+      return;
+    }
+    var html = '<button class="btn-clear-history" onclick="clearHistory()">Limpar histórico</button>';
+    h.forEach(function(item, i){
+      html += '<div class="history-item" onclick="loadFromHistory('+i+')">'
+        + '<div><div class="history-title">'+escHtml(item.title.substring(0,80))+(item.title.length>80?'…':'')+'</div>'
+        + '<div class="history-meta">'+escHtml(item.journal||'')+(item.year?' · '+item.year:'')+(item.author?' · '+item.author:'')+'</div></div>'
+        + '<span class="history-badge '+(item.oa?'badge-oa':'badge-email')+'">'+(item.oa?'OA':'Email')+'</span>'
+        + '</div>';
+    });
+    el.innerHTML = html;
+  }
+  function clearHistory(){
+    try{ localStorage.removeItem('pq_history'); }catch(e){}
+    renderHistory();
+  }
+  function loadFromHistory(i){
+    var h = getHistory();
+    var item = h[i];
+    if(!item) return;
+    g('queryInput').value = item.doi || item.title;
+    switchTab('search');
+  }
+  function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // --- STATE ---
   function saveState(){
     try{
       if(g('resultEmail').style.display === 'none') return;
@@ -218,22 +393,23 @@
         scholar: g('btnScholar').href,
         pubmed: g('btnPubmed').href,
         rgate: g('btnRgate').href,
+        linkedin: g('btnLinkedIn').href,
         mailto: g('btnMailto').href
       }));
     }catch(e){}
   }
-
   function restoreState(){
     try{
-      var s = JSON.parse(localStorage.getItem('pq_state') || 'null');
+      var s = JSON.parse(localStorage.getItem('pq_state')||'null');
       if(!s || !s.email) return;
       g('emailBody').value = s.email;
       g('authorName').textContent = s.author;
       g('authorAffil').textContent = s.affil;
-      g('btnScholar').href = s.scholar || '#';
-      g('btnPubmed').href = s.pubmed || '#';
-      g('btnRgate').href = s.rgate || '#';
-      g('btnMailto').href = s.mailto || '#';
+      g('btnScholar').href = s.scholar||'#';
+      g('btnPubmed').href = s.pubmed||'#';
+      g('btnRgate').href = s.rgate||'#';
+      g('btnLinkedIn').href = s.linkedin||'#';
+      g('btnMailto').href = s.mailto||'#';
       g('resultEmail').style.display = 'block';
       g('sentBtn').classList.remove('hidden');
       g('sentConfirm').style.display = 'none';
@@ -241,97 +417,159 @@
       g('restoreBanner').style.display = 'flex';
     }catch(e){}
   }
-
   function clearState(){
     try{ localStorage.removeItem('pq_state'); }catch(e){}
-    g('restoreBanner').style.display = 'none';
-    g('resultEmail').style.display = 'none';
+    g('restoreBanner').style.display='none';
+    g('resultEmail').style.display='none';
     hide('resetBtn');
   }
-
-  document.addEventListener('visibilitychange', function(){
-    if(document.hidden) saveState();
-  });
+  document.addEventListener('visibilitychange', function(){ if(document.hidden) saveState(); });
   window.addEventListener('pagehide', saveState);
 
   // --- UTILS ---
   function addLog(text, type){
     var d = document.createElement('div');
-    d.className = 'log-line log-' + (type || 'info');
+    d.className = 'log-line log-'+(type||'info');
     d.textContent = text;
     g('logLines').appendChild(d);
     g('logPanel').scrollTop = g('logPanel').scrollHeight;
   }
-
   function setRunning(val){
     isRunning = val;
     g('runBtn').disabled = val;
     g('runBtn').textContent = val ? 'A pesquisar…' : 'Pesquisar artigo';
   }
-
   function reset(){
     try{ localStorage.removeItem('pq_state'); }catch(e){}
-    g('restoreBanner').style.display = 'none';
-    g('queryInput').value = '';
-    g('logLines').innerHTML = '';
-    g('logPanel').style.display = 'none';
-    g('resultOA').style.display = 'none';
-    g('resultEmail').style.display = 'none';
-    g('sentConfirm').style.display = 'none';
+    g('restoreBanner').style.display='none';
+    g('queryInput').value='';
+    g('logLines').innerHTML='';
+    g('logPanel').style.display='none';
+    g('resultOA').style.display='none';
+    g('resultEmail').style.display='none';
+    g('sentConfirm').style.display='none';
     g('sentBtn').classList.remove('hidden');
     hide('resetBtn');
     setRunning(false);
+    currentArticle = null;
   }
-
   function copyEmail(){
     navigator.clipboard.writeText(g('emailBody').value).catch(function(){
-      g('emailBody').select();
-      document.execCommand('copy');
+      g('emailBody').select(); document.execCommand('copy');
     });
-    g('copyBtn').textContent = '✓ Copiado!';
-    g('copyBtn').classList.add('copied');
-    setTimeout(function(){ g('copyBtn').textContent = 'Copiar'; g('copyBtn').classList.remove('copied'); }, 2000);
+    g('copyBtn').textContent='✓ Copiado!'; g('copyBtn').classList.add('copied');
+    setTimeout(function(){ g('copyBtn').textContent='Copiar'; g('copyBtn').classList.remove('copied'); }, 2000);
   }
-
-  function markSent(){
-    hide('sentBtn');
-    g('sentConfirm').style.display = 'block';
-  }
+  function markSent(){ hide('sentBtn'); g('sentConfirm').style.display='block'; }
 
   function updateMailto(toEmail){
     var body = g('emailBody').value;
     var parts = body.split('\n\n');
-    var subject = encodeURIComponent(parts[0] || 'Request for PDF');
+    var subject = encodeURIComponent(parts[0]||'Request for PDF');
     var bodyText = encodeURIComponent(parts.slice(1).join('\n\n'));
     var to = toEmail ? encodeURIComponent(toEmail) : '';
-    g('btnMailto').href = 'mailto:' + to + '?subject=' + subject + '&body=' + bodyText;
+    g('btnMailto').href = 'mailto:'+to+'?subject='+subject+'&body='+bodyText;
   }
 
   function setAuthorLinks(authorName){
     var q = encodeURIComponent(authorName);
-    g('btnScholar').href = 'https://scholar.google.com/scholar?q=' + q;
-    g('btnPubmed').href = 'https://pubmed.ncbi.nlm.nih.gov/?term=' + q + '[author]';
-    g('btnRgate').href = 'https://www.google.com/search?q=' + q + '+researcher+email';
+    g('btnScholar').href = 'https://scholar.google.com/scholar?q='+q;
+    g('btnPubmed').href = 'https://pubmed.ncbi.nlm.nih.gov/?term='+q+'[author]';
+    g('btnRgate').href = 'https://www.google.com/search?q='+q+'+researcher+email';
+    g('btnLinkedIn').href = 'https://www.linkedin.com/search/results/people/?keywords='+q;
+  }
+
+  function shareArticle(){
+    var title = g('oaTitle').textContent;
+    var url = g('oaLink').href;
+    if(navigator.share){ navigator.share({title:title, url:url}); }
+    else { navigator.clipboard.writeText(url); alert('Link copiado!'); }
+  }
+
+  function shareEmail(){
+    var text = g('emailBody').value;
+    if(navigator.share){ navigator.share({text:text}); }
+    else { navigator.clipboard.writeText(text); alert('Email copiado!'); }
+  }
+
+  // --- EMAIL GENERATION ---
+  function generateEmail(article, authorName, req){
+    var name = req.name || 'A colleague';
+    var role = req.role || 'researcher';
+    var inst = req.inst || 'our institution';
+    var firstName = authorName.split(' ')[0] || 'Author';
+
+    if(emailLang === 'pt'){
+      var subject = 'Pedido de PDF: ' + article.title.substring(0,60) + (article.title.length>60?'...':'');
+      var body = 'Caro/a ' + firstName + ',\n\n'
+        + 'Sou ' + name + ', ' + role + ' no(a) ' + inst + '. '
+        + 'Li com interesse o seu artigo "' + article.title + '"'
+        + (article.journal ? ', publicado na ' + article.journal : '')
+        + (article.year ? ' (' + article.year + ')' : '')
+        + ', e gostaria muito de receber uma cópia em PDF, uma vez que não consigo aceder através da nossa subscrição institucional.\n\n'
+        + 'O seu trabalho é directamente relevante para a minha prática clínica e ficaria muito agradecido pela partilha.\n\n'
+        + 'Com os melhores cumprimentos,\n' + name + '\n' + role + '\n' + inst;
+      return subject + '\n\n' + body;
+    } else {
+      var subject = 'Request for PDF: ' + article.title.substring(0,60) + (article.title.length>60?'...':'');
+      var body = 'Dear ' + firstName + ',\n\n'
+        + 'I am ' + name + ', a ' + role + ' at ' + inst + '. '
+        + 'I came across your article "' + article.title + '"'
+        + (article.journal ? ' published in ' + article.journal : '')
+        + (article.year ? ' (' + article.year + ')' : '')
+        + ' and would greatly appreciate receiving a PDF copy, as I am unable to access it through our institutional subscription.\n\n'
+        + 'Your work is directly relevant to my clinical practice and I look forward to reading it in full.\n\n'
+        + 'Thank you very much for your time and consideration.\n\n'
+        + 'Best regards,\n' + name + '\n' + role + '\n' + inst;
+      return subject + '\n\n' + body;
+    }
+  }
+
+  function regenerateEmail(){
+    if(!currentArticle) return;
+    var req = { name:g('nameInput').value.trim(), role:g('roleInput').value.trim(), inst:g('instInput').value.trim() };
+    var emailText = generateEmail(currentArticle, g('authorName').textContent, req);
+    g('emailBody').value = emailText;
+    var affil = g('authorAffil').textContent;
+    var foundEmail = affil.startsWith('📧') ? affil.replace('📧 ','') : '';
+    updateMailto(foundEmail);
   }
 
   // --- API ---
   async function fetchByDOI(doi){
-    var r = await fetch('https://api.crossref.org/works/' + encodeURIComponent(doi));
+    var r = await fetch('https://api.crossref.org/works/'+encodeURIComponent(doi));
     if(!r.ok) throw new Error('DOI não encontrado');
     return (await r.json()).message;
   }
 
+  async function fetchByPMID(pmid){
+    var r = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+pmid+'&retmode=json');
+    if(!r.ok) throw new Error('PMID não encontrado');
+    var d = await r.json();
+    var info = d.result && d.result[pmid];
+    if(!info) throw new Error('PMID não encontrado');
+    var authors = (info.authors||[]).map(function(a){ return {given:'', family:a.name}; });
+    return {
+      title: [info.title||''],
+      author: authors,
+      'container-title': [info.source||''],
+      published: {'date-parts':[[info.pubdate?parseInt(info.pubdate):'']]},
+      DOI: info.elocationid||''
+    };
+  }
+
   async function fetchByTitle(title){
-    var r = await fetch('https://api.crossref.org/works?query.title=' + encodeURIComponent(title) + '&rows=1&select=DOI,title,author,published,container-title');
+    var r = await fetch('https://api.crossref.org/works?query.title='+encodeURIComponent(title)+'&rows=1&select=DOI,title,author,published,container-title');
     if(!r.ok) throw new Error('Erro na pesquisa');
-    var data = await r.json(); var items = data.message && data.message.items;
+    var data = await r.json();
+    var items = data.message && data.message.items;
     if(!items || !items.length) throw new Error('Nenhum resultado encontrado');
     return items[0];
   }
 
   async function checkOA(doi){
     try{
-      var r = await fetch('https://api.unpaywall.org/v2/' + encodeURIComponent(doi) + '?email=agent@paperquest.io');
+      var r = await fetch('https://api.unpaywall.org/v2/'+encodeURIComponent(doi)+'?email=agent@paperquest.io');
       if(!r.ok) return null;
       var d = await r.json();
       return (d.is_oa && d.best_oa_location && d.best_oa_location.url) ? d.best_oa_location.url : null;
@@ -340,12 +578,12 @@
 
   async function findEmailPubMed(doi){
     try{
-      var r1 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=' + encodeURIComponent(doi) + '[doi]&retmode=json');
+      var r1 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(doi)+'[doi]&retmode=json');
       if(!r1.ok) return null;
       var d1 = await r1.json();
       var pmid = d1.esearchresult && d1.esearchresult.idlist && d1.esearchresult.idlist[0];
       if(!pmid) return null;
-      var r2 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=' + pmid + '&retmode=xml');
+      var r2 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id='+pmid+'&retmode=xml');
       if(!r2.ok) return null;
       var xml = await r2.text();
       var matches = xml.match(/[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}/g) || [];
@@ -354,60 +592,52 @@
     }catch(e){ return null; }
   }
 
-  function generateEmail(article, author, req){
-    var name = req.name || 'A colleague';
-    var role = req.role || 'researcher';
-    var inst = req.inst || 'our institution';
-    var firstName = author.name.split(' ')[0] || 'Dear Author';
-    var subject = 'Request for PDF: ' + article.title.substring(0,60) + (article.title.length > 60 ? '...' : '');
-    var body = 'Dear ' + firstName + ',\n\n'
-      + 'I am ' + name + ', a ' + role + ' at ' + inst + '. I came across your article "'
-      + article.title + '"'
-      + (article.journal ? ' published in ' + article.journal : '')
-      + (article.year ? ' (' + article.year + ')' : '')
-      + ' and would greatly appreciate receiving a PDF copy, as I am unable to access it through our institutional subscription.\n\n'
-      + 'Your work is directly relevant to my clinical practice and I look forward to reading it in full.\n\n'
-      + 'Thank you very much for your time and consideration.\n\n'
-      + 'Best regards,\n' + name + '\n' + role + '\n' + inst;
-    return subject + '\n\n' + body;
-  }
-
   // --- MAIN ---
   async function runAgent(){
     var query = g('queryInput').value.trim();
     if(!query || isRunning) return;
     saveProfile();
     setRunning(true);
-    g('resultOA').style.display = 'none';
-    g('resultEmail').style.display = 'none';
-    g('restoreBanner').style.display = 'none';
+    g('resultOA').style.display='none';
+    g('resultEmail').style.display='none';
+    g('restoreBanner').style.display='none';
     hide('resetBtn');
-    g('logLines').innerHTML = '';
-    g('logPanel').style.display = 'block';
+    g('logLines').innerHTML='';
+    g('logPanel').style.display='block';
+    currentArticle = null;
 
-    var req = {
-      name: g('nameInput').value.trim(),
-      role: g('roleInput').value.trim(),
-      inst: g('instInput').value.trim()
-    };
+    var req = { name:g('nameInput').value.trim(), role:g('roleInput').value.trim(), inst:g('instInput').value.trim() };
 
     try{
+      var pmidMatch = query.match(/^(?:PMID:?\s*)?(\d{7,8})$/i);
       var doiMatch = query.match(/10\.\d{4,}\/\S+/);
-      addLog((doiMatch ? '→ DOI detectado' : '→ Título detectado') + ' · A consultar CrossRef…', 'accent');
 
-      var meta = doiMatch ? await fetchByDOI(doiMatch[0]) : await fetchByTitle(query);
+      var meta;
+      if(pmidMatch){
+        addLog('→ PMID detectado · A consultar PubMed…', 'accent');
+        meta = await fetchByPMID(pmidMatch[1]);
+      } else if(doiMatch){
+        addLog('→ DOI detectado · A consultar CrossRef…', 'accent');
+        meta = await fetchByDOI(doiMatch[0]);
+      } else {
+        addLog('→ Título detectado · A consultar CrossRef…', 'accent');
+        meta = await fetchByTitle(query);
+      }
+
       var doi = meta.DOI || '';
-      var title = Array.isArray(meta.title) ? meta.title[0] : (meta.title || 'Sem título');
+      var title = Array.isArray(meta.title) ? meta.title[0] : (meta.title||'Sem título');
       var authors = meta.author || [];
-      var journal = Array.isArray(meta['container-title']) ? meta['container-title'][0] : (meta['container-title'] || '');
+      var journal = Array.isArray(meta['container-title']) ? meta['container-title'][0] : (meta['container-title']||'');
       var year = meta.published && meta.published['date-parts'] && meta.published['date-parts'][0] ? meta.published['date-parts'][0][0] : '';
       var fa = authors[0];
-      var authorName = fa ? ((fa.given || '') + ' ' + (fa.family || '')).trim() : 'Autor desconhecido';
+      var authorName = fa ? ((fa.given||'')+' '+(fa.family||'')).trim() : 'Autor desconhecido';
       var authorAffil = fa && fa.affiliation && fa.affiliation[0] ? fa.affiliation[0].name : '';
 
-      addLog('✓ ' + title.substring(0,65) + (title.length > 65 ? '…' : ''), 'white');
-      addLog(journal + (year ? ' · ' + year : '') + ' · ' + authors.length + ' autor(es)', 'dim');
-      addLog('→ Primeiro autor: ' + authorName, 'accent');
+      currentArticle = { title:title, journal:journal, year:year, doi:doi };
+
+      addLog('✓ '+title.substring(0,60)+(title.length>60?'…':''), 'white');
+      addLog(journal+(year?' · '+year:'')+' · '+authors.length+' autor(es)', 'dim');
+      addLog('→ Primeiro autor: '+authorName, 'accent');
       addLog('→ A verificar acesso livre (Unpaywall)…', 'dim');
 
       var oaUrl = doi ? await checkOA(doi) : null;
@@ -415,44 +645,44 @@
       if(oaUrl){
         addLog('✓ Versão open access encontrada!', 'info');
         g('oaTitle').textContent = title;
-        g('oaMeta').textContent = journal + ' · ' + year + (doi ? ' · DOI: ' + doi : '');
+        g('oaMeta').textContent = journal+' · '+year+(doi?' · DOI: '+doi:'');
         g('oaLink').href = oaUrl;
         g('resultOA').style.display = 'block';
-        setRunning(false);
-        show('resetBtn');
-        return;
+        addToHistory({title:title, journal:journal, year:year, author:authorName, doi:doi, oa:true});
+        setRunning(false); show('resetBtn'); return;
       }
 
-      addLog('✗ Sem acesso livre · A procurar email do autor…', 'warn');
+      addLog('✗ Sem acesso livre · A procurar email no PubMed…', 'warn');
       var foundEmail = doi ? await findEmailPubMed(doi) : null;
       if(foundEmail){
-        addLog('✓ Email encontrado: ' + foundEmail, 'info');
+        addLog('✓ Email encontrado: '+foundEmail, 'info');
       } else {
-        addLog('✗ Email não encontrado automaticamente.', 'dim');
+        addLog('✗ Email não encontrado · Usa os botões abaixo.', 'dim');
       }
 
-      var emailText = generateEmail({title:title, journal:journal, year:year}, {name:authorName}, req);
+      var emailText = generateEmail(currentArticle, authorName, req);
       addLog('✓ Email gerado! Abre no Mail e envia.', 'info');
 
       g('authorName').textContent = authorName;
-      g('authorAffil').textContent = foundEmail ? '📧 ' + foundEmail : (authorAffil.substring(0,60) || 'Email não encontrado automaticamente');
+      g('authorAffil').textContent = foundEmail ? '📧 '+foundEmail : (authorAffil.substring(0,55)||'');
       g('emailBody').value = emailText;
       setAuthorLinks(authorName);
-      updateMailto(foundEmail || '');
+      updateMailto(foundEmail||'');
       g('resultEmail').style.display = 'block';
       g('sentBtn').classList.remove('hidden');
       g('sentConfirm').style.display = 'none';
+      addToHistory({title:title, journal:journal, year:year, author:authorName, doi:doi, oa:false});
 
     }catch(err){
-      addLog('✗ Erro: ' + err.message, 'error');
+      addLog('✗ Erro: '+err.message, 'error');
       addLog('Tenta com o DOI completo ou título mais específico.', 'dim');
     }
 
-    setRunning(false);
-    show('resetBtn');
+    setRunning(false); show('resetBtn');
   }
 
   // Init
+  initTheme();
   loadProfile();
   restoreState();
 </script>
