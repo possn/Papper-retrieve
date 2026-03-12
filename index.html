@@ -191,9 +191,9 @@
     g('btnClearProfile').style.display='none';
   }
 
-  // Save on input change
+  // Save on every keystroke
   ['nameInput','roleInput','instInput'].forEach(id=>{
-    g(id).addEventListener('change', saveProfile);
+    g(id).addEventListener('input', saveProfile);
   });
 
   // Load on start
