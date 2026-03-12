@@ -469,6 +469,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 </div>
 
 <script>
+// ── GLOBALS ──
 var isRunning = false;
 var emailLang = 'en';
 var currentArticle = null;
@@ -478,899 +479,821 @@ var currentPdfBase64 = '';
 var chatHistory = [];
 var CLAUDE_KEY = localStorage.getItem('pq_apikey') || '';
 
-function g(id){ return document.getElementById(id); }
-function show(id){ g(id).classList.remove('hidden'); }
-function hide(id){ g(id).classList.add('hidden'); }
-function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+var DEEP_REVIEW = 'You are conducting a deep multidisciplinary scientific review of the paper.\n\nSimulate a panel of expert reviewers:\n1. Domain Specialist\n2. Methodology / Biostatistics expert\n3. Preclinical model expert\n4. Pharmacology / drug mechanism expert\n5. Clinical translation expert\n6. Skeptical peer reviewer\n\nStructure the output:\n\nSECTION 1 - Technical Summary\nRigorous summary of study design, methods and findings.\n\nSECTION 2 - Independent Expert Reviews\nFor each expert: scientific validity, key strengths, major concerns, missing analyses, how convincing.\n\nSECTION 3 - Cross-Expert Debate\nAre results truly demonstrating the claimed phenomenon? Alternative explanations? Conclusions overstated? What experiments resolve doubts?\n\nSECTION 4 - Robustness Assessment\nScore 1-5 for: methodological rigor, novelty, reproducibility likelihood, translational potential.\n\nSECTION 5 - Future Research Directions\nMost important follow-up experiments.\n\nBe intellectually rigorous. Avoid polite or superficial praise.';
 
-// PAGES
-function openAnalysis(){
+function g(id) { return document.getElementById(id); }
+function show(id) { g(id).classList.remove('hidden'); }
+function hide(id) { g(id).classList.add('hidden'); }
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── PAGES ──
+function openAnalysis() {
   g('pageMain').classList.remove('active');
   g('pageAnalysis').classList.add('active');
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
   startAnalysis();
 }
-function closeAnalysis(){
+function closeAnalysis() {
   g('pageAnalysis').classList.remove('active');
   g('pageMain').classList.add('active');
 }
 
-// THEME
-function initTheme(){
-  var t=localStorage.getItem('pq_theme')||'light';
-  document.documentElement.setAttribute('data-theme',t);
-  g('btnTheme').textContent=t==='dark'?'☀️':'🌙';
+// ── THEME ──
+function initTheme() {
+  var t = localStorage.getItem('pq_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  g('btnTheme').textContent = t === 'dark' ? '\u2600\ufe0f' : '\ud83c\udf19';
 }
-function toggleTheme(){
-  var t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
-  document.documentElement.setAttribute('data-theme',t);
-  localStorage.setItem('pq_theme',t);
-  g('btnTheme').textContent=t==='dark'?'☀️':'🌙';
+function toggleTheme() {
+  var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('pq_theme', t);
+  g('btnTheme').textContent = t === 'dark' ? '\u2600\ufe0f' : '\ud83c\udf19';
 }
 
-// TABS
-function switchTab(tab){
-  var tabs=['search','library','jclub','history'];
-  tabs.forEach(function(t,i){
-    document.querySelectorAll('.tab')[i].classList.toggle('active',t===tab);
-    var panelId='panel'+t.charAt(0).toUpperCase()+t.slice(1);
-    var panelEl=g(panelId);
-    if(panelEl) panelEl.classList.toggle('active',t===tab);
+// ── TABS ──
+function switchTab(tab) {
+  var tabs = ['search', 'library', 'jclub', 'history'];
+  tabs.forEach(function(t, i) {
+    document.querySelectorAll('.tab')[i].classList.toggle('active', t === tab);
+    var el = g('panel' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (el) el.classList.toggle('active', t === tab);
   });
-  if(tab==='library') renderLibrary();
-  if(tab==='history') renderHistory();
-  if(tab==='jclub') renderJclub();
+  if (tab === 'library') renderLibrary();
+  if (tab === 'history') renderHistory();
+  if (tab === 'jclub') renderJclub();
 }
 
-// LANG
-function setLang(lang){
-  emailLang=lang;
-  g('langEN').classList.toggle('active',lang==='en');
-  g('langPT').classList.toggle('active',lang==='pt');
-  if(currentArticle) regenerateEmail();
+// ── LANG ──
+function setLang(lang) {
+  emailLang = lang;
+  g('langEN').classList.toggle('active', lang === 'en');
+  g('langPT').classList.toggle('active', lang === 'pt');
+  if (currentArticle) regenerateEmail();
 }
 
-// PROFILE
-function loadProfile(){
-  try{
-    var p=JSON.parse(localStorage.getItem('pq_profile')||'{}');
-    if(p.name) g('nameInput').value=p.name;
-    if(p.role) g('roleInput').value=p.role;
-    if(p.inst) g('instInput').value=p.inst;
-    if(p.lang){emailLang=p.lang;setLang(p.lang);}
-    if(p.name||p.role||p.inst){g('profileSaved').style.display='inline';g('btnClearProfile').style.display='inline';}
-  }catch(e){}
+// ── PROFILE ──
+function loadProfile() {
+  try {
+    var p = JSON.parse(localStorage.getItem('pq_profile') || '{}');
+    if (p.name) g('nameInput').value = p.name;
+    if (p.role) g('roleInput').value = p.role;
+    if (p.inst) g('instInput').value = p.inst;
+    if (p.lang) { emailLang = p.lang; setLang(p.lang); }
+    if (p.name || p.role || p.inst) {
+      g('profileSaved').style.display = 'inline';
+      g('btnClearProfile').style.display = 'inline';
+    }
+  } catch(e) {}
 }
-function saveProfile(){
-  var n=g('nameInput').value.trim(),r=g('roleInput').value.trim(),i=g('instInput').value.trim();
-  if(n||r||i){
-    try{localStorage.setItem('pq_profile',JSON.stringify({name:n,role:r,inst:i,lang:emailLang}));
-    g('profileSaved').style.display='inline';g('btnClearProfile').style.display='inline';}catch(e){}
+function saveProfile() {
+  var n = g('nameInput').value.trim();
+  var r = g('roleInput').value.trim();
+  var i = g('instInput').value.trim();
+  if (n || r || i) {
+    try {
+      localStorage.setItem('pq_profile', JSON.stringify({name:n, role:r, inst:i, lang:emailLang}));
+      g('profileSaved').style.display = 'inline';
+      g('btnClearProfile').style.display = 'inline';
+    } catch(e) {}
   }
 }
-function clearProfile(){
-  try{localStorage.removeItem('pq_profile');}catch(e){}
-  g('nameInput').value='';g('roleInput').value='';g('instInput').value='';
-  g('profileSaved').style.display='none';g('btnClearProfile').style.display='none';
+function clearProfile() {
+  try { localStorage.removeItem('pq_profile'); } catch(e) {}
+  g('nameInput').value = '';
+  g('roleInput').value = '';
+  g('instInput').value = '';
+  g('profileSaved').style.display = 'none';
+  g('btnClearProfile').style.display = 'none';
 }
-['nameInput','roleInput','instInput'].forEach(function(id){g(id).addEventListener('input',saveProfile);});
 
-// API KEY
-function loadApiKey(){
-  var k=localStorage.getItem('pq_apikey')||'';
-  if(k){g('apiKeyInput').value=k;g('apiKeySaved').style.display='inline';CLAUDE_KEY=k;}
+// ── API KEY ──
+function loadApiKey() {
+  var k = localStorage.getItem('pq_apikey') || '';
+  if (k) { g('apiKeyInput').value = k; g('apiKeySaved').style.display = 'inline'; CLAUDE_KEY = k; }
 }
-function saveApiKey(){
-  var k=g('apiKeyInput').value.trim();
-  if(k&&k.startsWith('sk-ant-')){
-    localStorage.setItem('pq_apikey',k);CLAUDE_KEY=k;
-    g('apiKeySaved').style.display='inline';
+function saveApiKey() {
+  var k = g('apiKeyInput').value.trim();
+  if (k && k.startsWith('sk-ant-')) {
+    localStorage.setItem('pq_apikey', k);
+    CLAUDE_KEY = k;
+    g('apiKeySaved').style.display = 'inline';
   }
 }
-g('apiKeyInput').addEventListener('input',saveApiKey);
 
-// HISTORY
-function getHistory(){try{return JSON.parse(localStorage.getItem('pq_history')||'[]');}catch(e){return[];}}
-function addToHistory(item){
-  var h=getHistory();h.unshift(item);if(h.length>10)h=h.slice(0,10);
-  try{localStorage.setItem('pq_history',JSON.stringify(h));}catch(e){}
+// ── HISTORY ──
+function getHistory() { try { return JSON.parse(localStorage.getItem('pq_history') || '[]'); } catch(e) { return []; } }
+function addToHistory(item) {
+  var h = getHistory();
+  h.unshift(item);
+  if (h.length > 10) h = h.slice(0, 10);
+  try { localStorage.setItem('pq_history', JSON.stringify(h)); } catch(e) {}
 }
-function renderHistory(){
-  var h=getHistory();var el=g('historyContent');
-  if(!h.length){el.innerHTML='<div class="lib-empty">Sem pesquisas ainda.</div>';return;}
-  el.innerHTML=h.map(function(item,i){
-    return '<div class="history-item" onclick="loadFromHistory('+i+')">'
-      +'<div><div class="history-title">'+esc(item.title.substring(0,80))+(item.title.length>80?'…':'')+'</div>'
-      +'<div class="history-meta">'+esc(item.journal||'')+(item.year?' · '+item.year:'')+'</div></div>'
-      +'<span class="h-badge '+(item.oa?'h-badge-oa':'h-badge-email')+'">'+(item.oa?'OA':'Email')+'</span>'
-      +'</div>';
+function renderHistory() {
+  var h = getHistory();
+  var el = g('historyContent');
+  if (!h.length) { el.innerHTML = '<div class="lib-empty">Sem pesquisas ainda.</div>'; return; }
+  el.innerHTML = h.map(function(item, i) {
+    return '<div class="history-item" onclick="loadFromHistory(' + i + ')">'
+      + '<div><div class="history-title">' + esc(item.title.substring(0, 80)) + (item.title.length > 80 ? '&hellip;' : '') + '</div>'
+      + '<div class="history-meta">' + esc(item.journal || '') + (item.year ? ' &middot; ' + item.year : '') + '</div></div>'
+      + '<span class="h-badge ' + (item.oa ? 'h-badge-oa' : 'h-badge-email') + '">' + (item.oa ? 'OA' : 'Email') + '</span>'
+      + '</div>';
   }).join('');
 }
-function clearHistory(){try{localStorage.removeItem('pq_history');}catch(e){}renderHistory();}
-function loadFromHistory(i){
-  var h=getHistory();var item=h[i];if(!item)return;
-  g('queryInput').value=item.doi||item.title;switchTab('search');
+function clearHistory() { try { localStorage.removeItem('pq_history'); } catch(e) {} renderHistory(); }
+function loadFromHistory(i) {
+  var h = getHistory();
+  var item = h[i];
+  if (!item) return;
+  g('queryInput').value = item.doi || item.title;
+  switchTab('search');
 }
 
-// LIBRARY
-function getLibrary(){try{return JSON.parse(localStorage.getItem('pq_library')||'[]');}catch(e){return[];}}
-function saveLibraryData(lib){try{localStorage.setItem('pq_library',JSON.stringify(lib));}catch(e){}}
-function addCurrentToJclub(){
-  if(!currentArticle){ alert('Pesquisa um artigo primeiro.'); return; }
-  var sessions = getJclubSessions();
-  if(!sessions.length){
-    if(!confirm('Sem sessões de Journal Club. Criar uma nova?')) return;
-    var name = prompt('Nome da sessão:', 'Journal Club '+new Date().toLocaleDateString('pt-PT',{month:'long',year:'numeric'}))||'';
-    if(!name) return;
-    sessions.unshift({ id: Date.now(), name: name, date: new Date().toISOString().split('T')[0], papers: [], analysis: '' });
-  }
-  var s = sessions[0];
-  var exists = s.papers.find(function(p){ return p.doi && p.doi===currentArticle.doi; });
-  if(exists){ alert('Já está na sessão mais recente!'); return; }
-  s.papers.push({ doi: currentArticle.doi, title: currentArticle.title, journal: currentArticle.journal, year: currentArticle.year });
-  saveJclubSessions(sessions);
-  alert('✓ Adicionado ao Journal Club: '+s.name);
-}
-
-function saveToLibrary(){
-  if(!currentArticle)return;
-  var lib=getLibrary();
-  var exists=lib.find(function(x){return x.doi&&x.doi===currentArticle.doi;});
-  if(exists){alert(emailLang==='pt'?'Já está na biblioteca!':'Already in library!');return;}
-  var note=prompt(emailLang==='pt'?'Nota clínica (opcional):':'Clinical note (optional):','')||'';
-  var tagStr=prompt(emailLang==='pt'?'Tags (ex: ARDS, Sépsis):':'Tags (ex: ARDS, Sepsis):','')||'';
-  var tags=tagStr.split(',').map(function(t){return t.trim();}).filter(Boolean);
-  lib.unshift({title:currentArticle.title,journal:currentArticle.journal,year:currentArticle.year,
-    doi:currentArticle.doi,oa:currentArticle.oa,oaUrl:currentArticle.oaUrl||'',
-    author:currentArticle.authorName||'',note:note,tags:tags,saved:new Date().toISOString().split('T')[0]});
+// ── LIBRARY ──
+function getLibrary() { try { return JSON.parse(localStorage.getItem('pq_library') || '[]'); } catch(e) { return []; } }
+function saveLibraryData(lib) { try { localStorage.setItem('pq_library', JSON.stringify(lib)); } catch(e) {} }
+function saveToLibrary() {
+  if (!currentArticle) return;
+  var lib = getLibrary();
+  var exists = lib.find(function(x) { return x.doi && x.doi === currentArticle.doi; });
+  if (exists) { alert(emailLang === 'pt' ? 'J\u00e1 est\u00e1 na biblioteca!' : 'Already in library!'); return; }
+  var note = prompt(emailLang === 'pt' ? 'Nota cl\u00ednica (opcional):' : 'Clinical note (optional):', '') || '';
+  var tagStr = prompt(emailLang === 'pt' ? 'Tags (ex: ARDS, S\u00e9psis):' : 'Tags (ex: ARDS, Sepsis):', '') || '';
+  var tags = tagStr.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+  lib.unshift({
+    title: currentArticle.title, journal: currentArticle.journal, year: currentArticle.year,
+    doi: currentArticle.doi, oa: currentArticle.oa, oaUrl: currentArticle.oaUrl || '',
+    author: currentArticle.authorName || '', note: note, tags: tags,
+    saved: new Date().toISOString().split('T')[0]
+  });
   saveLibraryData(lib);
-  alert(emailLang==='pt'?'✓ Guardado na biblioteca!':'✓ Saved to library!');
+  alert(emailLang === 'pt' ? '\u2713 Guardado na biblioteca!' : '\u2713 Saved to library!');
 }
-function renderLibrary(){
-  var lib=getLibrary();var el=g('libraryContent');
-  if(!lib.length){el.innerHTML='<div class="lib-empty">Biblioteca vazia.<br>Guarda artigos com o botão 🔖</div>';return;}
-  el.innerHTML=lib.map(function(item,i){
-    var tagsHtml=item.tags&&item.tags.length?item.tags.map(function(t){return'<span class="lib-tag">'+esc(t)+'</span>';}).join(''):'';
+function renderLibrary() {
+  var lib = getLibrary();
+  var el = g('libraryContent');
+  if (!lib.length) { el.innerHTML = '<div class="lib-empty">Biblioteca vazia.<br>Guarda artigos com o bot\u00e3o \ud83d\udd16</div>'; return; }
+  el.innerHTML = lib.map(function(item, i) {
+    var tagsHtml = item.tags && item.tags.length ? item.tags.map(function(t) { return '<span class="lib-tag">' + esc(t) + '</span>'; }).join('') : '';
     return '<div class="lib-item">'
-      +'<div class="lib-item-header"><div class="lib-item-title">'+esc(item.title.substring(0,100))+(item.title.length>100?'…':'')+'</div>'
-      +'<span class="h-badge '+(item.oa?'h-badge-oa':'h-badge-email')+'">'+(item.oa?'OA':'Email')+'</span></div>'
-      +'<div class="lib-item-meta">'+esc(item.journal||'')+(item.year?' · '+item.year:'')+(item.author?' · '+item.author:'')+(item.saved?' · '+item.saved:'')+'</div>'
-      +(tagsHtml?'<div class="lib-tags">'+tagsHtml+'</div>':'')
-      +(item.note?'<div class="lib-note">'+esc(item.note)+'</div>':'')
-      +'<div class="lib-actions">'
-      +(item.oa&&item.oaUrl?'<a class="btn-lib-action" href="'+esc(item.oaUrl)+'" target="_blank">↓ PDF</a>':'')
-      +'<button class="btn-lib-action btn-lib-delete" onclick="deleteFromLibrary('+i+')">✕ Remover</button>'
-      +'</div></div>';
+      + '<div class="lib-item-header"><div class="lib-item-title">' + esc(item.title.substring(0, 100)) + (item.title.length > 100 ? '&hellip;' : '') + '</div>'
+      + '<span class="h-badge ' + (item.oa ? 'h-badge-oa' : 'h-badge-email') + '">' + (item.oa ? 'OA' : 'Email') + '</span></div>'
+      + '<div class="lib-item-meta">' + esc(item.journal || '') + (item.year ? ' &middot; ' + item.year : '') + (item.author ? ' &middot; ' + item.author : '') + (item.saved ? ' &middot; ' + item.saved : '') + '</div>'
+      + (tagsHtml ? '<div class="lib-tags">' + tagsHtml + '</div>' : '')
+      + (item.note ? '<div class="lib-note">' + esc(item.note) + '</div>' : '')
+      + '<div class="lib-actions">'
+      + (item.oa && item.oaUrl ? '<a class="btn-lib-action" href="' + esc(item.oaUrl) + '" target="_blank">\u2193 PDF</a>' : '')
+      + '<button class="btn-lib-action btn-lib-delete" onclick="deleteFromLibrary(' + i + ')">\u2715 Remover</button>'
+      + '</div></div>';
   }).join('');
 }
-function deleteFromLibrary(i){var lib=getLibrary();lib.splice(i,1);saveLibraryData(lib);renderLibrary();}
-function clearLibrary(){if(confirm('Limpar toda a biblioteca?')){try{localStorage.removeItem('pq_library');}catch(e){}renderLibrary();}}
-
-// STATE
-function saveState(){
-  try{
-    if(!currentArticle)return;
-    localStorage.setItem('pq_state',JSON.stringify({
-      article:currentArticle,email:g('emailBody').value,
-      emailAuthor:g('emailAuthor').textContent,emailFound:g('emailFound').textContent,
-      scholar:g('btnScholar').href,pubmed:g('btnPubmed').href,
-      rgate:g('btnRgate').href,linkedin:g('btnLinkedIn').href,
-      mailto:g('btnMailto').href,foundEmail:currentFoundEmail,
-      abstract:currentAbstract
-    }));
-  }catch(e){}
-}
-function restoreState(){
-  try{
-    var s=JSON.parse(localStorage.getItem('pq_state')||'null');
-    if(!s||!s.article)return;
-    currentArticle=s.article;currentFoundEmail=s.foundEmail||'';currentAbstract=s.abstract||'';
-    showArticleCard(s.article,s.article.oa);
-    if(s.article.oa){
-      show('oaLink');g('oaLink').href=s.article.oaUrl||'#';
-      g('emailSection').style.display='none';
-    } else {
-      hide('oaLink');g('emailSection').style.display='block';
-      g('emailBody').value=s.email||'';g('emailAuthor').textContent=s.emailAuthor||'';
-      g('emailFound').textContent=s.emailFound||'';
-      g('btnScholar').href=s.scholar||'#';g('btnPubmed').href=s.pubmed||'#';
-      g('btnRgate').href=s.rgate||'#';g('btnLinkedIn').href=s.linkedin||'#';
-      g('btnMailto').href=s.mailto||'#';
-    }
-    show('resetBtn');g('restoreBanner').style.display='flex';
-  }catch(e){}
-}
-function clearState(){
-  try{localStorage.removeItem('pq_state');}catch(e){}
-  g('restoreBanner').style.display='none';g('articleCard').style.display='none';hide('resetBtn');
-}
-document.addEventListener('visibilitychange',function(){if(document.hidden)saveState();});
-window.addEventListener('pagehide',saveState);
-
-// UTILS
-function setRunning(val){
-  isRunning=val;g('runBtn').disabled=val;
-  g('runBtn').textContent=val?'A pesquisar…':'Pesquisar artigo';
-}
-function reset(){
-  try{localStorage.removeItem('pq_state');}catch(e){}
-  g('restoreBanner').style.display='none';g('queryInput').value='';
-  g('resultsList').style.display='none';g('resultsItems').innerHTML='';
-  g('articleCard').style.display='none';g('sentConfirm').style.display='none';
-  g('sentBtn').classList.remove('hidden');hide('resetBtn');setRunning(false);
-  currentArticle=null;currentFoundEmail='';currentAbstract='';
-}
-function copyEmail(){
-  navigator.clipboard.writeText(g('emailBody').value).catch(function(){g('emailBody').select();document.execCommand('copy');});
-  g('copyBtn').textContent='✓ Copiado!';g('copyBtn').classList.add('copied');
-  setTimeout(function(){g('copyBtn').textContent='Copiar';g('copyBtn').classList.remove('copied');},2000);
-}
-function markSent(){hide('sentBtn');g('sentConfirm').style.display='block';}
-function updateMailto(toEmail){
-  var body=g('emailBody').value;var parts=body.split('\n\n');
-  var subj=encodeURIComponent(parts[0]||'Request for PDF');
-  var bodyText=encodeURIComponent(parts.slice(1).join('\n\n'));
-  g('btnMailto').href='mailto:'+(toEmail?encodeURIComponent(toEmail):'')+'?subject='+subj+'&body='+bodyText;
-}
-function setAuthorLinks(authorName){
-  var q=encodeURIComponent(authorName);
-  g('btnScholar').href='https://scholar.google.com/scholar?q='+q;
-  g('btnPubmed').href='https://pubmed.ncbi.nlm.nih.gov/?term='+q+'[author]';
-  g('btnRgate').href='https://www.google.com/search?q='+q+'+researcher+email';
-  g('btnLinkedIn').href='https://www.linkedin.com/search/results/people/?keywords='+q;
-}
-function shareArticle(){
-  var title=currentArticle?currentArticle.title:'';var url=currentArticle&&currentArticle.oaUrl?currentArticle.oaUrl:window.location.href;
-  if(navigator.share){navigator.share({title:title,url:url});}
-  else{navigator.clipboard.writeText(url);alert('Link copiado!');}
-}
-
-// EMAIL
-function generateEmail(article,authorName,req){
-  var name=req.name||'A colleague';var role=req.role||'researcher';var inst=req.inst||'our institution';
-  var firstName=authorName.split(' ')[0]||'Author';
-  if(emailLang==='pt'){
-    var s='Pedido de PDF: '+article.title.substring(0,60)+(article.title.length>60?'...':'');
-    var b='Caro/a '+firstName+',\n\nSou '+name+', '+role+' no(a) '+inst+'. Li com interesse o seu artigo "'+article.title+'"'+(article.journal?', publicado na '+article.journal:'')+(article.year?' ('+article.year+')':'')+', e gostaria muito de receber uma cópia em PDF, uma vez que não consigo aceder através da nossa subscrição institucional.\n\nO seu trabalho é directamente relevante para a minha prática clínica e ficaria muito agradecido pela partilha.\n\nCom os melhores cumprimentos,\n'+name+'\n'+role+'\n'+inst;
-    return s+'\n\n'+b;
-  } else {
-    var s='Request for PDF: '+article.title.substring(0,60)+(article.title.length>60?'...':'');
-    var b='Dear '+firstName+',\n\nI am '+name+', a '+role+' at '+inst+'. I came across your article "'+article.title+'"'+(article.journal?' published in '+article.journal:'')+(article.year?' ('+article.year+')':'')+' and would greatly appreciate receiving a PDF copy, as I am unable to access it through our institutional subscription.\n\nYour work is directly relevant to my clinical practice and I look forward to reading it in full.\n\nThank you very much for your time and consideration.\n\nBest regards,\n'+name+'\n'+role+'\n'+inst;
-    return s+'\n\n'+b;
-  }
-}
-function regenerateEmail(){
-  if(!currentArticle)return;
-  var req={name:g('nameInput').value.trim(),role:g('roleInput').value.trim(),inst:g('instInput').value.trim()};
-  g('emailBody').value=generateEmail(currentArticle,currentArticle.authorName||'',req);
-  updateMailto(currentFoundEmail);
-}
-
-// SHOW ARTICLE CARD
-function showArticleCard(article,isOA){
-  var el=g('articleStatus');
-  if(isOA){el.className='article-status status-oa';el.textContent='✓ Acesso Livre';}
-  else{el.className='article-status status-closed';el.textContent='✉ Pedir ao autor';}
-  g('articleTitle').textContent=article.title;
-  g('articleMeta').textContent=(article.journal||'')+(article.year?' · '+article.year:'')+(article.doi?' · DOI: '+article.doi:'');
-  g('articleCard').style.display='block';
-}
-
-// CLAUDE API — streaming
-async function streamClaude(systemPrompt, userPrompt, onChunk, onDone){
-  if(!CLAUDE_KEY){onDone('no-key');return;}
-  var resp=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,stream:true,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})
-  });
-  if(!resp.ok){var e=await resp.text();onDone('error:'+e);return;}
-  var reader=resp.body.getReader();var decoder=new TextDecoder();var full='';
-  while(true){
-    var res=await reader.read();if(res.done)break;
-    var lines=decoder.decode(res.value,{stream:true}).split('\n');
-    for(var i=0;i<lines.length;i++){
-      var line=lines[i].trim();
-      if(line.startsWith('data: ')){
-        var data=line.slice(6);if(data==='[DONE]')continue;
-        try{var p=JSON.parse(data);if(p.type==='content_block_delta'&&p.delta&&p.delta.text){full+=p.delta.text;onChunk(full);}}catch(e){}
-      }
-    }
-  }
-  onDone('ok');
-}
-
-// FETCH ABSTRACT
-async function fetchAbstract(doi,pmid){
-  try{
-    var id=pmid;
-    if(!id&&doi){
-      var r=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(doi)+'[doi]&retmode=json');
-      var d=await r.json();id=d.esearchresult&&d.esearchresult.idlist&&d.esearchresult.idlist[0];
-    }
-    if(!id)return null;
-    var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id='+id+'&retmode=xml');
-    var xml=await r2.text();
-    var abs=xml.match(/<AbstractText[^>]*>([\s\S]*?)<\/AbstractText>/g);
-    if(!abs)return null;
-    return abs.map(function(a){return a.replace(/<[^>]+>/g,'');}).join(' ');
-  }catch(e){return null;}
-}
-
-// RELATED ARTICLES
-async function fetchRelated(doi, title){
-  try{
-    var query=doi?doi+'[doi]':encodeURIComponent(title);
-    var r1=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(query)+'&retmode=json');
-    var d1=await r1.json();var pmid=d1.esearchresult&&d1.esearchresult.idlist&&d1.esearchresult.idlist[0];
-    if(!pmid)return[];
-    var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&db=pubmed&id='+pmid+'&cmd=neighbor_score&retmode=json');
-    var d2=await r2.json();
-    var links=d2.linksets&&d2.linksets[0]&&d2.linksets[0].linksetdbs&&d2.linksets[0].linksetdbs[0]&&d2.linksets[0].linksetdbs[0].links;
-    if(!links||!links.length)return[];
-    var relIds=links.slice(0,5).join(',');
-    var r3=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+relIds+'&retmode=json');
-    var d3=await r3.json();
-    return Object.values(d3.result||{}).filter(function(x){return x.uid;}).map(function(x){
-      return{pmid:x.uid,title:x.title,journal:x.source,year:x.pubdate?x.pubdate.substring(0,4):''};
-    });
-  }catch(e){return[];}
-}
-
-// START ANALYSIS PAGE
-async function startAnalysis(){
-  if(!currentArticle)return;
-  chatHistory=[];g('chatMessages').innerHTML='<div class="chat-empty" id="chatEmpty">Faz uma pergunta sobre o artigo ↓</div>';
-  g('analysisTitleFull').textContent=currentArticle.title;
-  g('analysisMetaFull').textContent=(currentArticle.journal||'')+(currentArticle.year?' · '+currentArticle.year:'')+(currentArticle.doi?' · '+currentArticle.doi:'');
-  g('analysisHeaderTitle').textContent=currentArticle.title.substring(0,40)+'…';
-  g('analysisSummaryLoading').style.display='flex';
-  g('analysisSummaryText').style.display='none';g('analysisSummaryText').innerHTML='';
-  g('relatedCard').style.display='none';clearPdf();
-
-  // Fetch abstract if not cached
-  if(!currentAbstract&&currentArticle.doi){
-    currentAbstract=await fetchAbstract(currentArticle.doi,null)||'';
-  }
-
-  // Stream summary
-  if(!CLAUDE_KEY){
-    g('analysisSummaryLoading').style.display='none';
-    g('analysisSummaryText').style.display='block';
-    g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px;">💡 Adiciona a tua Claude API Key nas definições para activar os resumos com IA.</span>';
-  } else {
-    var sysP = emailLang==='pt'
-      ? 'És um painel de revisores científicos especializados em medicina intensiva pediátrica. Conduz revisões profundas e rigorosas de artigos científicos. Responde sempre em Português.'
-      : 'You are a panel of scientific expert reviewers specialised in paediatric intensive care medicine. Conduct deep, rigorous peer reviews of scientific papers. Be intellectually honest and critical.';
-    var deepReviewPrompt = `You are conducting a deep multidisciplinary scientific review of the paper.
-
-Simulate a panel of expert reviewers, each representing a different scientific perspective.
-
-The panel must include:
-1. Domain Specialist (expert in the main biological field)
-2. Methodology / Biostatistics expert
-3. Preclinical model expert
-4. Pharmacology / drug mechanism expert
-5. Clinical translation expert
-6. Skeptical peer reviewer whose role is to challenge assumptions
-
-Each expert must independently analyze the paper.
-
-Structure the output as follows:
-
-SECTION 1 — Technical Summary
-Provide a rigorous summary of the study design, methods and findings.
-
-SECTION 2 — Independent Expert Reviews
-For each persona provide:
-- Their evaluation of the scientific validity
-- Key strengths
-- Major concerns
-- Important missing analyses
-- How convincing the results are
-
-SECTION 3 — Cross-Expert Debate
-Simulate a discussion between the experts addressing:
-- Are the results truly demonstrating the claimed phenomenon?
-- Could alternative explanations exist?
-- Are the conclusions overstated?
-- What experiments would resolve remaining doubts?
-
-SECTION 4 — Robustness Assessment
-Score the paper (1–5) for:
-- Methodological rigor
-- Novelty
-- Reproducibility likelihood
-- Translational potential
-
-SECTION 5 — Future Research Directions
-List the most important follow-up experiments.
-
-Be intellectually rigorous and avoid polite or superficial praise.`;
-    var usrP = deepReviewPrompt + '\n\nArticle title: ' + currentArticle.title + '\n' + (currentAbstract ? 'Abstract: ' + currentAbstract : '(No abstract available — base your review on the title and journal context.)');
-    streamClaude(sysP,usrP,function(full){
-      g('analysisSummaryLoading').style.display='none';
-      g('analysisSummaryText').style.display='block';
-      g('analysisSummaryText').innerHTML=formatAIOutput(full);
-    },function(status){
-      if(status!=='ok'){
-        g('analysisSummaryLoading').style.display='none';
-        g('analysisSummaryText').style.display='block';
-        g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px;">Resumo não disponível.</span>';
-      }
-    });
-  }
-
-  // Related articles
-  fetchRelated(currentArticle.doi,currentArticle.title).then(function(related){
-    if(!related.length)return;
-    g('relatedCard').style.display='block';
-    g('relatedItems').innerHTML=related.map(function(r){
-      return '<div class="related-item" onclick="loadRelated(\''+esc(r.pmid)+'\')">'
-        +'<div class="related-title">'+esc(r.title)+'</div>'
-        +'<div class="related-meta">'+esc(r.journal||'')+(r.year?' · '+r.year:'')+'</div>'
-        +'</div>';
-    }).join('');
-  });
-}
-
-function loadRelated(pmid){
-  g('queryInput').value='PMID:'+pmid;
-  closeAnalysis();
-  runAgent();
-}
-
-// PDF
-function onDragOver(e){e.preventDefault();g('pdfDrop').classList.add('dragover');}
-function onDragLeave(e){g('pdfDrop').classList.remove('dragover');}
-function onDrop(e){e.preventDefault();g('pdfDrop').classList.remove('dragover');var f=e.dataTransfer.files[0];if(f)loadPdfFile(f);}
-function onPdfSelected(e){var f=e.target.files[0];if(f)loadPdfFile(f);}
-function loadPdfFile(file){
-  if(file.size>10*1024*1024){alert('PDF demasiado grande (máx 10MB)');return;}
-  var reader=new FileReader();
-  reader.onload=function(e){
-    currentPdfBase64=e.target.result.split(',')[1];
-    g('pdfName').textContent=file.name;
-    g('pdfLoaded').classList.remove('hidden');
-    g('btnAnalyzePdf').disabled=false;
-  };
-  reader.readAsDataURL(file);
-}
-function clearPdf(){
-  currentPdfBase64='';g('pdfInput').value='';
-  g('pdfLoaded').classList.add('hidden');g('btnAnalyzePdf').disabled=true;
-}
-async function analyzePdf(){
-  if(!currentPdfBase64){return;}
-  if(!CLAUDE_KEY){alert('Adiciona a tua API Key primeiro.');return;}
-  g('btnAnalyzePdf').disabled=true;g('btnAnalyzePdf').textContent='A analisar…';
-  g('analysisSummaryLoading').style.display='flex';
-  g('analysisSummaryText').style.display='none';g('analysisSummaryText').innerHTML='';
-
-  var sysP = emailLang==='pt'
-    ? 'És um painel de revisores científicos especializados em medicina intensiva pediátrica. Conduz revisões profundas e rigorosas de artigos científicos completos. Responde em Português.'
-    : 'You are a panel of scientific expert reviewers specialised in paediatric intensive care medicine. Conduct deep, rigorous peer reviews of full scientific papers. Be intellectually honest, critical and structured.';
-  var deepReviewPdf = `You are conducting a deep multidisciplinary scientific review of the paper.
-
-Simulate a panel of expert reviewers, each representing a different scientific perspective.
-
-The panel must include:
-1. Domain Specialist (expert in the main biological field)
-2. Methodology / Biostatistics expert
-3. Preclinical model expert
-4. Pharmacology / drug mechanism expert
-5. Clinical translation expert
-6. Skeptical peer reviewer whose role is to challenge assumptions
-
-Each expert must independently analyze the paper.
-
-Structure the output as follows:
-
-SECTION 1 — Technical Summary
-Provide a rigorous summary of the study design, methods and findings.
-
-SECTION 2 — Independent Expert Reviews
-For each persona provide:
-- Their evaluation of the scientific validity
-- Key strengths
-- Major concerns
-- Important missing analyses
-- How convincing the results are
-
-SECTION 3 — Cross-Expert Debate
-Simulate a discussion between the experts addressing:
-- Are the results truly demonstrating the claimed phenomenon?
-- Could alternative explanations exist?
-- Are the conclusions overstated?
-- What experiments would resolve remaining doubts?
-
-SECTION 4 — Robustness Assessment
-Score the paper (1–5) for:
-- Methodological rigor
-- Novelty
-- Reproducibility likelihood
-- Translational potential
-
-SECTION 5 — Future Research Directions
-List the most important follow-up experiments.
-
-Be intellectually rigorous and avoid polite or superficial praise.`;
-  var usrP = deepReviewPdf + '\n\nAnalyse the full paper provided. Be rigorous, critical and detailed.';
-
-  try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,stream:true,system:sysP,
-        messages:[{role:'user',content:[
-          {type:'document',source:{type:'base64',media_type:'application/pdf',data:currentPdfBase64}},
-          {type:'text',text:usrP}
-        ]}]})
-    });
-    if(!resp.ok)throw new Error(await resp.text());
-    var reader=resp.body.getReader();var decoder=new TextDecoder();var full='';
-    while(true){
-      var res=await reader.read();if(res.done)break;
-      var lines=decoder.decode(res.value,{stream:true}).split('\n');
-      for(var i=0;i<lines.length;i++){
-        var line=lines[i].trim();
-        if(line.startsWith('data: ')){
-          var data=line.slice(6);if(data==='[DONE]')continue;
-          try{var p=JSON.parse(data);if(p.type==='content_block_delta'&&p.delta&&p.delta.text){
-            full+=p.delta.text;
-            g('analysisSummaryLoading').style.display='none';
-            g('analysisSummaryText').style.display='block';
-            g('analysisSummaryText').innerHTML=formatAIOutput(full);
-          }}catch(e){}
-        }
-      }
-    }
-  }catch(e){
-    g('analysisSummaryLoading').style.display='none';
-    g('analysisSummaryText').style.display='block';
-    g('analysisSummaryText').innerHTML='<span style="color:var(--text3);">Erro ao analisar PDF: '+esc(e.message)+'</span>';
-  }
-  g('btnAnalyzePdf').disabled=false;g('btnAnalyzePdf').textContent='Analisar PDF completo';
-}
-
-// CHAT
-function getArticleContext(){
-  var summary=g('analysisSummaryText').textContent||'';
-  return 'Article: '+( currentArticle?currentArticle.title:'')+'\n'
-    +(currentAbstract?'Abstract: '+currentAbstract+'\n':'')
-    +(summary?'Summary: '+summary.substring(0,500)+'\n':'');
-}
-function askSuggestion(btn){g('chatInput').value=btn.textContent;sendChat();}
-async function sendChat(){
-  var msg=g('chatInput').value.trim();if(!msg)return;
-  if(!CLAUDE_KEY){alert('Adiciona a tua API Key primeiro.');return;}
-  g('chatInput').value='';g('btnSend').disabled=true;
-  var empty=g('chatEmpty');if(empty)empty.remove();
-  var userDiv=document.createElement('div');
-  userDiv.className='chat-msg chat-msg-user';userDiv.textContent=msg;
-  g('chatMessages').appendChild(userDiv);
-  chatHistory.push({role:'user',content:msg});
-
-  var aiDiv=document.createElement('div');
-  aiDiv.className='chat-msg chat-msg-ai';aiDiv.innerHTML='<div class="dot-pulse"><span></span><span></span><span></span></div>';
-  g('chatMessages').appendChild(aiDiv);
-  g('chatMessages').scrollTop=g('chatMessages').scrollHeight;
-
-  var sysP=emailLang==='pt'
-    ?'És um assistente clínico especializado em medicina intensiva pediátrica. Responde a perguntas sobre artigos científicos de forma concisa e prática em Português. Contexto do artigo:\n'+getArticleContext()
-    :'You are a clinical assistant specialised in paediatric intensive care. Answer questions about scientific articles concisely and practically in English. Article context:\n'+getArticleContext();
-
-  var messages=chatHistory.map(function(m){return{role:m.role,content:m.content};});
-
-  var resp=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,stream:true,system:sysP,messages:messages})
-  });
-
-  if(!resp.ok){aiDiv.innerHTML='Erro ao responder.';g('btnSend').disabled=false;return;}
-  var reader=resp.body.getReader();var decoder=new TextDecoder();var full='';
-  while(true){
-    var res=await reader.read();if(res.done)break;
-    var lines=decoder.decode(res.value,{stream:true}).split('\n');
-    for(var i=0;i<lines.length;i++){
-      var line=lines[i].trim();
-      if(line.startsWith('data: ')){
-        var data=line.slice(6);if(data==='[DONE]')continue;
-        try{var p=JSON.parse(data);if(p.type==='content_block_delta'&&p.delta&&p.delta.text){
-          full+=p.delta.text;aiDiv.innerHTML=full.replace(/\n/g,'<br/>');
-          g('chatMessages').scrollTop=g('chatMessages').scrollHeight;
-        }}catch(e){}
-      }
-    }
-  }
-  chatHistory.push({role:'assistant',content:full});
-  g('btnSend').disabled=false;
-}
-
-// API
-async function fetchByDOI(doi){
-  try{var r=await fetch('https://api.crossref.org/works/'+encodeURIComponent(doi));if(r.ok)return[(await r.json()).message];}catch(e){}
-  try{
-    var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(doi)+'[doi]&retmode=json');
-    var d2=await r2.json();var pmid=d2.esearchresult&&d2.esearchresult.idlist&&d2.esearchresult.idlist[0];
-    if(pmid)return await fetchByPMID(pmid);
-  }catch(e){}
-  try{
-    var r3=await fetch('https://api.crossref.org/works?query='+encodeURIComponent(doi)+'&rows=1&select=DOI,title,author,published,container-title');
-    var d3=await r3.json();var items3=d3.message&&d3.message.items;if(items3&&items3.length)return[items3[0]];
-  }catch(e){}
-  throw new Error('Artigo não encontrado. Tenta pesquisar pelo título.');
-}
-async function fetchByPMID(pmid){
-  var r=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+pmid+'&retmode=json');
-  if(!r.ok)throw new Error('PMID não encontrado');
-  var d=await r.json();var info=d.result&&d.result[pmid];if(!info)throw new Error('PMID não encontrado');
-  return[{title:[info.title||''],author:(info.authors||[]).map(function(a){return{given:'',family:a.name};}),
-    'container-title':[info.source||''],published:{'date-parts':[[parseInt(info.pubdate)||'']]},DOI:info.elocationid||'',_pmid:pmid}];
-}
-async function fetchByTitle(title){
-  var r=await fetch('https://api.crossref.org/works?query.title='+encodeURIComponent(title)+'&rows=5&select=DOI,title,author,published,container-title');
-  if(!r.ok)throw new Error('Erro na pesquisa');
-  var data=await r.json();var items=data.message&&data.message.items;
-  if(!items||!items.length)throw new Error('Nenhum resultado encontrado');
-  return items;
-}
-async function checkOA(doi){
-  try{
-    var r=await fetch('https://api.unpaywall.org/v2/'+encodeURIComponent(doi)+'?email=agent@paperquest.io');
-    if(!r.ok)return null;var d=await r.json();
-    return(d.is_oa&&d.best_oa_location&&d.best_oa_location.url)?d.best_oa_location.url:null;
-  }catch(e){return null;}
-}
-async function findEmailPubMed(doi){
-  try{
-    var r1=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(doi)+'[doi]&retmode=json');
-    if(!r1.ok)return null;var d1=await r1.json();
-    var pmid=d1.esearchresult&&d1.esearchresult.idlist&&d1.esearchresult.idlist[0];if(!pmid)return null;
-    var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id='+pmid+'&retmode=xml');
-    if(!r2.ok)return null;var xml=await r2.text();
-    var matches=xml.match(/[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}/g)||[];
-    var real=matches.filter(function(e){return!e.includes('nlm.nih.gov')&&!e.includes('example');});
-    return real.length>0?real[0]:null;
-  }catch(e){return null;}
-}
-
-async function processArticle(meta){
-  var doi=meta.DOI||'';
-  var title=Array.isArray(meta.title)?meta.title[0]:(meta.title||'Sem título');
-  var authors=meta.author||[];
-  var journal=Array.isArray(meta['container-title'])?meta['container-title'][0]:(meta['container-title']||'');
-  var year=meta.published&&meta.published['date-parts']&&meta.published['date-parts'][0]?meta.published['date-parts'][0][0]:'';
-  var fa=authors[0];
-  var authorName=fa?((fa.given||'')+' '+(fa.family||'')).trim():'Autor desconhecido';
-  var pmid=meta._pmid||null;
-  currentArticle={title:title,journal:journal,year:year,doi:doi,authorName:authorName,oa:false,oaUrl:''};
-  var oaUrl=doi?await checkOA(doi):null;
-  currentArticle.oa=!!oaUrl;currentArticle.oaUrl=oaUrl||'';
-  showArticleCard(currentArticle,!!oaUrl);
-  if(oaUrl){show('oaLink');g('oaLink').href=oaUrl;g('emailSection').style.display='none';addToHistory({title:title,journal:journal,year:year,doi:doi,oa:true});}
-  else{
-    hide('oaLink');var foundEmail=doi?await findEmailPubMed(doi):null;
-    currentFoundEmail=foundEmail||'';
-    var req={name:g('nameInput').value.trim(),role:g('roleInput').value.trim(),inst:g('instInput').value.trim()};
-    g('emailAuthor').textContent=authorName;g('emailFound').textContent=foundEmail?'📧 '+foundEmail:'';
-    g('emailBody').value=generateEmail(currentArticle,authorName,req);
-    setAuthorLinks(authorName);updateMailto(foundEmail||'');
-    g('emailSection').style.display='block';g('sentBtn').classList.remove('hidden');g('sentConfirm').style.display='none';
-    addToHistory({title:title,journal:journal,year:year,doi:doi,oa:false});
-  }
-  show('resetBtn');setRunning(false);
-  // Pre-fetch abstract in background
-  fetchAbstract(doi,pmid).then(function(abs){if(abs)currentAbstract=abs;});
-}
-
-async function runAgent(){
-  var query=g('queryInput').value.trim();if(!query||isRunning)return;
-  saveProfile();setRunning(true);
-  g('articleCard').style.display='none';g('resultsList').style.display='none';g('resultsItems').innerHTML='';
-  g('restoreBanner').style.display='none';hide('resetBtn');
-  currentArticle=null;currentFoundEmail='';currentAbstract='';
-  try{
-    var pmidMatch=query.match(/^(?:PMID:?\s*)?(\d{7,8})$/i);
-    var doiMatch=query.match(/10\.\d{4,}\/\S+/);
-    var items;
-    if(pmidMatch){items=await fetchByPMID(pmidMatch[1]);await processArticle(items[0]);}
-    else if(doiMatch){items=await fetchByDOI(doiMatch[0]);await processArticle(items[0]);}
-    else{
-      items=await fetchByTitle(query);setRunning(false);
-      if(items.length===1){setRunning(true);await processArticle(items[0]);}
-      else{
-        show('resetBtn');g('resultsList').style.display='block';
-        g('resultsItems').innerHTML=items.map(function(item,i){
-          var t=Array.isArray(item.title)?item.title[0]:(item.title||'Sem título');
-          var j=Array.isArray(item['container-title'])?item['container-title'][0]:(item['container-title']||'');
-          var y=item.published&&item.published['date-parts']&&item.published['date-parts'][0]?item.published['date-parts'][0][0]:'';
-          return'<div class="result-item" onclick="selectResult('+i+')">'
-            +'<div class="result-item-title">'+esc(t)+'</div>'
-            +'<div class="result-item-meta">'+esc(j)+(y?' · '+y:'')+(item.DOI?' · '+item.DOI:'')+'</div></div>';
-        }).join('');
-        window._searchResults=items;
-      }
-    }
-  }catch(err){alert('Erro: '+err.message);setRunning(false);show('resetBtn');}
-}
-
-async function selectResult(i){
-  var items=window._searchResults;if(!items||!items[i])return;
-  g('resultsList').style.display='none';setRunning(true);await processArticle(items[i]);
-}
-
-// ── FORMAT AI OUTPUT ──
-function formatAIOutput(text){
-  if(!text) return '';
-  var html = text;
-  html = html.replace(/^(SECTION [0-9]+[^\n]*)/gm, '<h1>$1</h1>');
-  html = html.replace(/[-*]\s*([A-Za-z][\w\s\/]{2,30}?):\s*([1-5])\/5/g, function(m, label, score){
-    var fill = (parseInt(score)/5*100)+'%';
-    return '<div class="score-row"><span class="score-label">'+label.trim()+'</span><div class="score-bar"><div class="score-fill" style="width:'+fill+'"></div></div><span class="score-val">'+score+'/5</span></div>';
-  });
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
-  html = html.replace(/^[\-*]\s+(.+)$/gm, '<li>$1</li>');
-  html = html.replace(/\n/g, '<br/>');
-  return '<div class="ai-output">'+html+'</div>';
-}
-
-// ── EXPORT ANALYSIS ──
-function exportAnalysis(){
-  var title = currentArticle ? currentArticle.title : 'Artigo';
-  var summary = g('analysisSummaryText').innerText || '';
-  var text = 'PAPERQUEST — REVISÃO CIENTÍFICA\n\n'+title+'\n'+(currentArticle?currentArticle.journal+' - '+currentArticle.year:'')+' \n\n'+summary;
-  if(navigator.share){
-    navigator.share({title:'PaperQuest: '+title.substring(0,50), text:text});
-  } else {
-    navigator.clipboard.writeText(text);
-    alert('Análise copiada para a área de transferência!');
-  }
+function deleteFromLibrary(i) { var lib = getLibrary(); lib.splice(i, 1); saveLibraryData(lib); renderLibrary(); }
+function clearLibrary() {
+  if (confirm('Limpar toda a biblioteca?')) { try { localStorage.removeItem('pq_library'); } catch(e) {} renderLibrary(); }
 }
 
 // ── JOURNAL CLUB ──
-function getJclubSessions(){ try{ return JSON.parse(localStorage.getItem('pq_jclub')||'[]'); }catch(e){ return []; } }
-function saveJclubSessions(s){ try{ localStorage.setItem('pq_jclub', JSON.stringify(s)); }catch(e){} }
-
-function newJclubSession(){
-  var name = prompt('Nome da sessão (ex: Journal Club Março 2026):', 'Journal Club '+new Date().toLocaleDateString('pt-PT',{month:'long',year:'numeric'}))||'';
-  if(!name) return;
+function getJclubSessions() { try { return JSON.parse(localStorage.getItem('pq_jclub') || '[]'); } catch(e) { return []; } }
+function saveJclubSessions(s) { try { localStorage.setItem('pq_jclub', JSON.stringify(s)); } catch(e) {} }
+function newJclubSession() {
+  var name = prompt('Nome da sess\u00e3o:', 'Journal Club ' + new Date().toLocaleDateString('pt-PT', {month:'long', year:'numeric'})) || '';
+  if (!name) return;
   var sessions = getJclubSessions();
   sessions.unshift({ id: Date.now(), name: name, date: new Date().toISOString().split('T')[0], papers: [], analysis: '' });
   saveJclubSessions(sessions);
   renderJclub();
 }
-
-function addPaperToSession(sessionId){
+function addCurrentToJclub() {
+  if (!currentArticle) { alert('Pesquisa um artigo primeiro.'); return; }
   var sessions = getJclubSessions();
-  var s = sessions.find(function(x){ return x.id===sessionId; });
-  if(!s) return;
-  var doi = g('jclub-input-'+sessionId).value.trim();
-  if(!doi) return;
-  // If current article matches, use it
-  if(currentArticle && (currentArticle.doi===doi || currentArticle.title.toLowerCase().includes(doi.toLowerCase()))){
-    s.papers.push({ doi: currentArticle.doi, title: currentArticle.title, journal: currentArticle.journal, year: currentArticle.year });
-    saveJclubSessions(sessions); renderJclub(); return;
+  if (!sessions.length) {
+    if (!confirm('Sem sess\u00f5es de Journal Club. Criar uma nova?')) return;
+    var name = prompt('Nome da sess\u00e3o:', 'Journal Club ' + new Date().toLocaleDateString('pt-PT', {month:'long', year:'numeric'})) || '';
+    if (!name) return;
+    sessions.unshift({ id: Date.now(), name: name, date: new Date().toISOString().split('T')[0], papers: [], analysis: '' });
   }
-  // Otherwise just store the DOI/title as-is
-  s.papers.push({ doi: doi, title: doi, journal: '', year: '' });
-  saveJclubSessions(sessions); renderJclub();
+  var s = sessions[0];
+  var exists = s.papers.find(function(p) { return p.doi && p.doi === currentArticle.doi; });
+  if (exists) { alert('J\u00e1 est\u00e1 na sess\u00e3o!'); return; }
+  s.papers.push({ doi: currentArticle.doi, title: currentArticle.title, journal: currentArticle.journal, year: currentArticle.year });
+  saveJclubSessions(sessions);
+  alert('\u2713 Adicionado ao Journal Club: ' + s.name);
 }
-
-function removePaperFromSession(sessionId, paperIdx){
+function addPaperToSession(sessionId) {
   var sessions = getJclubSessions();
-  var s = sessions.find(function(x){ return x.id===sessionId; });
-  if(!s) return;
-  s.papers.splice(paperIdx,1);
-  saveJclubSessions(sessions); renderJclub();
+  var s = sessions.find(function(x) { return x.id === sessionId; });
+  if (!s) return;
+  var input = g('jclub-input-' + sessionId);
+  var doi = input.value.trim();
+  if (!doi) return;
+  if (currentArticle && (currentArticle.doi === doi || currentArticle.title.toLowerCase().includes(doi.toLowerCase()))) {
+    s.papers.push({ doi: currentArticle.doi, title: currentArticle.title, journal: currentArticle.journal, year: currentArticle.year });
+  } else {
+    s.papers.push({ doi: doi, title: doi, journal: '', year: '' });
+  }
+  input.value = '';
+  saveJclubSessions(sessions);
+  renderJclub();
 }
-
-function deleteSession(sessionId){
-  if(!confirm('Eliminar esta sessão?')) return;
-  var sessions = getJclubSessions().filter(function(x){ return x.id!==sessionId; });
-  saveJclubSessions(sessions); renderJclub();
-}
-
-async function analyzeSession(sessionId){
-  if(!CLAUDE_KEY){ alert('Adiciona a tua API Key primeiro.'); return; }
+function removePaperFromSession(sessionId, paperIdx) {
   var sessions = getJclubSessions();
-  var s = sessions.find(function(x){ return x.id===sessionId; });
-  if(!s||!s.papers.length){ alert('Adiciona artigos à sessão primeiro.'); return; }
-  var analysisEl = g('jclub-analysis-'+sessionId);
-  analysisEl.style.display='block';
-  analysisEl.innerHTML='<div class="dot-pulse" style="justify-content:center;padding:10px;"><span></span><span></span><span></span></div>';
-  var paperList = s.papers.map(function(p,i){ return (i+1)+'. '+p.title+(p.journal?' ['+p.journal+']':'')+(p.year?' ('+p.year+')':''); }).join('\n');
-  var sysP = emailLang==='pt'
-    ? 'És um moderador de Journal Club especializado em medicina intensiva pediátrica. Analisa conjuntos de artigos e facilita discussão científica crítica em Português.'
-    : 'You are a Journal Club moderator specialised in paediatric intensive care medicine. Analyse sets of papers and facilitate critical scientific discussion in English.';
-  var usrPT = 'Prepara uma sessão de Journal Club para os seguintes artigos:\n\n'+paperList+'\n\nPara cada artigo:\n1. Resumo em 3 linhas\n2. Ponto-chave para discussão\n3. Relevância clínica\n\nDebate transversal e 5 perguntas para a equipa.';
-  var usrEN = 'Prepare a Journal Club session for the following papers:\n\n'+paperList+'\n\nFor each paper:\n1. 3-line summary\n2. Key point\n3. Clinical relevance\n\nCross-paper debate and 5 questions for the team.';
-  var usrP = emailLang==='pt' ? usrPT : usrEN;
-  var full='';
-  var resp = await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,stream:true,system:sysP,messages:[{role:'user',content:usrP}]})
-  });
-  if(!resp.ok){ analysisEl.innerHTML='Erro ao analisar.'; return; }
-  var reader=resp.body.getReader(); var decoder=new TextDecoder();
-  while(true){
-    var res=await reader.read(); if(res.done) break;
-    var lines=decoder.decode(res.value,{stream:true}).split('\n');
-    for(var i=0;i<lines.length;i++){
-      var line=lines[i].trim();
-      if(line.startsWith('data: ')){
-        var data=line.slice(6); if(data==='[DONE]') continue;
-        try{ var p=JSON.parse(data); if(p.type==='content_block_delta'&&p.delta&&p.delta.text){
-          full+=p.delta.text;
-          analysisEl.innerHTML=formatAIOutput(full);
-        }}catch(e){}
+  var s = sessions.find(function(x) { return x.id === sessionId; });
+  if (!s) return;
+  s.papers.splice(paperIdx, 1);
+  saveJclubSessions(sessions);
+  renderJclub();
+}
+function deleteSession(sessionId) {
+  if (!confirm('Eliminar esta sess\u00e3o?')) return;
+  var sessions = getJclubSessions().filter(function(x) { return x.id !== sessionId; });
+  saveJclubSessions(sessions);
+  renderJclub();
+}
+async function analyzeSession(sessionId) {
+  if (!CLAUDE_KEY) { alert('Adiciona a tua API Key primeiro.'); return; }
+  var sessions = getJclubSessions();
+  var s = sessions.find(function(x) { return x.id === sessionId; });
+  if (!s || !s.papers.length) { alert('Adiciona artigos \u00e0 sess\u00e3o primeiro.'); return; }
+  var analysisEl = g('jclub-analysis-' + sessionId);
+  analysisEl.style.display = 'block';
+  analysisEl.innerHTML = '<div class="dot-pulse" style="justify-content:center;padding:10px;"><span></span><span></span><span></span></div>';
+  var paperList = s.papers.map(function(p, i) {
+    return (i + 1) + '. ' + p.title + (p.journal ? ' [' + p.journal + ']' : '') + (p.year ? ' (' + p.year + ')' : '');
+  }).join('\n');
+  var sysP = emailLang === 'pt'
+    ? 'És um moderador de Journal Club especializado em medicina intensiva pediátrica. Responde em Português.'
+    : 'You are a Journal Club moderator specialised in paediatric intensive care. Respond in English.';
+  var usrPT = 'Prepara uma sessão de Journal Club para os seguintes artigos:\n\n' + paperList + '\n\nPara cada artigo:\n1. Resumo em 3 linhas\n2. Ponto-chave para discussão\n3. Relevância clínica\n\nDepois: debate transversal e 5 perguntas para a equipa.';
+  var usrEN = 'Prepare a Journal Club session for the following papers:\n\n' + paperList + '\n\nFor each paper:\n1. 3-line summary\n2. Key discussion point\n3. Clinical relevance\n\nThen: cross-paper debate and 5 questions for the team.';
+  var usrP = emailLang === 'pt' ? usrPT : usrEN;
+  var full = '';
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': CLAUDE_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, stream: true, system: sysP, messages: [{ role: 'user', content: usrP }] })
+    });
+    if (!resp.ok) throw new Error(await resp.text());
+    var reader = resp.body.getReader();
+    var decoder = new TextDecoder();
+    while (true) {
+      var res = await reader.read();
+      if (res.done) break;
+      var lines = decoder.decode(res.value, { stream: true }).split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (line.startsWith('data: ')) {
+          var data = line.slice(6);
+          if (data === '[DONE]') continue;
+          try {
+            var p = JSON.parse(data);
+            if (p.type === 'content_block_delta' && p.delta && p.delta.text) {
+              full += p.delta.text;
+              analysisEl.innerHTML = formatAIOutput(full);
+            }
+          } catch(e) {}
+        }
       }
     }
+    s.analysis = full;
+    saveJclubSessions(sessions);
+  } catch(e) {
+    analysisEl.innerHTML = 'Erro: ' + esc(e.message);
   }
-  s.analysis=full; saveJclubSessions(sessions);
 }
-
-function shareSession(sessionId){
+function shareSession(sessionId) {
   var sessions = getJclubSessions();
-  var s = sessions.find(function(x){ return x.id===sessionId; });
-  if(!s) return;
-  var text = '🎓 Journal Club: '+s.name+'
-
-'
-    +s.papers.map(function(p,i){ return (i+1)+'. '+p.title; }).join('
-')
-    +(s.analysis?'
-
-'+s.analysis.substring(0,500)+'…':'');
-  if(navigator.share){ navigator.share({title:'Journal Club: '+s.name, text:text}); }
-  else { navigator.clipboard.writeText(text); alert('Sessão copiada!'); }
+  var s = sessions.find(function(x) { return x.id === sessionId; });
+  if (!s) return;
+  var paperLines = s.papers.map(function(p, i) { return (i + 1) + '. ' + p.title; }).join('\n');
+  var text = 'Journal Club: ' + s.name + '\n\n' + paperLines + (s.analysis ? '\n\n' + s.analysis.substring(0, 400) + '...' : '');
+  if (navigator.share) { navigator.share({ title: 'Journal Club: ' + s.name, text: text }); }
+  else { navigator.clipboard.writeText(text); alert('Sess\u00e3o copiada!'); }
 }
-
-function renderJclub(){
+function renderJclub() {
   var sessions = getJclubSessions();
   var el = g('jclubContent');
-  if(!sessions.length){
-    el.innerHTML='<div class="jclub-empty">Sem sessões ainda.<br>Cria uma sessão e adiciona artigos para discutir com a equipa.</div>';
-    return;
-  }
-  el.innerHTML = sessions.map(function(s){
+  if (!sessions.length) { el.innerHTML = '<div class="jclub-empty">Sem sess\u00f5es ainda.<br>Cria uma sess\u00e3o e adiciona artigos.</div>'; return; }
+  el.innerHTML = sessions.map(function(s) {
     var papersHtml = s.papers.length
-      ? s.papers.map(function(p,i){
+      ? s.papers.map(function(p, i) {
           return '<div class="jclub-paper">'
-            +'<span class="jclub-paper-num">'+(i+1)+'</span>'
-            +'<div style="flex:1;"><div class="jclub-paper-title">'+esc(p.title.substring(0,80))+(p.title.length>80?'…':'')+'</div>'
-            +'<div class="jclub-paper-meta">'+esc(p.journal||'')+(p.year?' · '+p.year:'')+'</div></div>'
-            +'<button class="jclub-paper-remove" onclick="removePaperFromSession('+s.id+','+i+')">✕</button>'
-            +'</div>';
+            + '<span class="jclub-paper-num">' + (i + 1) + '</span>'
+            + '<div style="flex:1;"><div class="jclub-paper-title">' + esc(p.title.substring(0, 80)) + (p.title.length > 80 ? '&hellip;' : '') + '</div>'
+            + '<div class="jclub-paper-meta">' + esc(p.journal || '') + (p.year ? ' &middot; ' + p.year : '') + '</div></div>'
+            + '<button class="jclub-paper-remove" onclick="removePaperFromSession(' + s.id + ',' + i + ')">\u2715</button>'
+            + '</div>';
         }).join('')
       : '<div style="font-size:12px;color:var(--text3);padding:8px 0;">Sem artigos ainda.</div>';
-
     return '<div class="jclub-session">'
-      +'<div class="jclub-header">'
-      +'<div><div class="jclub-title">'+esc(s.name)+'</div><div class="jclub-date">'+esc(s.date)+'</div></div>'
-      +'<button class="small-btn" onclick="deleteSession('+s.id+')">✕ Eliminar</button>'
-      +'</div>'
-      +'<div class="jclub-papers">'+papersHtml+'</div>'
-      +'<div class="jclub-add-row">'
-      +'<input class="jclub-add-input" id="jclub-input-'+s.id+'" placeholder="DOI, PMID ou título…"/>'
-      +'<button class="btn-jclub-add" onclick="addPaperToSession('+s.id+')">+ Adicionar</button>'
-      +'</div>'
-      +'<div class="jclub-actions">'
-      +'<button class="btn-jclub-action btn-jclub-analyze" onclick="analyzeSession('+s.id+')">🧠 Analisar sessão</button>'
-      +'<button class="btn-jclub-action" onclick="shareSession('+s.id+')">↗ Partilhar</button>'
-      +'</div>'
-      +'<div class="jclub-analysis ai-output" id="jclub-analysis-'+s.id+'" style="display:'+(s.analysis?'block':'none')+';">'
-      +(s.analysis?formatAIOutput(s.analysis):'')+'</div>'
-      +'</div>';
+      + '<div class="jclub-header"><div><div class="jclub-title">' + esc(s.name) + '</div><div class="jclub-date">' + esc(s.date) + '</div></div>'
+      + '<button class="small-btn" onclick="deleteSession(' + s.id + ')">\u2715 Eliminar</button></div>'
+      + '<div class="jclub-papers">' + papersHtml + '</div>'
+      + '<div class="jclub-add-row"><input class="jclub-add-input" id="jclub-input-' + s.id + '" placeholder="DOI, PMID ou t\u00edtulo\u2026"/>'
+      + '<button class="btn-jclub-add" onclick="addPaperToSession(' + s.id + ')">+ Adicionar</button></div>'
+      + '<div class="jclub-actions"><button class="btn-jclub-action btn-jclub-analyze" onclick="analyzeSession(' + s.id + ')">\ud83e\udde0 Analisar sess\u00e3o</button>'
+      + '<button class="btn-jclub-action" onclick="shareSession(' + s.id + ')">\u2197 Partilhar</button></div>'
+      + '<div class="jclub-analysis" id="jclub-analysis-' + s.id + '" style="display:' + (s.analysis ? 'block' : 'none') + ';">'
+      + (s.analysis ? formatAIOutput(s.analysis) : '') + '</div>'
+      + '</div>';
   }).join('');
 }
 
-// ── PATCH switchTab to include jclub ──
-// INIT
-initTheme();loadProfile();loadApiKey();restoreState();
+// ── FORMAT AI OUTPUT ──
+function formatAIOutput(text) {
+  if (!text) return '';
+  var html = text;
+  html = html.replace(/^(SECTION [0-9]+[^\n]*)/gm, '<h1>$1</h1>');
+  html = html.replace(/[-*]\s*([A-Za-z][\w\s\/]{2,30}?):\s*([1-5])\/5/g, function(m, label, score) {
+    var fill = (parseInt(score) / 5 * 100) + '%';
+    return '<div class="score-row"><span class="score-label">' + label.trim() + '</span><div class="score-bar"><div class="score-fill" style="width:' + fill + '"></div></div><span class="score-val">' + score + '/5</span></div>';
+  });
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  html = html.replace(/^[-*]\s+(.+)$/gm, '<li>$1</li>');
+  html = html.replace(/\n/g, '<br/>');
+  return '<div class="ai-output">' + html + '</div>';
+}
+
+// ── EXPORT ──
+function exportAnalysis() {
+  var title = currentArticle ? currentArticle.title : 'Artigo';
+  var summary = g('analysisSummaryText').innerText || '';
+  var text = 'PAPERQUEST - REVISAO CIENTIFICA\n\n' + title + '\n' + (currentArticle ? currentArticle.journal + ' - ' + currentArticle.year : '') + '\n\n' + summary;
+  if (navigator.share) { navigator.share({ title: 'PaperQuest: ' + title.substring(0, 50), text: text }); }
+  else { navigator.clipboard.writeText(text); alert('An\u00e1lise copiada!'); }
+}
+
+// ── STATE ──
+function saveState() {
+  try {
+    if (!currentArticle) return;
+    localStorage.setItem('pq_state', JSON.stringify({
+      article: currentArticle, email: g('emailBody').value,
+      emailAuthor: g('emailAuthor').textContent, emailFound: g('emailFound').textContent,
+      scholar: g('btnScholar').href, pubmed: g('btnPubmed').href,
+      rgate: g('btnRgate').href, linkedin: g('btnLinkedIn').href,
+      mailto: g('btnMailto').href, foundEmail: currentFoundEmail, abstract: currentAbstract
+    }));
+  } catch(e) {}
+}
+function restoreState() {
+  try {
+    var s = JSON.parse(localStorage.getItem('pq_state') || 'null');
+    if (!s || !s.article) return;
+    currentArticle = s.article; currentFoundEmail = s.foundEmail || ''; currentAbstract = s.abstract || '';
+    showArticleCard(s.article, s.article.oa);
+    if (s.article.oa) {
+      show('oaLink'); g('oaLink').href = s.article.oaUrl || '#';
+      g('emailSection').style.display = 'none';
+    } else {
+      hide('oaLink'); g('emailSection').style.display = 'block';
+      g('emailBody').value = s.email || ''; g('emailAuthor').textContent = s.emailAuthor || '';
+      g('emailFound').textContent = s.emailFound || '';
+      g('btnScholar').href = s.scholar || '#'; g('btnPubmed').href = s.pubmed || '#';
+      g('btnRgate').href = s.rgate || '#'; g('btnLinkedIn').href = s.linkedin || '#';
+      g('btnMailto').href = s.mailto || '#';
+    }
+    show('resetBtn'); g('restoreBanner').style.display = 'flex';
+  } catch(e) {}
+}
+function clearState() {
+  try { localStorage.removeItem('pq_state'); } catch(e) {}
+  g('restoreBanner').style.display = 'none'; g('articleCard').style.display = 'none'; hide('resetBtn');
+}
+document.addEventListener('visibilitychange', function() { if (document.hidden) saveState(); });
+window.addEventListener('pagehide', saveState);
+
+// ── UTILS ──
+function setRunning(val) {
+  isRunning = val; g('runBtn').disabled = val;
+  g('runBtn').textContent = val ? 'A pesquisar\u2026' : 'Pesquisar artigo';
+}
+function reset() {
+  try { localStorage.removeItem('pq_state'); } catch(e) {}
+  g('restoreBanner').style.display = 'none'; g('queryInput').value = '';
+  g('resultsList').style.display = 'none'; g('resultsItems').innerHTML = '';
+  g('articleCard').style.display = 'none'; g('sentConfirm').style.display = 'none';
+  g('sentBtn').classList.remove('hidden'); hide('resetBtn'); setRunning(false);
+  currentArticle = null; currentFoundEmail = ''; currentAbstract = '';
+}
+function copyEmail() {
+  navigator.clipboard.writeText(g('emailBody').value).catch(function() { g('emailBody').select(); document.execCommand('copy'); });
+  g('copyBtn').textContent = '\u2713 Copiado!'; g('copyBtn').classList.add('copied');
+  setTimeout(function() { g('copyBtn').textContent = 'Copiar'; g('copyBtn').classList.remove('copied'); }, 2000);
+}
+function markSent() { hide('sentBtn'); g('sentConfirm').style.display = 'block'; }
+function updateMailto(toEmail) {
+  var body = g('emailBody').value;
+  var parts = body.split('\n\n');
+  var subj = encodeURIComponent(parts[0] || 'Request for PDF');
+  var bodyText = encodeURIComponent(parts.slice(1).join('\n\n'));
+  g('btnMailto').href = 'mailto:' + (toEmail ? encodeURIComponent(toEmail) : '') + '?subject=' + subj + '&body=' + bodyText;
+}
+function setAuthorLinks(authorName) {
+  var q = encodeURIComponent(authorName);
+  g('btnScholar').href = 'https://scholar.google.com/scholar?q=' + q;
+  g('btnPubmed').href = 'https://pubmed.ncbi.nlm.nih.gov/?term=' + q + '[author]';
+  g('btnRgate').href = 'https://www.google.com/search?q=' + q + '+researcher+email';
+  g('btnLinkedIn').href = 'https://www.linkedin.com/search/results/people/?keywords=' + q;
+}
+function shareArticle() {
+  var title = currentArticle ? currentArticle.title : '';
+  var url = currentArticle && currentArticle.oaUrl ? currentArticle.oaUrl : window.location.href;
+  if (navigator.share) { navigator.share({ title: title, url: url }); }
+  else { navigator.clipboard.writeText(url); alert('Link copiado!'); }
+}
+
+// ── EMAIL ──
+function generateEmail(article, authorName, req) {
+  var name = req.name || 'A colleague';
+  var role = req.role || 'researcher';
+  var inst = req.inst || 'our institution';
+  var firstName = authorName.split(' ')[0] || 'Author';
+  if (emailLang === 'pt') {
+    var s = 'Pedido de PDF: ' + article.title.substring(0, 60) + (article.title.length > 60 ? '...' : '');
+    var b = 'Caro/a ' + firstName + ',\n\nSou ' + name + ', ' + role + ' no(a) ' + inst + '. Li com interesse o seu artigo "' + article.title + '"' + (article.journal ? ', publicado na ' + article.journal : '') + (article.year ? ' (' + article.year + ')' : '') + ', e gostaria muito de receber uma c\u00f3pia em PDF, uma vez que n\u00e3o consigo aceder atrav\u00e9s da nossa subscri\u00e7\u00e3o institucional.\n\nO seu trabalho \u00e9 directamente relevante para a minha pr\u00e1tica cl\u00ednica e ficaria muito agradecido pela partilha.\n\nCom os melhores cumprimentos,\n' + name + '\n' + role + '\n' + inst;
+    return s + '\n\n' + b;
+  } else {
+    var s = 'Request for PDF: ' + article.title.substring(0, 60) + (article.title.length > 60 ? '...' : '');
+    var b = 'Dear ' + firstName + ',\n\nI am ' + name + ', a ' + role + ' at ' + inst + '. I came across your article "' + article.title + '"' + (article.journal ? ' published in ' + article.journal : '') + (article.year ? ' (' + article.year + ')' : '') + ' and would greatly appreciate receiving a PDF copy, as I am unable to access it through our institutional subscription.\n\nYour work is directly relevant to my clinical practice and I look forward to reading it in full.\n\nThank you very much for your time and consideration.\n\nBest regards,\n' + name + '\n' + role + '\n' + inst;
+    return s + '\n\n' + b;
+  }
+}
+function regenerateEmail() {
+  if (!currentArticle) return;
+  var req = { name: g('nameInput').value.trim(), role: g('roleInput').value.trim(), inst: g('instInput').value.trim() };
+  g('emailBody').value = generateEmail(currentArticle, currentArticle.authorName || '', req);
+  updateMailto(currentFoundEmail);
+}
+
+// ── ARTICLE CARD ──
+function showArticleCard(article, isOA) {
+  var el = g('articleStatus');
+  if (isOA) { el.className = 'article-status status-oa'; el.textContent = '\u2713 Acesso Livre'; }
+  else { el.className = 'article-status status-closed'; el.textContent = '\u2709 Pedir ao autor'; }
+  g('articleTitle').textContent = article.title;
+  g('articleMeta').textContent = (article.journal || '') + (article.year ? ' \u00b7 ' + article.year : '') + (article.doi ? ' \u00b7 DOI: ' + article.doi : '');
+  g('articleCard').style.display = 'block';
+}
+
+// ── CLAUDE STREAMING ──
+async function streamClaude(sysP, usrP, onChunk, onDone) {
+  if (!CLAUDE_KEY) { onDone('no-key'); return; }
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': CLAUDE_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, stream: true, system: sysP, messages: [{ role: 'user', content: usrP }] })
+    });
+    if (!resp.ok) { onDone('error:' + await resp.text()); return; }
+    var reader = resp.body.getReader();
+    var decoder = new TextDecoder();
+    var full = '';
+    while (true) {
+      var res = await reader.read();
+      if (res.done) break;
+      var lines = decoder.decode(res.value, { stream: true }).split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (line.startsWith('data: ')) {
+          var data = line.slice(6);
+          if (data === '[DONE]') continue;
+          try { var parsed = JSON.parse(data); if (parsed.type === 'content_block_delta' && parsed.delta && parsed.delta.text) { full += parsed.delta.text; onChunk(full); } } catch(e) {}
+        }
+      }
+    }
+    onDone('ok');
+  } catch(e) { onDone('error:' + e.message); }
+}
+
+// ── ABSTRACT ──
+async function fetchAbstract(doi, pmid) {
+  try {
+    var id = pmid;
+    if (!id && doi) {
+      var r = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=' + encodeURIComponent(doi) + '[doi]&retmode=json');
+      var d = await r.json();
+      id = d.esearchresult && d.esearchresult.idlist && d.esearchresult.idlist[0];
+    }
+    if (!id) return null;
+    var r2 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=' + id + '&retmode=xml');
+    var xml = await r2.text();
+    var abs = xml.match(/<AbstractText[^>]*>([\s\S]*?)<\/AbstractText>/g);
+    if (!abs) return null;
+    return abs.map(function(a) { return a.replace(/<[^>]+>/g, ''); }).join(' ');
+  } catch(e) { return null; }
+}
+
+// ── RELATED ──
+async function fetchRelated(doi, title) {
+  try {
+    var query = doi ? doi + '[doi]' : title;
+    var r1 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=' + encodeURIComponent(query) + '&retmode=json');
+    var d1 = await r1.json();
+    var pmid = d1.esearchresult && d1.esearchresult.idlist && d1.esearchresult.idlist[0];
+    if (!pmid) return [];
+    var r2 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&db=pubmed&id=' + pmid + '&cmd=neighbor_score&retmode=json');
+    var d2 = await r2.json();
+    var links = d2.linksets && d2.linksets[0] && d2.linksets[0].linksetdbs && d2.linksets[0].linksetdbs[0] && d2.linksets[0].linksetdbs[0].links;
+    if (!links || !links.length) return [];
+    var relIds = links.slice(0, 5).join(',');
+    var r3 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=' + relIds + '&retmode=json');
+    var d3 = await r3.json();
+    return Object.values(d3.result || {}).filter(function(x) { return x.uid; }).map(function(x) {
+      return { pmid: x.uid, title: x.title, journal: x.source, year: x.pubdate ? x.pubdate.substring(0, 4) : '' };
+    });
+  } catch(e) { return []; }
+}
+
+// ── ANALYSIS PAGE ──
+async function startAnalysis() {
+  if (!currentArticle) return;
+  chatHistory = [];
+  g('chatMessages').innerHTML = '<div class="chat-empty">Faz uma pergunta sobre o artigo \u2193</div>';
+  g('analysisTitleFull').textContent = currentArticle.title;
+  g('analysisMetaFull').textContent = (currentArticle.journal || '') + (currentArticle.year ? ' \u00b7 ' + currentArticle.year : '') + (currentArticle.doi ? ' \u00b7 ' + currentArticle.doi : '');
+  g('analysisHeaderTitle').textContent = currentArticle.title.substring(0, 40) + '\u2026';
+  g('analysisSummaryLoading').style.display = 'flex';
+  g('analysisSummaryText').style.display = 'none';
+  g('analysisSummaryText').innerHTML = '';
+  g('relatedCard').style.display = 'none';
+  clearPdf();
+  if (!currentAbstract && currentArticle.doi) {
+    currentAbstract = await fetchAbstract(currentArticle.doi, null) || '';
+  }
+  if (!CLAUDE_KEY) {
+    g('analysisSummaryLoading').style.display = 'none';
+    g('analysisSummaryText').style.display = 'block';
+    g('analysisSummaryText').innerHTML = '<span style="color:var(--text3);font-size:12px;">\ud83d\udca1 Adiciona a tua Claude API Key nas defini\u00e7\u00f5es para activar os resumos com IA.</span>';
+  } else {
+    var sysP = emailLang === 'pt'
+      ? 'És um painel de revisores científicos especializados em medicina intensiva pediátrica. Conduz revisões profundas e rigorosas. Responde em Português.'
+      : 'You are a panel of scientific expert reviewers specialised in paediatric intensive care. Conduct deep, rigorous peer reviews. Respond in English.';
+    var usrP = DEEP_REVIEW + '\n\nArticle: ' + currentArticle.title + '\n' + (currentAbstract ? 'Abstract: ' + currentAbstract : '(No abstract available)');
+    streamClaude(sysP, usrP, function(full) {
+      g('analysisSummaryLoading').style.display = 'none';
+      g('analysisSummaryText').style.display = 'block';
+      g('analysisSummaryText').innerHTML = formatAIOutput(full);
+    }, function(status) {
+      if (status !== 'ok') {
+        g('analysisSummaryLoading').style.display = 'none';
+        g('analysisSummaryText').style.display = 'block';
+        g('analysisSummaryText').innerHTML = '<span style="color:var(--text3);font-size:12px;">Resumo n\u00e3o dispon\u00edvel.</span>';
+      }
+    });
+  }
+  fetchRelated(currentArticle.doi, currentArticle.title).then(function(related) {
+    if (!related.length) return;
+    g('relatedCard').style.display = 'block';
+    g('relatedItems').innerHTML = related.map(function(r) {
+      return '<div class="related-item" onclick="loadRelated(\'' + esc(r.pmid) + '\')">'
+        + '<div class="related-title">' + esc(r.title) + '</div>'
+        + '<div class="related-meta">' + esc(r.journal || '') + (r.year ? ' \u00b7 ' + r.year : '') + '</div>'
+        + '</div>';
+    }).join('');
+  });
+}
+function loadRelated(pmid) { g('queryInput').value = 'PMID:' + pmid; closeAnalysis(); runAgent(); }
+
+// ── PDF ──
+function onDragOver(e) { e.preventDefault(); g('pdfDrop').classList.add('dragover'); }
+function onDragLeave(e) { g('pdfDrop').classList.remove('dragover'); }
+function onDrop(e) { e.preventDefault(); g('pdfDrop').classList.remove('dragover'); var f = e.dataTransfer.files[0]; if (f) loadPdfFile(f); }
+function onPdfSelected(e) { var f = e.target.files[0]; if (f) loadPdfFile(f); }
+function loadPdfFile(file) {
+  if (file.size > 10 * 1024 * 1024) { alert('PDF demasiado grande (m\u00e1x 10MB)'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    currentPdfBase64 = e.target.result.split(',')[1];
+    g('pdfName').textContent = file.name;
+    g('pdfLoaded').classList.remove('hidden');
+    g('btnAnalyzePdf').disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+function clearPdf() {
+  currentPdfBase64 = ''; g('pdfInput').value = '';
+  g('pdfLoaded').classList.add('hidden'); g('btnAnalyzePdf').disabled = true;
+}
+async function analyzePdf() {
+  if (!currentPdfBase64 || !CLAUDE_KEY) { alert('Adiciona a tua API Key e carrega um PDF primeiro.'); return; }
+  g('btnAnalyzePdf').disabled = true; g('btnAnalyzePdf').textContent = 'A analisar\u2026';
+  g('analysisSummaryLoading').style.display = 'flex';
+  g('analysisSummaryText').style.display = 'none'; g('analysisSummaryText').innerHTML = '';
+  var sysP = emailLang === 'pt'
+    ? 'És um painel de revisores científicos especializados em medicina intensiva pediátrica. Analisa artigos completos. Responde em Português.'
+    : 'You are a panel of scientific expert reviewers specialised in paediatric intensive care. Analyse full papers. Respond in English.';
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': CLAUDE_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, stream: true, system: sysP,
+        messages: [{ role: 'user', content: [
+          { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: currentPdfBase64 } },
+          { type: 'text', text: DEEP_REVIEW + '\n\nAnalyse the full paper provided. Be rigorous and detailed.' }
+        ]}]
+      })
+    });
+    if (!resp.ok) throw new Error(await resp.text());
+    var reader = resp.body.getReader(); var decoder = new TextDecoder(); var full = '';
+    while (true) {
+      var res = await reader.read(); if (res.done) break;
+      var lines = decoder.decode(res.value, { stream: true }).split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (line.startsWith('data: ')) {
+          var data = line.slice(6); if (data === '[DONE]') continue;
+          try { var parsed = JSON.parse(data); if (parsed.type === 'content_block_delta' && parsed.delta && parsed.delta.text) {
+            full += parsed.delta.text;
+            g('analysisSummaryLoading').style.display = 'none';
+            g('analysisSummaryText').style.display = 'block';
+            g('analysisSummaryText').innerHTML = formatAIOutput(full);
+          }} catch(e) {}
+        }
+      }
+    }
+  } catch(e) {
+    g('analysisSummaryLoading').style.display = 'none';
+    g('analysisSummaryText').style.display = 'block';
+    g('analysisSummaryText').innerHTML = '<span style="color:var(--text3);">Erro: ' + esc(e.message) + '</span>';
+  }
+  g('btnAnalyzePdf').disabled = false; g('btnAnalyzePdf').textContent = 'Analisar PDF completo';
+}
+
+// ── CHAT ──
+function getArticleContext() {
+  var summary = g('analysisSummaryText').textContent || '';
+  return 'Article: ' + (currentArticle ? currentArticle.title : '') + '\n'
+    + (currentAbstract ? 'Abstract: ' + currentAbstract + '\n' : '')
+    + (summary ? 'Summary: ' + summary.substring(0, 500) + '\n' : '');
+}
+function askSuggestion(btn) { g('chatInput').value = btn.textContent; sendChat(); }
+async function sendChat() {
+  var msg = g('chatInput').value.trim(); if (!msg) return;
+  if (!CLAUDE_KEY) { alert('Adiciona a tua API Key primeiro.'); return; }
+  g('chatInput').value = ''; g('btnSend').disabled = true;
+  var empty = document.querySelector('.chat-empty'); if (empty) empty.remove();
+  var userDiv = document.createElement('div');
+  userDiv.className = 'chat-msg chat-msg-user'; userDiv.textContent = msg;
+  g('chatMessages').appendChild(userDiv);
+  chatHistory.push({ role: 'user', content: msg });
+  var aiDiv = document.createElement('div');
+  aiDiv.className = 'chat-msg chat-msg-ai';
+  aiDiv.innerHTML = '<div class="dot-pulse"><span></span><span></span><span></span></div>';
+  g('chatMessages').appendChild(aiDiv);
+  g('chatMessages').scrollTop = g('chatMessages').scrollHeight;
+  var sysP = emailLang === 'pt'
+    ? 'És um assistente clínico especializado em medicina intensiva pediátrica. Responde a perguntas sobre artigos de forma concisa em Português. Contexto: ' + getArticleContext()
+    : 'You are a clinical assistant specialised in paediatric intensive care. Answer questions about papers concisely in English. Context: ' + getArticleContext();
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': CLAUDE_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 400, stream: true, system: sysP, messages: chatHistory })
+    });
+    if (!resp.ok) { aiDiv.textContent = 'Erro ao responder.'; g('btnSend').disabled = false; return; }
+    var reader = resp.body.getReader(); var decoder = new TextDecoder(); var full = '';
+    while (true) {
+      var res = await reader.read(); if (res.done) break;
+      var lines = decoder.decode(res.value, { stream: true }).split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (line.startsWith('data: ')) {
+          var data = line.slice(6); if (data === '[DONE]') continue;
+          try { var parsed = JSON.parse(data); if (parsed.type === 'content_block_delta' && parsed.delta && parsed.delta.text) {
+            full += parsed.delta.text; aiDiv.innerHTML = full.replace(/\n/g, '<br/>');
+            g('chatMessages').scrollTop = g('chatMessages').scrollHeight;
+          }} catch(e) {}
+        }
+      }
+    }
+    chatHistory.push({ role: 'assistant', content: full });
+  } catch(e) { aiDiv.textContent = 'Erro: ' + e.message; }
+  g('btnSend').disabled = false;
+}
+
+// ── API ──
+async function fetchByDOI(doi) {
+  try { var r = await fetch('https://api.crossref.org/works/' + encodeURIComponent(doi)); if (r.ok) return [(await r.json()).message]; } catch(e) {}
+  try {
+    var r2 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=' + encodeURIComponent(doi) + '[doi]&retmode=json');
+    var d2 = await r2.json(); var pmid = d2.esearchresult && d2.esearchresult.idlist && d2.esearchresult.idlist[0];
+    if (pmid) return await fetchByPMID(pmid);
+  } catch(e) {}
+  try {
+    var r3 = await fetch('https://api.crossref.org/works?query=' + encodeURIComponent(doi) + '&rows=1&select=DOI,title,author,published,container-title');
+    var d3 = await r3.json(); var items3 = d3.message && d3.message.items;
+    if (items3 && items3.length) return [items3[0]];
+  } catch(e) {}
+  throw new Error('Artigo não encontrado. Tenta pesquisar pelo título.');
+}
+async function fetchByPMID(pmid) {
+  var r = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=' + pmid + '&retmode=json');
+  if (!r.ok) throw new Error('PMID não encontrado');
+  var d = await r.json(); var info = d.result && d.result[pmid];
+  if (!info) throw new Error('PMID não encontrado');
+  return [{ title: [info.title || ''], author: (info.authors || []).map(function(a) { return { given: '', family: a.name }; }),
+    'container-title': [info.source || ''], published: { 'date-parts': [[parseInt(info.pubdate) || '']] }, DOI: info.elocationid || '', _pmid: pmid }];
+}
+async function fetchByTitle(title) {
+  var r = await fetch('https://api.crossref.org/works?query.title=' + encodeURIComponent(title) + '&rows=5&select=DOI,title,author,published,container-title');
+  if (!r.ok) throw new Error('Erro na pesquisa');
+  var data = await r.json(); var items = data.message && data.message.items;
+  if (!items || !items.length) throw new Error('Nenhum resultado encontrado');
+  return items;
+}
+async function checkOA(doi) {
+  try {
+    var r = await fetch('https://api.unpaywall.org/v2/' + encodeURIComponent(doi) + '?email=agent@paperquest.io');
+    if (!r.ok) return null; var d = await r.json();
+    return (d.is_oa && d.best_oa_location && d.best_oa_location.url) ? d.best_oa_location.url : null;
+  } catch(e) { return null; }
+}
+async function findEmailPubMed(doi) {
+  try {
+    var r1 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=' + encodeURIComponent(doi) + '[doi]&retmode=json');
+    if (!r1.ok) return null; var d1 = await r1.json();
+    var pmid = d1.esearchresult && d1.esearchresult.idlist && d1.esearchresult.idlist[0]; if (!pmid) return null;
+    var r2 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=' + pmid + '&retmode=xml');
+    if (!r2.ok) return null; var xml = await r2.text();
+    var matches = xml.match(/[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}/g) || [];
+    var real = matches.filter(function(e) { return !e.includes('nlm.nih.gov') && !e.includes('example'); });
+    return real.length > 0 ? real[0] : null;
+  } catch(e) { return null; }
+}
+async function processArticle(meta) {
+  var doi = meta.DOI || '';
+  var title = Array.isArray(meta.title) ? meta.title[0] : (meta.title || 'Sem título');
+  var authors = meta.author || [];
+  var journal = Array.isArray(meta['container-title']) ? meta['container-title'][0] : (meta['container-title'] || '');
+  var year = meta.published && meta.published['date-parts'] && meta.published['date-parts'][0] ? meta.published['date-parts'][0][0] : '';
+  var fa = authors[0];
+  var authorName = fa ? ((fa.given || '') + ' ' + (fa.family || '')).trim() : 'Autor desconhecido';
+  var pmid = meta._pmid || null;
+  currentArticle = { title: title, journal: journal, year: year, doi: doi, authorName: authorName, oa: false, oaUrl: '' };
+  var oaUrl = doi ? await checkOA(doi) : null;
+  currentArticle.oa = !!oaUrl; currentArticle.oaUrl = oaUrl || '';
+  showArticleCard(currentArticle, !!oaUrl);
+  if (oaUrl) {
+    show('oaLink'); g('oaLink').href = oaUrl; g('emailSection').style.display = 'none';
+    addToHistory({ title: title, journal: journal, year: year, doi: doi, oa: true });
+  } else {
+    hide('oaLink');
+    var foundEmail = doi ? await findEmailPubMed(doi) : null;
+    currentFoundEmail = foundEmail || '';
+    var req = { name: g('nameInput').value.trim(), role: g('roleInput').value.trim(), inst: g('instInput').value.trim() };
+    g('emailAuthor').textContent = authorName;
+    g('emailFound').textContent = foundEmail ? '\ud83d\udce7 ' + foundEmail : '';
+    g('emailBody').value = generateEmail(currentArticle, authorName, req);
+    setAuthorLinks(authorName); updateMailto(foundEmail || '');
+    g('emailSection').style.display = 'block'; g('sentBtn').classList.remove('hidden'); g('sentConfirm').style.display = 'none';
+    addToHistory({ title: title, journal: journal, year: year, doi: doi, oa: false });
+  }
+  show('resetBtn'); setRunning(false);
+  fetchAbstract(doi, pmid).then(function(abs) { if (abs) currentAbstract = abs; });
+}
+async function runAgent() {
+  var query = g('queryInput').value.trim(); if (!query || isRunning) return;
+  saveProfile(); setRunning(true);
+  g('articleCard').style.display = 'none'; g('resultsList').style.display = 'none'; g('resultsItems').innerHTML = '';
+  g('restoreBanner').style.display = 'none'; hide('resetBtn');
+  currentArticle = null; currentFoundEmail = ''; currentAbstract = '';
+  try {
+    var pmidMatch = query.match(/^(?:PMID:?\s*)?(\d{7,8})$/i);
+    var doiMatch = query.match(/10\.\d{4,}\/\S+/);
+    var items;
+    if (pmidMatch) { items = await fetchByPMID(pmidMatch[1]); await processArticle(items[0]); }
+    else if (doiMatch) { items = await fetchByDOI(doiMatch[0]); await processArticle(items[0]); }
+    else {
+      items = await fetchByTitle(query); setRunning(false);
+      if (items.length === 1) { setRunning(true); await processArticle(items[0]); }
+      else {
+        show('resetBtn'); g('resultsList').style.display = 'block';
+        g('resultsItems').innerHTML = items.map(function(item, i) {
+          var t = Array.isArray(item.title) ? item.title[0] : (item.title || 'Sem título');
+          var j = Array.isArray(item['container-title']) ? item['container-title'][0] : (item['container-title'] || '');
+          var y = item.published && item.published['date-parts'] && item.published['date-parts'][0] ? item.published['date-parts'][0][0] : '';
+          return '<div class="result-item" onclick="selectResult(' + i + ')">'
+            + '<div class="result-item-title">' + esc(t) + '</div>'
+            + '<div class="result-item-meta">' + esc(j) + (y ? ' \u00b7 ' + y : '') + (item.DOI ? ' \u00b7 ' + item.DOI : '') + '</div></div>';
+        }).join('');
+        window._searchResults = items;
+      }
+    }
+  } catch(err) { alert('Erro: ' + err.message); setRunning(false); show('resetBtn'); }
+}
+async function selectResult(i) {
+  var items = window._searchResults; if (!items || !items[i]) return;
+  g('resultsList').style.display = 'none'; setRunning(true); await processArticle(items[i]);
+}
+
+// ── INIT ──
+document.getElementById('apiKeyInput').addEventListener('input', saveApiKey);
+['nameInput','roleInput','instInput'].forEach(function(id){ document.getElementById(id).addEventListener('input', saveProfile); });
+initTheme(); loadProfile(); loadApiKey(); restoreState();
+
 </script>
 
 </body>
