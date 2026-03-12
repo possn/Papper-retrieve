@@ -534,7 +534,7 @@ function toggleTheme() {
 
 // ── TABS ──
 function switchTab(tab) {
-  var tabs = ['search', 'library', 'history'];
+  var tabs = ['search', 'library', 'history', 'jclub'];
   tabs.forEach(function(t, i) {
     var tabEl = document.querySelectorAll('.tab')[i];
     if (tabEl) tabEl.classList.toggle('active', t === tab);
@@ -543,6 +543,7 @@ function switchTab(tab) {
   });
   if (tab === 'library') renderLibrary();
   if (tab === 'history') renderHistory();
+  if (tab === 'jclub') renderJclub();
 }
 
 // ── LANG ──
