@@ -24,6 +24,9 @@
     .brand-sub{font-size:12px;color:var(--text3);margin-top:2px;}
     .card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
     .card-title{font-family:'Fraunces',serif;font-size:13px;font-style:italic;color:var(--text3);margin-bottom:14px;}
+    .profile-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+    .profile-saved{font-size:11px;color:var(--accent);font-weight:500;display:none;}
+    .btn-clear-profile{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;}
     .field{margin-bottom:14px;}
     label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:6px;letter-spacing:0.5px;text-transform:uppercase;}
     input,textarea{width:100%;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;transition:border-color 0.2s;-webkit-appearance:none;}
@@ -57,7 +60,7 @@
     .find-email-box{margin-top:14px;padding:14px;background:var(--blue-light);border:1px solid #bfdbfe;border-radius:12px;}
     .find-email-label{font-size:11px;font-weight:500;color:var(--blue);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;}
     .find-email-btns{display:flex;gap:8px;flex-wrap:wrap;}
-    .btn-find{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-decoration:none;border:1.5px solid;cursor:pointer;transition:all 0.2s;}
+    .btn-find{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-decoration:none;border:1.5px solid;cursor:pointer;}
     .btn-find-scholar{background:#fff;border-color:#4285f4;color:#4285f4;}
     .btn-find-pubmed{background:#fff;border-color:#2e86c1;color:#2e86c1;}
     .btn-find-rgate{background:#fff;border-color:#c0392b;color:#c0392b;}
@@ -88,8 +91,14 @@
       <input type="text" id="queryInput" placeholder="10.1056/NEJMoa2001017  ou  título do artigo..."/>
     </div>
     <div class="divider"></div>
-    <div class="card-title">O teu perfil <span style="font-size:11px;color:var(--text3)">(opcional)</span></div>
-    <div class="grid-3">
+    <div class="profile-header">
+      <div class="card-title" style="margin-bottom:0">O teu perfil <span style="font-size:11px;color:var(--text3)">(opcional)</span></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="profile-saved" id="profileSaved">✓ Guardado</span>
+        <button class="btn-clear-profile" id="btnClearProfile" onclick="clearProfile()" style="display:none">Limpar</button>
+      </div>
+    </div>
+    <div class="grid-3" style="margin-top:14px;">
       <div class="field"><label>Nome</label><input type="text" id="nameInput" placeholder="Dr. Pedro Nunes"/></div>
       <div class="field"><label>Função</label><input type="text" id="roleInput" placeholder="Intensivista Pediátrico"/></div>
       <div class="field"><label>Instituição</label><input type="text" id="instInput" placeholder="Hospital Prof Dr. Fernando Fonseca"/></div>
@@ -122,21 +131,16 @@
       <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
     </div>
     <textarea class="email-body" id="emailBody"></textarea>
-
-```
-<div class="find-email-box">
-  <div class="find-email-label">📧 Encontrar email do autor</div>
-  <div class="find-email-btns">
-    <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Google Scholar</a>
-    <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
-    <a class="btn-find btn-find-rgate" id="btnRgate" href="#" target="_blank">ResearchGate</a>
-  </div>
-</div>
-
-<button class="btn-sent" id="sentBtn" onclick="markSent()">✓ Marcar como enviado</button>
-<div class="sent-confirm" id="sentConfirm">✓ Enviado! Se não houver resposta em 5–7 dias, tenta o ResearchGate.</div>
-```
-
+    <div class="find-email-box">
+      <div class="find-email-label">📧 Encontrar email do autor</div>
+      <div class="find-email-btns">
+        <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Google Scholar</a>
+        <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
+        <a class="btn-find btn-find-rgate" id="btnRgate" href="#" target="_blank">ResearchGate</a>
+      </div>
+    </div>
+    <button class="btn-sent" id="sentBtn" onclick="markSent()">✓ Marcar como enviado</button>
+    <div class="sent-confirm" id="sentConfirm">✓ Enviado! Se não houver resposta em 5–7 dias, tenta o ResearchGate.</div>
   </div>
 
   <div class="footer">CrossRef · Unpaywall · Pedir artigos a autores é legal</div>
@@ -149,10 +153,51 @@
 
 <script>
   let isRunning=false;
-  let currentAuthorName='';
   function g(id){return document.getElementById(id);}
   function show(id){g(id).classList.remove('hidden');}
   function hide(id){g(id).classList.add('hidden');}
+
+  // --- PROFILE PERSISTENCE ---
+  function loadProfile(){
+    try{
+      const p=JSON.parse(localStorage.getItem('pq_profile')||'{}');
+      if(p.name) g('nameInput').value=p.name;
+      if(p.role) g('roleInput').value=p.role;
+      if(p.inst) g('instInput').value=p.inst;
+      if(p.name||p.role||p.inst){
+        g('profileSaved').style.display='inline';
+        g('btnClearProfile').style.display='inline';
+      }
+    }catch(e){}
+  }
+
+  function saveProfile(){
+    const name=g('nameInput').value.trim();
+    const role=g('roleInput').value.trim();
+    const inst=g('instInput').value.trim();
+    if(name||role||inst){
+      try{
+        localStorage.setItem('pq_profile',JSON.stringify({name,role,inst}));
+        g('profileSaved').style.display='inline';
+        g('btnClearProfile').style.display='inline';
+      }catch(e){}
+    }
+  }
+
+  function clearProfile(){
+    try{ localStorage.removeItem('pq_profile'); }catch(e){}
+    ['nameInput','roleInput','instInput'].forEach(id=>g(id).value='');
+    g('profileSaved').style.display='none';
+    g('btnClearProfile').style.display='none';
+  }
+
+  // Save on input change
+  ['nameInput','roleInput','instInput'].forEach(id=>{
+    g(id).addEventListener('change', saveProfile);
+  });
+
+  // Load on start
+  loadProfile();
 
   function addLog(text,type){
     const d=document.createElement('div');
@@ -169,7 +214,7 @@
   }
 
   function reset(){
-    ['queryInput','nameInput','roleInput','instInput'].forEach(id=>g(id).value='');
+    g('queryInput').value='';
     g('logLines').innerHTML='';
     g('logPanel').style.display='none';
     g('resultOA').style.display='none';
@@ -178,7 +223,6 @@
     g('sentBtn').classList.remove('hidden');
     hide('resetBtn');
     setRunning(false);
-    currentAuthorName='';
   }
 
   function copyEmail(){
@@ -233,6 +277,7 @@
   async function runAgent(){
     const query=g('queryInput').value.trim();
     if(!query||isRunning) return;
+    saveProfile();
     setRunning(true);
     g('resultOA').style.display='none';
     g('resultEmail').style.display='none';
