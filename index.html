@@ -185,132 +185,121 @@
         <button class="btn-icon" id="btnTheme" onclick="toggleTheme()">&#127769;</button>
       </div>
     </div>
-
-```
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('search')">&#128269; Pesquisa</button>
-  <button class="tab" onclick="switchTab('library')">&#128218; Biblioteca</button>
-  <button class="tab" onclick="switchTab('history')">&#128336; Hist&oacute;rico</button>
-</div>
-
-<div class="panel active" id="panelSearch">
-  <div class="restore-banner" id="restoreBanner">
-    <span style="font-size:13px;color:var(--accent);">&#8617; Sess&atilde;o anterior recuperada</span>
-    <button onclick="clearState()" class="small-btn">Limpar</button>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Qual &eacute; o artigo que procuras?</div>
-    <div class="field">
-      <label>DOI, PMID ou T&iacute;tulo</label>
-      <input type="text" id="queryInput" placeholder="10.1056/... &middot; PMID:12345 &middot; t&iacute;tulo..."/>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('search')">&#128269; Pesquisa</button>
+      <button class="tab" onclick="switchTab('library')">&#128218; Biblioteca</button>
+      <button class="tab" onclick="switchTab('history')">&#128336; Hist&oacute;rico</button>
     </div>
-    <div class="divider"></div>
-    <div class="profile-header">
-      <div class="card-title" style="margin-bottom:0">O teu perfil <span style="font-size:11px;color:var(--text3)">(opcional)</span></div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span id="profileSaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">&#10003; Guardado</span>
-        <button id="btnClearProfile" onclick="clearProfile()" class="small-btn" style="display:none;">Limpar</button>
+    <div class="panel active" id="panelSearch">
+      <div class="restore-banner" id="restoreBanner">
+        <span style="font-size:13px;color:var(--accent);">&#8617; Sess&atilde;o anterior recuperada</span>
+        <button onclick="clearState()" class="small-btn">Limpar</button>
       </div>
-    </div>
-    <div class="grid-3" style="margin-top:10px;">
-      <div class="field"><label>Nome</label><input type="text" id="nameInput" placeholder="Dr. Pedro Nunes"/></div>
-      <div class="field"><label>Fun&ccedil;&atilde;o</label><input type="text" id="roleInput" placeholder="Intensivista Pedi&aacute;trico"/></div>
-      <div class="field"><label>Institui&ccedil;&atilde;o</label><input type="text" id="instInput" placeholder="Hospital Fernando Fonseca"/></div>
-    </div>
-    <div>
-      <div class="card-title" style="margin-bottom:6px;">Idioma do email e resumo</div>
-      <div class="lang-row">
-        <button class="btn-lang active" id="langEN" onclick="setLang('en')">&#127468;&#127463; English</button>
-        <button class="btn-lang" id="langPT" onclick="setLang('pt')">&#127477;&#127481; Portugu&ecirc;s</button>
-      </div>
-    </div>
-    <div class="divider"></div>
-    <div>
-      <div class="profile-header" style="margin-bottom:6px;">
-        <div class="card-title" style="margin-bottom:0;">Claude API Key <span style="font-size:11px;color:var(--text3)">(para IA)</span></div>
-        <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">&#10003; Guardada</span>
-      </div>
-      <div class="field" style="margin-bottom:6px;">
-        <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
-      </div>
-      <div style="font-size:11px;color:var(--text3);line-height:1.6;">
-        Cria a tua chave em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> &rarr; API Keys.
-      </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
-      <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
-    </div>
-  </div>
-
-  <div class="results-list" id="resultsList">
-    <div class="results-label">Selecciona o artigo correcto</div>
-    <div id="resultsItems"></div>
-  </div>
-
-  <div class="article-card" id="articleCard">
-    <div class="article-header">
-      <div class="article-status" id="articleStatus"></div>
-      <div class="article-title" id="articleTitle"></div>
-      <div class="article-meta" id="articleMeta"></div>
-    </div>
-    <hr class="article-divider"/>
-    <div class="article-actions">
-      <button class="btn-analyze" onclick="openAnalysis()">&#129504; Analisar com IA</button>
-      <a class="btn-dl hidden" id="oaLink" href="#" target="_blank">&#8595; PDF</a>
-      <button class="btn-sm" onclick="saveToLibrary()">&#128278;</button>
-      <button class="btn-sm" onclick="shareArticle()">&#8599;</button>
-    </div>
-    <div class="email-section" id="emailSection" style="display:none;">
-      <div class="find-email-box">
-        <div class="find-email-label">&#128231; Encontrar email do autor</div>
-        <div class="find-email-btns">
-          <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Scholar</a>
-          <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
-          <a class="btn-find btn-find-google" id="btnRgate" href="#" target="_blank">Google</a>
-          <a class="btn-find btn-find-linkedin" id="btnLinkedIn" href="#" target="_blank">LinkedIn</a>
+      <div class="card">
+        <div class="card-title">Qual &eacute; o artigo que procuras?</div>
+        <div class="field">
+          <label>DOI, PMID ou T&iacute;tulo</label>
+          <input type="text" id="queryInput" placeholder="10.1056/... &middot; PMID:12345 &middot; t&iacute;tulo..."/>
         </div>
-      </div>
-      <div>
-        <div class="email-header-row">
-          <div>
-            <div class="email-author" id="emailAuthor"></div>
-            <div class="email-found" id="emailFound"></div>
+        <div class="divider"></div>
+        <div class="profile-header">
+          <div class="card-title" style="margin-bottom:0">O teu perfil <span style="font-size:11px;color:var(--text3)">(opcional)</span></div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span id="profileSaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">&#10003; Guardado</span>
+            <button id="btnClearProfile" onclick="clearProfile()" class="small-btn" style="display:none;">Limpar</button>
           </div>
-          <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
         </div>
-        <textarea class="email-body" id="emailBody"></textarea>
-        <div class="action-row">
-          <a class="btn-mail" id="btnMailto" href="#">&#9993;&#65039; Abrir no Mail</a>
-          <button class="btn-sent" id="sentBtn" onclick="markSent()">&#10003;</button>
+        <div class="grid-3" style="margin-top:10px;">
+          <div class="field"><label>Nome</label><input type="text" id="nameInput" placeholder="Dr. Pedro Nunes"/></div>
+          <div class="field"><label>Fun&ccedil;&atilde;o</label><input type="text" id="roleInput" placeholder="Intensivista Pedi&aacute;trico"/></div>
+          <div class="field"><label>Institui&ccedil;&atilde;o</label><input type="text" id="instInput" placeholder="Hospital Fernando Fonseca"/></div>
         </div>
-        <div class="sent-confirm" id="sentConfirm">&#10003; Enviado! Follow-up em 7 dias.</div>
+        <div>
+          <div class="card-title" style="margin-bottom:6px;">Idioma do email e resumo</div>
+          <div class="lang-row">
+            <button class="btn-lang active" id="langEN" onclick="setLang('en')">&#127468;&#127463; English</button>
+            <button class="btn-lang" id="langPT" onclick="setLang('pt')">&#127477;&#127481; Portugu&ecirc;s</button>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div class="profile-header" style="margin-bottom:6px;">
+            <div class="card-title" style="margin-bottom:0;">Claude API Key <span style="font-size:11px;color:var(--text3)">(para IA)</span></div>
+            <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">&#10003; Guardada</span>
+          </div>
+          <div class="field" style="margin-bottom:6px;">
+            <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
+          </div>
+          <div style="font-size:11px;color:var(--text3);line-height:1.6;">
+            Cria a tua chave em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> &rarr; API Keys.
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
+          <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
+        </div>
       </div>
+      <div class="results-list" id="resultsList">
+        <div class="results-label">Selecciona o artigo correcto</div>
+        <div id="resultsItems"></div>
+      </div>
+      <div class="article-card" id="articleCard">
+        <div class="article-header">
+          <div class="article-status" id="articleStatus"></div>
+          <div class="article-title" id="articleTitle"></div>
+          <div class="article-meta" id="articleMeta"></div>
+        </div>
+        <hr class="article-divider"/>
+        <div class="article-actions">
+          <button class="btn-analyze" onclick="openAnalysis()">&#129504; Analisar com IA</button>
+          <a class="btn-dl hidden" id="oaLink" href="#" target="_blank">&#8595; PDF</a>
+          <button class="btn-sm" onclick="saveToLibrary()">&#128278;</button>
+          <button class="btn-sm" onclick="shareArticle()">&#8599;</button>
+        </div>
+        <div class="email-section" id="emailSection" style="display:none;">
+          <div class="find-email-box">
+            <div class="find-email-label">&#128231; Encontrar email do autor</div>
+            <div class="find-email-btns">
+              <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Scholar</a>
+              <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
+              <a class="btn-find btn-find-google" id="btnRgate" href="#" target="_blank">Google</a>
+              <a class="btn-find btn-find-linkedin" id="btnLinkedIn" href="#" target="_blank">LinkedIn</a>
+            </div>
+          </div>
+          <div>
+            <div class="email-header-row">
+              <div>
+                <div class="email-author" id="emailAuthor"></div>
+                <div class="email-found" id="emailFound"></div>
+              </div>
+              <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
+            </div>
+            <textarea class="email-body" id="emailBody"></textarea>
+            <div class="action-row">
+              <a class="btn-mail" id="btnMailto" href="#">&#9993;&#65039; Abrir no Mail</a>
+              <button class="btn-sent" id="sentBtn" onclick="markSent()">&#10003;</button>
+            </div>
+            <div class="sent-confirm" id="sentConfirm">&#10003; Enviado! Follow-up em 7 dias.</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">CrossRef &middot; Unpaywall &middot; PubMed &middot; Pedir artigos a autores &eacute; legal</div>
+    </div>
+    <div class="panel" id="panelLibrary">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">A minha biblioteca</div>
+        <button class="small-btn" onclick="clearLibrary()">Limpar tudo</button>
+      </div>
+      <div id="libraryContent"></div>
+    </div>
+    <div class="panel" id="panelHistory">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Hist&oacute;rico</div>
+        <button class="small-btn" onclick="clearHistory()">Limpar</button>
+      </div>
+      <div id="historyContent"></div>
     </div>
   </div>
-  <div class="footer">CrossRef &middot; Unpaywall &middot; PubMed &middot; Pedir artigos a autores &eacute; legal</div>
-</div>
-
-<div class="panel" id="panelLibrary">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">A minha biblioteca</div>
-    <button class="small-btn" onclick="clearLibrary()">Limpar tudo</button>
-  </div>
-  <div id="libraryContent"></div>
-</div>
-
-<div class="panel" id="panelHistory">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Hist&oacute;rico</div>
-    <button class="small-btn" onclick="clearHistory()">Limpar</button>
-  </div>
-  <div id="historyContent"></div>
-</div>
-```
-
-  </div>
-
   <div class="coffee-bar">
     <div class="coffee-text">Feito por <strong>um m&eacute;dico, para m&eacute;dicos</strong></div>
     <a class="btn-coffee" href="https://buymeacoffee.com/possn" target="_blank">&#9749; Buy me a coffee</a>
@@ -326,71 +315,62 @@
     <button class="btn-icon" onclick="saveToLibrary()">&#128278;</button>
   </div>
   <div class="analysis-body">
-
-```
-<div class="summary-card" style="margin-bottom:14px;">
-  <div style="font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:6px;" id="analysisTitleFull"></div>
-  <div style="font-size:12px;color:var(--text2);" id="analysisMetaFull"></div>
-</div>
-
-<!-- AI ANALYSIS WITH MODE TOGGLE -->
-<div class="summary-card">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-    <div class="summary-label" style="margin-bottom:0;">An&aacute;lise com IA <span class="ai-badge">Claude AI</span></div>
-    <div style="display:flex;gap:6px;">
-      <button class="btn-mode" id="btnModeResume" onclick="switchMode('resume')">&#128203; Resumo</button>
-      <button class="btn-mode btn-mode-active" id="btnModeDeep" onclick="switchMode('deep')">&#128300; An&aacute;lise</button>
+    <div class="summary-card" style="margin-bottom:14px;">
+      <div style="font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:6px;" id="analysisTitleFull"></div>
+      <div style="font-size:12px;color:var(--text2);" id="analysisMetaFull"></div>
     </div>
-  </div>
-  <div id="analysisSummaryLoading" style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;">
-    <div class="dot-pulse"><span></span><span></span><span></span></div>
-    <span id="analysisLoadingText">Painel de revisores a analisar&hellip;</span>
-  </div>
-  <div class="summary-text ai-output" id="analysisSummaryText" style="display:none;"></div>
-</div>
-
-<div class="pdf-card">
-  <div class="summary-label">Upload de PDF <span class="ai-badge">An&aacute;lise completa</span></div>
-  <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Tens o PDF? Carrega-o aqui e o Claude analisa o artigo completo &mdash; n&atilde;o s&oacute; o abstract.</div>
-  <div class="pdf-drop" id="pdfDrop" onclick="g('pdfInput').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
-    <div class="pdf-drop-icon">&#128196;</div>
-    <div class="pdf-drop-text">Clica ou arrasta o PDF aqui</div>
-    <div class="pdf-drop-sub">M&aacute;ximo 10MB</div>
-  </div>
-  <input type="file" id="pdfInput" accept=".pdf" style="display:none;" onchange="onPdfSelected(event)"/>
-  <div class="pdf-loaded hidden" id="pdfLoaded">
-    <span>&#128196;</span>
-    <span class="pdf-loaded-name" id="pdfName"></span>
-    <button class="btn-pdf-clear" onclick="clearPdf()">&#10005;</button>
-  </div>
-  <button class="btn-analyze-pdf" id="btnAnalyzePdf" onclick="analyzePdf()" disabled>Analisar PDF completo</button>
-</div>
-
-<div class="related-card" id="relatedCard" style="display:none;">
-  <div class="summary-label">Artigos relacionados <span class="ai-badge">PubMed</span></div>
-  <div id="relatedItems"></div>
-</div>
-
-<div class="chat-card">
-  <div class="summary-label" style="padding:16px 16px 0;">Perguntas ao artigo <span class="ai-badge">Claude AI</span></div>
-  <div class="chat-suggestions" id="chatSuggestions">
-    <button class="chat-suggestion" onclick="askSuggestion(this)">Qual o NNT/NNH?</button>
-    <button class="chat-suggestion" onclick="askSuggestion(this)">Aplica-se a pediatria?</button>
-    <button class="chat-suggestion" onclick="askSuggestion(this)">Rigor metodol&oacute;gico?</button>
-    <button class="chat-suggestion" onclick="askSuggestion(this)">Explica&ccedil;&otilde;es alternativas?</button>
-    <button class="chat-suggestion" onclick="askSuggestion(this)">N&iacute;vel de evid&ecirc;ncia?</button>
-    <button class="chat-suggestion" onclick="askSuggestion(this)">Aplicar na minha UCI?</button>
-  </div>
-  <div class="chat-messages" id="chatMessages">
-    <div class="chat-empty" id="chatEmpty">Faz uma pergunta sobre o artigo &#8595;</div>
-  </div>
-  <div class="chat-input-row">
-    <input class="chat-input" id="chatInput" type="text" placeholder="Pergunta sobre o artigo&hellip;" onkeydown="if(event.key==='Enter')sendChat()"/>
-    <button class="btn-send" id="btnSend" onclick="sendChat()">&#8593;</button>
-  </div>
-</div>
-```
-
+    <div class="summary-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <div class="summary-label" style="margin-bottom:0;">An&aacute;lise com IA <span class="ai-badge">Claude AI</span></div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn-mode btn-mode-active" id="btnModeResume" onclick="switchMode('resume')">&#128203; Resumo</button>
+          <button class="btn-mode" id="btnModeDeep" onclick="switchMode('deep')">&#128300; An&aacute;lise</button>
+        </div>
+      </div>
+      <div id="analysisSummaryLoading" style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;">
+        <div class="dot-pulse"><span></span><span></span><span></span></div>
+        <span id="analysisLoadingText">A gerar resumo cl&iacute;nico&hellip;</span>
+      </div>
+      <div class="summary-text ai-output" id="analysisSummaryText" style="display:none;"></div>
+    </div>
+    <div class="pdf-card">
+      <div class="summary-label">Upload de PDF <span class="ai-badge">An&aacute;lise completa</span></div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Tens o PDF? Carrega-o aqui e o Claude analisa o artigo completo &mdash; n&atilde;o s&oacute; o abstract.</div>
+      <div class="pdf-drop" id="pdfDrop" onclick="g('pdfInput').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+        <div class="pdf-drop-icon">&#128196;</div>
+        <div class="pdf-drop-text">Clica ou arrasta o PDF aqui</div>
+        <div class="pdf-drop-sub">M&aacute;ximo 10MB</div>
+      </div>
+      <input type="file" id="pdfInput" accept=".pdf" style="display:none;" onchange="onPdfSelected(event)"/>
+      <div class="pdf-loaded hidden" id="pdfLoaded">
+        <span>&#128196;</span>
+        <span class="pdf-loaded-name" id="pdfName"></span>
+        <button class="btn-pdf-clear" onclick="clearPdf()">&#10005;</button>
+      </div>
+      <button class="btn-analyze-pdf" id="btnAnalyzePdf" onclick="analyzePdf()" disabled>Analisar PDF completo</button>
+    </div>
+    <div class="related-card" id="relatedCard" style="display:none;">
+      <div class="summary-label">Artigos relacionados <span class="ai-badge">PubMed</span></div>
+      <div id="relatedItems"></div>
+    </div>
+    <div class="chat-card">
+      <div class="summary-label" style="padding:16px 16px 0;">Perguntas ao artigo <span class="ai-badge">Claude AI</span></div>
+      <div class="chat-suggestions" id="chatSuggestions">
+        <button class="chat-suggestion" onclick="askSuggestion(this)">Qual o NNT/NNH?</button>
+        <button class="chat-suggestion" onclick="askSuggestion(this)">Aplica-se a pediatria?</button>
+        <button class="chat-suggestion" onclick="askSuggestion(this)">Rigor metodol&oacute;gico?</button>
+        <button class="chat-suggestion" onclick="askSuggestion(this)">Explica&ccedil;&otilde;es alternativas?</button>
+        <button class="chat-suggestion" onclick="askSuggestion(this)">N&iacute;vel de evid&ecirc;ncia?</button>
+        <button class="chat-suggestion" onclick="askSuggestion(this)">Aplicar na minha UCI?</button>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-empty" id="chatEmpty">Faz uma pergunta sobre o artigo &#8595;</div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chatInput" type="text" placeholder="Pergunta sobre o artigo&hellip;" onkeydown="if(event.key==='Enter')sendChat()"/>
+        <button class="btn-send" id="btnSend" onclick="sendChat()">&#8593;</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -865,18 +845,21 @@ function showArticleCard(article, isOA) {
 }
 
 // ── CLAUDE STREAMING ──
-async function streamClaudeTokens(sysP, usrP, maxTok, onChunk, onDone) {
+async function streamClaudeTokens(sysP, usrP, maxTok, onChunk, onDone, signal) {
   if (!CLAUDE_KEY) { onDone('no-key'); return; }
   try {
     var resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      signal: signal || null,
       headers: { 'Content-Type': 'application/json', 'x-api-key': CLAUDE_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: maxTok, stream: true, system: sysP, messages: [{ role: 'user', content: usrP }] })
     });
     if (!resp.ok) { onDone('error:' + await resp.text()); return; }
     var reader = resp.body.getReader(); var decoder = new TextDecoder(); var full = '';
     while (true) {
+      if (signal && signal.aborted) { reader.cancel(); onDone('aborted'); return; }
       var res = await reader.read(); if (res.done) break;
+      if (signal && signal.aborted) { reader.cancel(); onDone('aborted'); return; }
       var lines = decoder.decode(res.value, { stream: true }).split('\n');
       for (var i = 0; i < lines.length; i++) {
         var line = lines[i].trim();
@@ -887,7 +870,10 @@ async function streamClaudeTokens(sysP, usrP, maxTok, onChunk, onDone) {
       }
     }
     onDone('ok');
-  } catch(e) { onDone('error:' + e.message); }
+  } catch(e) {
+    if (e.name === 'AbortError') { onDone('aborted'); return; }
+    onDone('error:' + e.message);
+  }
 }
 async function streamClaude(sysP, usrP, onChunk, onDone) {
   if (!CLAUDE_KEY) { onDone('no-key'); return; }
@@ -958,13 +944,17 @@ async function fetchRelated(doi, title) {
 }
 
 // ── ANALYSIS MODE TOGGLE ──
-var currentMode = 'deep';
+var currentMode = 'resume';
+var analysisAbortController = null;
 
 var QUICK_RESUME = 'You are a clinical expert in paediatric intensive care. Generate a concise, structured clinical summary adapted to the article type (RCT, systematic review, narrative review, meta-analysis, case report, cohort study, etc.).' +
   '\n\nStructure your output:\n**Study type:** (one line)\n**Objective:** (one line)\n**Methods:** (2-3 lines)\n**Main findings:** (bullet points, quantitative where available)\n**Clinical bottom line:** (1-2 sentences)\n**Limitations:** (2-3 key points)\n**Applicability to PICU:** (one line)\n\nBe concise. No preamble. Max 350 words.';
 
 function switchMode(mode) {
+  if (currentMode === mode) return;
   currentMode = mode;
+  // abort any running stream
+  if (analysisAbortController) { analysisAbortController.abort(); analysisAbortController = null; }
   g('btnModeResume').classList.toggle('btn-mode-active', mode === 'resume');
   g('btnModeDeep').classList.toggle('btn-mode-active', mode === 'deep');
   g('analysisSummaryText').style.display = 'none';
@@ -974,17 +964,21 @@ function switchMode(mode) {
 
 function runAnalysisMode() {
   if (!currentArticle) return;
+  // abort any previous stream
+  if (analysisAbortController) { analysisAbortController.abort(); }
+  analysisAbortController = new AbortController();
+  var signal = analysisAbortController.signal;
   g('analysisSummaryLoading').style.display = 'flex';
   g('analysisSummaryText').style.display = 'none';
   g('analysisSummaryText').innerHTML = '';
   if (!CLAUDE_KEY) {
     g('analysisSummaryLoading').style.display = 'none';
     g('analysisSummaryText').style.display = 'block';
-    g('analysisSummaryText').innerHTML = '<span style="color:var(--text3);font-size:12px;">\ud83d\udca1 Adiciona a tua Claude API Key para activar a IA.</span>';
+    g('analysisSummaryText').innerHTML = '<span style="color:var(--text3);font-size:12px;">&#128161; Adiciona a tua Claude API Key para activar a IA.</span>';
     return;
   }
   var isDeep = currentMode === 'deep';
-  g('analysisLoadingText').textContent = isDeep ? 'Painel de revisores a analisar\u2026' : 'A gerar resumo cl\u00ednico\u2026';
+  g('analysisLoadingText').textContent = isDeep ? 'Painel de revisores a analisar…' : 'A gerar resumo clínico…';
   var sysP = emailLang === 'pt'
     ? (isDeep ? 'Es um painel de revisores cientificos especializados em medicina intensiva pediatrica. Responde em Portugues.'
                : 'Es um especialista clinico em medicina intensiva pediatrica. Gera resumos concisos. Responde em Portugues.')
@@ -994,23 +988,30 @@ function runAnalysisMode() {
   var usrP = prompt + '\n\nArticle: ' + currentArticle.title + '\n' + (currentAbstract ? 'Abstract: ' + currentAbstract : '(No abstract available)');
   var maxTok = isDeep ? 4000 : 800;
   streamClaudeTokens(sysP, usrP, maxTok, function(full) {
+    if (signal.aborted) return;
     g('analysisSummaryLoading').style.display = 'none';
     g('analysisSummaryText').style.display = 'block';
     g('analysisSummaryText').innerHTML = formatAIOutput(full);
   }, function(status) {
+    if (signal.aborted || status === 'aborted') return;
     if (status !== 'ok') {
       g('analysisSummaryLoading').style.display = 'none';
       g('analysisSummaryText').style.display = 'block';
-      g('analysisSummaryText').innerHTML = '<span style="color:var(--text3);font-size:12px;">An\u00e1lise n\u00e3o dispon\u00edvel.</span>';
+      g('analysisSummaryText').innerHTML = '<span style="color:var(--text3);font-size:12px;">Análise não disponível.</span>';
     }
-  });
+  }, signal);
 }
 
 // ── ANALYSIS PAGE ──
 async function startAnalysis() {
   if (!currentArticle) return;
+  // reset mode to resume on each new article open
+  currentMode = 'resume';
+  if (analysisAbortController) { analysisAbortController.abort(); analysisAbortController = null; }
+  g('btnModeResume').classList.add('btn-mode-active');
+  g('btnModeDeep').classList.remove('btn-mode-active');
   chatHistory = [];
-  g('chatMessages').innerHTML = '<div class="chat-empty">Faz uma pergunta sobre o artigo \u2193</div>';
+  g('chatMessages').innerHTML = '<div class="chat-empty">Faz uma pergunta sobre o artigo ↓</div>';
   g('analysisTitleFull').textContent = currentArticle.title;
   g('analysisMetaFull').textContent = (currentArticle.journal || '') + (currentArticle.year ? ' \u00b7 ' + currentArticle.year : '') + (currentArticle.doi ? ' \u00b7 ' + currentArticle.doi : '');
   g('analysisHeaderTitle').textContent = currentArticle.title.substring(0, 40) + '\u2026';
