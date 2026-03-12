@@ -167,6 +167,35 @@
     .ai-output strong{color:var(--text);font-weight:600;}
     .ai-output p{margin-bottom:8px;}
     .score-bar{display:inline-block;height:8px;border-radius:4px;background:var(--accent);margin-left:6px;vertical-align:middle;}
+
+```
+.jclub-empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px;}
+.jclub-session{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;}
+.jclub-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.jclub-title{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);}
+.jclub-date{font-size:11px;color:var(--text3);margin-top:2px;}
+.jclub-papers{margin-bottom:10px;}
+.jclub-paper{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--sand);}
+.jclub-paper:last-child{border-bottom:none;}
+.jclub-paper-num{width:20px;height:20px;border-radius:50%;background:var(--accent);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.jclub-paper-title{font-size:12px;font-weight:500;color:var(--text);line-height:1.4;}
+.jclub-paper-meta{font-size:11px;color:var(--text3);}
+.jclub-paper-remove{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px;flex-shrink:0;}
+.jclub-add-row{display:flex;gap:8px;margin-bottom:10px;}
+.jclub-add-input{flex:1;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;-webkit-appearance:none;}
+.jclub-add-input:focus{outline:none;border-color:var(--accent);}
+.btn-jclub-add{padding:9px 14px;background:var(--accent);border:none;border-radius:10px;color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;}
+.jclub-actions{display:flex;gap:8px;margin-bottom:10px;}
+.btn-jclub-action{flex:1;padding:10px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--cream2);color:var(--text2);text-align:center;}
+.btn-jclub-analyze{background:var(--accent);border-color:var(--accent);color:white;}
+.jclub-analysis{font-size:13px;line-height:1.8;color:var(--text2);padding-top:10px;border-top:1px solid var(--sand);}
+.score-row{display:flex;align-items:center;gap:8px;margin:4px 0;}
+.score-label{font-size:12px;color:var(--text2);min-width:140px;}
+.score-bar{flex:1;height:8px;border-radius:4px;background:var(--sand);overflow:hidden;}
+.score-fill{height:100%;border-radius:4px;background:var(--accent);}
+.score-val{font-size:12px;font-weight:600;color:var(--accent);min-width:28px;}
+```
+
   </style>
 </head>
 <body>
@@ -189,6 +218,7 @@
       <button class="tab active" onclick="switchTab('search')">&#128269; Pesquisa</button>
       <button class="tab" onclick="switchTab('library')">&#128218; Biblioteca</button>
       <button class="tab" onclick="switchTab('history')">&#128336; Hist&oacute;rico</button>
+      <button class="tab" onclick="switchTab('jclub')">&#127942; JClub</button>
     </div>
     <div class="panel active" id="panelSearch">
       <div class="restore-banner" id="restoreBanner">
@@ -253,8 +283,9 @@
         <div class="article-actions">
           <button class="btn-analyze" onclick="openAnalysis()">&#129504; Analisar com IA</button>
           <a class="btn-dl hidden" id="oaLink" href="#" target="_blank">&#8595; PDF</a>
-          <button class="btn-sm" onclick="saveToLibrary()">&#128278;</button>
-          <button class="btn-sm" onclick="shareArticle()">&#8599;</button>
+          <button class="btn-sm" onclick="saveToLibrary()" title="Guardar na biblioteca">&#128278;</button>
+          <button class="btn-sm" onclick="addCurrentToJclub()" title="Adicionar ao Journal Club">&#127942;</button>
+          <button class="btn-sm" onclick="shareArticle()" title="Partilhar">&#8599;</button>
         </div>
         <div class="email-section" id="emailSection" style="display:none;">
           <div class="find-email-box">
@@ -299,6 +330,18 @@
       </div>
       <div id="historyContent"></div>
     </div>
+
+```
+<div class="panel" id="panelJclub">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Journal Club</div>
+    <button class="btn-primary" style="flex:none;padding:8px 14px;font-size:13px;" onclick="createSession()">+ Nova sess&atilde;o</button>
+  </div>
+  <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.6;">Agrupa artigos por sess&atilde;o e gera uma prepara&ccedil;&atilde;o completa com IA para apresentares &agrave; equipa.</div>
+  <div id="jclubContent"></div>
+</div>
+```
+
   </div>
   <div class="coffee-bar">
     <div class="coffee-text">Feito por <strong>um m&eacute;dico, para m&eacute;dicos</strong></div>
@@ -419,11 +462,12 @@ function toggleTheme() {
 
 // ── TABS ──
 function switchTab(tab) {
-  var tabs = ['search', 'library', 'jclub', 'history'];
+  var tabs = ['search', 'library', 'history', 'jclub'];
   tabs.forEach(function(t, i) {
-    document.querySelectorAll('.tab')[i].classList.toggle('active', t === tab);
-    var el = g('panel' + t.charAt(0).toUpperCase() + t.slice(1));
-    if (el) el.classList.toggle('active', t === tab);
+    var tabEl = document.querySelectorAll('.tab')[i];
+    if (tabEl) tabEl.classList.toggle('active', t === tab);
+    var panelEl = g('panel' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (panelEl) panelEl.classList.toggle('active', t === tab);
   });
   if (tab === 'library') renderLibrary();
   if (tab === 'history') renderHistory();
