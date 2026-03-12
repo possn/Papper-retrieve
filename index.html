@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="PaperQuest" />
+  <meta name="theme-color" content="#050d0d" />
+  <title>PaperQuest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #050d0d;
+      --bg2: #0a1a15;
+      --border: #0d3d30;
+      --border2: #0a2d22;
+      --green: #7ee8a2;
+      --green-dim: #3a9b6a;
+      --green-dark: #2d6b4a;
+      --green-darker: #1a4030;
+      --cyan: #00d4ff;
+      --white: #e8f5e9;
+      --warn: #f5c518;
+      --error: #ff6b6b;
+      --text-dim: #3a6b5a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(0,100,80,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(0,180,120,0.05) 0%, transparent 50%);
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--green);
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      padding: env(safe-area-inset-top, 20px) 0 env(safe-area-inset-bottom, 20px) 0;
+    }
+
+    .container { max-width: 640px; margin: 0 auto; padding: 24px 16px 100px; }
+
+    .header { margin-bottom: 28px; animation: fadeUp 0.5s ease; }
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--cyan);
+      display: inline-block; margin-right: 10px;
+      animation: pulse 2s infinite;
+    }
+    .status-line { display: flex; align-items: center; margin-bottom: 10px; }
+    .status-text { font-size: 10px; color: var(--cyan); letter-spacing: 3px; text-transform: uppercase; }
+    .title { font-size: 26px; font-weight: 600; color: var(--white); line-height: 1.2; }
+    .title span { color: var(--green); }
+    .subtitle { font-size: 11px; color: var(--text-dim); margin-top: 6px; font-family: 'IBM Plex Sans', sans-serif; line-height: 1.5; }
+
+    .panel {
+      background: rgba(0,30,25,0.6);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 14px;
+      animation: fadeUp 0.5s ease 0.1s both;
+    }
+
+    .label {
+      display: block;
+      font-size: 9px;
+      color: var(--green-dim);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: rgba(0,20,15,0.8);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 12px 14px;
+      color: var(--white);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    input:focus, textarea:focus { outline: none; border-color: var(--cyan); }
+    input::placeholder, textarea::placeholder { color: var(--green-darker); }
+
+    .input-group { margin-bottom: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 480px) { .grid-3 { grid-template-columns: 1fr 1fr 1fr; } }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+    .section-label { font-size: 9px; color: var(--green-dim); letter-spacing: 2px; margin-bottom: 14px; text-transform: uppercase; }
+
+    .btn-primary {
+      width: 100%; padding: 14px;
+      background: rgba(0,100,70,0.3);
+      border: 1px solid var(--cyan);
+      border-radius: 4px; color: var(--cyan);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px; letter-spacing: 2px; cursor: pointer;
+      transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-primary:disabled { border-color: var(--border2); color: var(--green-dark); background: rgba(0,40,30,0.3); cursor: not-allowed; }
+    .btn-secondary {
+      padding: 12px 18px; background: transparent;
+      border: 1px solid var(--border); border-radius: 4px;
+      color: var(--text-dim); font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-row { display: flex; gap: 10px; margin-top: 14px; }
+
+    .terminal {
+      background: rgba(0,10,8,0.95); border: 1px solid var(--border2);
+      border-radius: 4px; padding: 14px; margin-bottom: 14px;
+      max-height: 200px; overflow-y: auto; animation: fadeUp 0.3s ease;
+    }
+    .terminal-header { font-size: 9px; color: #1a5040; letter-spacing: 2px; margin-bottom: 10px; }
+    .log-line { font-size: 11px; line-height: 1.9; white-space: pre-wrap; word-break: break-word; }
+    .log-info { color: var(--green); }
+    .log-accent { color: var(--cyan); }
+    .log-dim { color: #3a6b5a; }
+    .log-warn { color: var(--warn); }
+    .log-error { color: var(--error); }
+    .log-white { color: var(--white); }
+
+    .result-oa {
+      background: rgba(0,60,40,0.3); border: 1px solid var(--cyan);
+      border-radius: 6px; padding: 20px; margin-bottom: 14px; animation: fadeUp 0.4s ease;
+    }
+    .result-email {
+      background: rgba(0,20,15,0.6); border: 1px solid var(--border);
+      border-radius: 6px; padding: 20px; margin-bottom: 14px; animation: fadeUp 0.4s ease;
+    }
+    .result-title { font-size: 13px; color: var(--white); font-weight: 500; margin-bottom: 6px; line-height: 1.4; }
+    .result-meta { font-size: 10px; color: var(--green-dim); margin-bottom: 14px; }
+
+    .btn-download {
+      display: inline-block; padding: 11px 20px;
+      background: rgba(0,212,255,0.1); border: 1px solid var(--cyan);
+      border-radius: 4px; color: var(--cyan); text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1px;
+    }
+
+    .email-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+    .author-name { font-size: 12px; color: var(--green); }
+    .author-affil { font-size: 10px; color: var(--green-dark); margin-top: 2px; }
+
+    .btn-copy {
+      padding: 7px 14px; background: transparent;
+      border: 1px solid var(--border); border-radius: 3px;
+      color: var(--text-dim); font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; cursor: pointer; transition: all 0.3s;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-copy.copied { border-color: var(--cyan); color: var(--cyan); }
+
+    textarea.email-body { min-height: 200px; resize: vertical; font-size: 12px; line-height: 1.8; color: #c8e6c9; }
+
+    .warn-box {
+      margin-top: 12px; padding: 12px;
+      background: rgba(245,197,24,0.05); border: 1px solid rgba(245,197,24,0.15);
+      border-radius: 4px; font-size: 11px; color: #a08020; line-height: 1.6;
+      font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+    .btn-sent {
+      width: 100%; margin-top: 10px; padding: 12px;
+      background: rgba(0,80,55,0.3); border: 1px solid #1a7a50;
+      border-radius: 4px; color: var(--green);
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; cursor: pointer;
+    }
+    .sent-confirm {
+      margin-top: 10px; padding: 12px;
+      background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 4px; font-size: 11px; color: var(--cyan); text-align: center; letter-spacing: 1px;
+    }
+
+    .install-banner {
+      background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 6px; padding: 16px; margin-bottom: 14px; animation: fadeUp 0.4s ease;
+    }
+    .install-title { font-size: 11px; color: var(--cyan); letter-spacing: 1px; margin-bottom: 6px; }
+    .install-steps { font-size: 11px; color: #3a7a6a; line-height: 2; font-family: 'IBM Plex Sans', sans-serif; }
+    .install-steps span { color: var(--white); }
+
+    .coffee-bar {
+      position: fixed; bottom: env(safe-area-inset-bottom, 0); left: 0; right: 0;
+      background: rgba(5,13,13,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border); padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between; z-index: 100;
+    }
+    .coffee-text { font-size: 11px; color: var(--text-dim); font-family: 'IBM Plex Sans', sans-serif; }
+    .coffee-text strong { color: var(--green-dim); }
+    .btn-coffee {
+      display: flex; align-items: center; gap: 7px;
+      padding: 9px 16px; background: rgba(255,213,0,0.1);
+      border: 1px solid rgba(255,213,0,0.3); border-radius: 20px;
+      color: #ffd500; font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; text-decoration: none; cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+    }
+    .btn-coffee:active { background: rgba(255,213,0,0.2); transform: scale(0.97); }
+
+    .spinner { display: inline-block; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0,212,255,0.4); } 50% { box-shadow: 0 0 0 6px rgba(0,212,255,0); } }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg2); }
+    ::-webkit-scrollbar-thumb { background: #1a4040; border-radius: 2px; }
+
+    .hidden { display: none; }
+    .footer { font-size: 9px; color: #1a4030; text-align: center; margin-top: 20px; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="status-line">
+      <span class="status-dot"></span>
+      <span class="status-text">PaperQuest Agent v1.0</span>
+    </div>
+    <div class="title">Scientific Article<br><span>Acquisition Engine</span></div>
+    <div class="subtitle">Finds open access · Drafts author emails · CrossRef + Unpaywall + Claude AI</div>
+  </div>
+
+  <div class="install-banner" id="installBanner" style="display:none">
+    <div class="install-title">📲 Adicionar ao ecrã principal</div>
+    <div class="install-steps">
+      1. Toca em <span>Partilhar</span> (ícone □↑ em baixo)<br>
+      2. Desliza e toca em <span>"Adicionar ao ecrã principal"</span><br>
+      3. Toca em <span>Adicionar</span> — aparece como uma app!
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="input-group">
+      <label class="label">Identificador do Artigo</label>
+      <input type="text" id="queryInput" placeholder="DOI (10.1056/...) ou título do artigo..." />
+    </div>
+    <hr class="divider" />
+    <div class="section-label">Teu Perfil (opcional — melhora o email gerado)</div>
+    <div class="grid-3">
+      <div class="input-group">
+        <label class="label">Nome</label>
+        <input type="text" id="nameInput" placeholder="Dr. Ana Santos" />
+      </div>
+      <div class="input-group">
+        <label class="label">Função</label>
+        <input type="text" id="roleInput" placeholder="Intensivista Pediátrico" />
+      </div>
+      <div class="input-group">
+        <label class="label">Instituição</label>
+        <input type="text" id="instInput" placeholder="Hospital Santa Maria" />
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="runBtn" onclick="runAgent()">▸ INICIAR AGENTE</button>
+      <button class="btn-secondary" id="resetBtn" onclick="reset()" style="display:none">RESET</button>
+    </div>
+  </div>
+
+  <div class="terminal hidden" id="terminal">
+    <div class="terminal-header">AGENT LOG</div>
+    <div id="logLines"></div>
+    <div id="spinner" class="hidden" style="color:var(--cyan);font-size:12px;margin-top:4px">
+      <span class="spinner">◌</span> a processar...
+    </div>
+  </div>
+
+  <div class="result-oa hidden" id="resultOA">
+    <div class="label" style="color:var(--cyan)">✓ VERSÃO OPEN ACCESS ENCONTRADA</div>
+    <div class="result-title" id="oaTitle"></div>
+    <div class="result-meta" id="oaMeta"></div>
+    <a class="btn-download" id="oaLink" href="#" target="_blank">▸ DOWNLOAD PDF</a>
+  </div>
+
+  <div class="result-email hidden" id="resultEmail">
+    <div class="email-header">
+      <div>
+        <div class="label" style="color:var(--green-dim)">EMAIL DRAFT — ENVIAR AO PRIMEIRO AUTOR</div>
+        <div class="author-name" id="authorName"></div>
+        <div class="author-affil" id="authorAffil"></div>
+      </div>
+      <button class="btn-copy" id="copyBtn" onclick="copyEmail()">COPIAR</button>
+    </div>
+    <textarea class="email-body" id="emailBody"></textarea>
+    <div class="warn-box">
+      ⚠ Email do autor não disponível automaticamente. Procura em:
+      <strong style="color:#c8a030">PubMed · ResearchGate · Google Scholar · página institucional</strong>
+    </div>
+    <button class="btn-sent" id="sentBtn" onclick="markSent()">✓ MARCAR COMO ENVIADO</button>
+    <div class="sent-confirm hidden" id="sentConfirm">
+      ✓ Marcado como enviado · Se não houver resposta em 5–7 dias, tenta ResearchGate
+    </div>
+  </div>
+
+  <div class="footer">CrossRef · Unpaywall · Claude Sonnet · Pedir artigos a autores é legal</div>
+</div>
+
+<div class="coffee-bar">
+  <div class="coffee-text">Feito por <strong>um médico, para médicos</strong></div>
+  <a class="btn-coffee" href="https://buymeacoffee.com/possn" target="_blank">
+    ☕ Buy me a coffee
+  </a>
+</div>
+
+<script>
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone;
+  if (isIOS && !isStandalone) {
+    document.getElementById('installBanner').style.display = 'block';
+  }
+
+  let isRunning = false;
+  let emailDraft = '';
+
+  function $(id) { return document.getElementById(id); }
+
+  function addLog(text, type = 'info') {
+    const div = document.createElement('div');
+    div.className = `log-line log-${type}`;
+    div.textContent = text;
+    $('logLines').appendChild(div);
+    $('terminal').scrollTop = $('terminal').scrollHeight;
+  }
+
+  function show(id) { $(id).classList.remove('hidden'); }
+  function hide(id) { $(id).classList.add('hidden'); }
+
+  function setRunning(val) {
+    isRunning = val;
+    $('runBtn').disabled = val;
+    $('runBtn').innerHTML = val ? '<span class="spinner">◌</span> A PROCESSAR...' : '▸ INICIAR AGENTE';
+    val ? show('spinner') : hide('spinner');
+  }
+
+  function reset() {
+    $('queryInput').value = '';
+    $('nameInput').value = '';
+    $('roleInput').value = '';
+    $('instInput').value = '';
+    $('logLines').innerHTML = '';
+    hide('terminal'); hide('resultOA'); hide('resultEmail'); hide('resetBtn'); hide('sentConfirm');
+    show('sentBtn');
+    emailDraft = '';
+    setRunning(false);
+  }
+
+  function copyEmail() {
+    navigator.clipboard.writeText($('emailBody').value).catch(() => {
+      $('emailBody').select();
+      document.execCommand('copy');
+    });
+    const btn = $('copyBtn');
+    btn.textContent = '✓ COPIADO';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'COPIAR'; btn.classList.remove('copied'); }, 2000);
+  }
+
+  function markSent() { hide('sentBtn'); show('sentConfirm'); }
+
+  async function fetchByDOI(doi) {
+    const r = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}`);
+    if (!r.ok) throw new Error('DOI não encontrado no CrossRef');
+    return (await r.json()).message;
+  }
+
+  async function fetchByTitle(title) {
+    const r = await fetch(`https://api.crossref.org/works?query.title=${encodeURIComponent(title)}&rows=1&select=DOI,title,author,published,container-title`);
+    if (!r.ok) throw new Error('Erro na pesquisa CrossRef');
+    const items = (await r.json()).message?.items;
+    if (!items?.length) throw new Error('Nenhum resultado encontrado');
+    return items[0];
+  }
+
+  async function checkOA(doi) {
+    try {
+      const r = await fetch(`https://api.unpaywall.org/v2/${encodeURIComponent(doi)}?email=agent@paperquest.io`);
+      if (!r.ok) return null;
+      const d = await r.json();
+      return d.is_oa && d.best_oa_location?.url ? d.best_oa_location.url : null;
+    } catch { return null; }
+  }
+
+  async function generateEmail(article, author, requester) {
+    const system = `You are a scientific communication assistant. Write professional, collegial emails in English requesting article PDFs from authors. Be concise, specific, warm, and researcher-to-researcher. Format: Subject line on first line, blank line, then email body. No markdown. Under 150 words.`;
+    const user = `Write a PDF request email for:
+ARTICLE: "${article.title}"
+FIRST AUTHOR: ${author.name}${author.affiliation ? ', ' + author.affiliation : ''}
+JOURNAL: ${article.journal || 'Unknown'} (${article.year || ''})
+REQUESTER:
+- Name: ${requester.name || 'A colleague'}
+- Role: ${requester.role || 'Researcher'}
+- Institution: ${requester.institution || 'Medical institution'}
+Make it warm, professional, specific. No placeholders.`;
+
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system,
+        messages: [{ role: 'user', content: user }]
+      })
+    });
+    if (!r.ok) throw new Error('Erro na API Claude');
+    return (await r.json()).content[0].text;
+  }
+
+  async function runAgent() {
+    const query = $('queryInput').value.trim();
+    if (!query || isRunning) return;
+
+    setRunning(true);
+    hide('resultOA'); hide('resultEmail'); hide('resetBtn');
+    show('terminal');
+    $('logLines').innerHTML = '';
+
+    const requester = {
+      name: $('nameInput').value.trim(),
+      role: $('roleInput').value.trim(),
+      institution: $('instInput').value.trim()
+    };
+
+    try {
+      const doiMatch = query.match(/10\.\d{4,}\/\S+/);
+      addLog(`▸ Input: ${doiMatch ? 'DOI detectado' : 'título de artigo'}`, 'accent');
+      addLog('▸ A consultar CrossRef...', 'dim');
+
+      let meta = doiMatch ? await fetchByDOI(doiMatch[0]) : await fetchByTitle(query);
+
+      const doi = meta.DOI || meta.doi || '';
+      const title = Array.isArray(meta.title) ? meta.title[0] : meta.title || 'Título desconhecido';
+      const authors = meta.author || [];
+      const journal = Array.isArray(meta['container-title']) ? meta['container-title'][0] : meta['container-title'] || '';
+      const year = meta.published?.['date-parts']?.[0]?.[0] || '';
+      const firstAuthor = authors[0];
+      const authorName = firstAuthor ? `${firstAuthor.given || ''} ${firstAuthor.family || ''}`.trim() : 'Autor desconhecido';
+      const authorAffil = firstAuthor?.affiliation?.[0]?.name || '';
+
+      addLog('✓ Artigo encontrado', 'info');
+      addLog(`  ${title.substring(0, 70)}${title.length > 70 ? '...' : ''}`, 'white');
+      addLog(`  DOI: ${doi}`, 'dim');
+      addLog(`  ${journal} · ${year} · ${authors.length} autor(es)`, 'dim');
+      addLog(`▸ Primeiro autor: ${authorName}`, 'accent');
+      if (authorAffil) addLog(`  ${authorAffil.substring(0, 55)}`, 'dim');
+
+      addLog('▸ A verificar open access (Unpaywall)...', 'dim');
+      const oaUrl = doi ? await checkOA(doi) : null;
+
+      if (oaUrl) {
+        addLog('✓ VERSÃO OPEN ACCESS ENCONTRADA!', 'info');
+        addLog(`  ${oaUrl}`, 'accent');
+        $('oaTitle').textContent = title;
+        $('oaMeta').textContent = `${journal} · ${year} · DOI: ${doi}`;
+        $('oaLink').href = oaUrl;
+        show('resultOA');
+        setRunning(false);
+        show('resetBtn');
+        return;
+      }
+
+      addLog('✗ Sem versão open access', 'warn');
+      addLog('▸ A gerar email com Claude AI...', 'dim');
+
+      const emailText = await generateEmail({ title, journal, year }, { name: authorName, affiliation: authorAffil }, requester);
+
+      emailDraft = emailText;
+      addLog('✓ Email gerado com sucesso', 'info');
+      addLog('▸ Agente completo.', 'accent');
+
+      $('authorName').textContent = authorName;
+      $('authorAffil').textContent = authorAffil.substring(0, 60);
+      $('emailBody').value = emailText;
+      show('resultEmail');
+      show('sentBtn');
+      hide('sentConfirm');
+
+    } catch (err) {
+      addLog(`✗ Erro: ${err.message}`, 'error');
+      addLog('  Tenta com o DOI completo ou um título mais específico', 'warn');
+    }
+
+    setRunning(false);
+    show('resetBtn');
+  }
+</script>
+</body>
+</html>
