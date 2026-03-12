@@ -14,13 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --cream:#f8f6f1;--cream2:#f0ede6;--sand:#e8e3d8;--border:#d8d2c4;
-      --text:#2c2820;--text2:#6b6358;--text3:#9e9488;
-      --accent:#c96442;--accent2:#cc785c;--accent-light:#fdf0eb;
-      --blue:#1d6fa4;--blue-light:#dbeafe;
-      --warn:#92400e;--warn-light:#fef3c7;--error:#991b1b;--white:#ffffff;
-    }
+    :root{--cream:#f8f6f1;--cream2:#f0ede6;--sand:#e8e3d8;--border:#d8d2c4;--text:#2c2820;--text2:#6b6358;--text3:#9e9488;--accent:#c96442;--accent2:#cc785c;--accent-light:#fdf0eb;--blue:#1d6fa4;--blue-light:#dbeafe;--warn:#92400e;--warn-light:#fef3c7;--error:#991b1b;--white:#ffffff;}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
     body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;min-height:-webkit-fill-available;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,80px) 0;}
     .container{max-width:600px;margin:0 auto;padding:0 16px 100px;}
@@ -73,7 +67,6 @@
 </head>
 <body>
 <div class="container">
-
   <div class="header">
     <img class="logo" src="icon.png" alt="PaperQuest"/>
     <div>
@@ -93,7 +86,7 @@
     <div class="grid-3">
       <div class="field"><label>Nome</label><input type="text" id="nameInput" placeholder="Dr. Pedro Nunes"/></div>
       <div class="field"><label>Função</label><input type="text" id="roleInput" placeholder="Intensivista Pediátrico"/></div>
-      <div class="field"><label>Instituição</label><input type="text" id="instInput" placeholder="Hospital Santa Maria"/></div>
+      <div class="field"><label>Instituição</label><input type="text" id="instInput" placeholder="Hospital Prof Dr. Fernando Fonseca"/></div>
     </div>
     <div class="btn-row">
       <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
@@ -123,7 +116,7 @@
       <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
     </div>
     <textarea class="email-body" id="emailBody"></textarea>
-    <div class="warn-box">⚠️ Email do autor não disponível automaticamente — procura em <strong>PubMed · ResearchGate · Google Scholar</strong></div>
+    <div class="warn-box">⚠️ Procura o email do autor em <strong>PubMed · ResearchGate · Google Scholar</strong></div>
     <button class="btn-sent" id="sentBtn" onclick="markSent()">✓ Marcar como enviado</button>
     <div class="sent-confirm" id="sentConfirm">✓ Enviado! Se não houver resposta em 5–7 dias, tenta o ResearchGate.</div>
   </div>
@@ -133,7 +126,7 @@
 
 <div class="coffee-bar">
   <div class="coffee-text">Feito por <strong>um médico, para médicos</strong></div>
-  <a class="btn-coffee" href="https://buymeacoffee.com/4B0qcwfXaD" target="_blank">☕ Buy me a coffee</a>
+  <a class="btn-coffee" href="https://buymeacoffee.com/possn" target="_blank">☕ Buy me a coffee</a>
 </div>
 
 <script>
@@ -200,19 +193,29 @@
     }catch{return null;}
   }
 
-  async function generateEmail(article,author,req){
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:'You are a scientific communication assistant. Write professional, warm, collegial emails in English requesting article PDFs from authors. Format: Subject line first, blank line, then body. No markdown. Under 150 words.',
-        messages:[{role:'user',content:'Write a PDF request email for:\nARTICLE: "'+article.title+'"\nFIRST AUTHOR: '+author.name+(author.affil?', '+author.affil:'')+'\nJOURNAL: '+(article.journal||'Unknown')+' ('+(article.year||'')+')\nREQUESTER:\n- Name: '+(req.name||'A colleague')+'\n- Role: '+(req.role||'Researcher')+'\n- Institution: '+(req.inst||'Medical institution')+'\nMake it warm, professional, specific.'}]
-      })
-    });
-    if(!r.ok) throw new Error('Erro Claude API');
-    return (await r.json()).content[0].text;
+  // Generate email locally — no API call needed
+  function generateEmailLocally(article, author, req){
+    const name = req.name || 'A colleague';
+    const role = req.role || 'researcher';
+    const inst = req.inst || 'our institution';
+    const authorFirst = author.name.split(' ')[0] || 'Dear Author';
+
+    const subject = `Request for PDF: ${article.title.substring(0,60)}${article.title.length>60?'...':''}`;
+
+    const body = `Dear ${authorFirst},
+
+I am ${name}, a ${role} at ${inst}. I came across your article "${article.title}"${article.journal?' published in '+article.journal:''}${article.year?' ('+article.year+')':''} and would greatly appreciate receiving a PDF copy, as I am unable to access it through our institutional subscription.
+
+Your work is directly relevant to my clinical practice and I look forward to reading it in full.
+
+Thank you very much for your time and consideration.
+
+Best regards,
+${name}
+${role}
+${inst}`;
+
+    return subject + '\n\n' + body;
   }
 
   async function runAgent(){
@@ -259,8 +262,8 @@
         return;
       }
 
-      addLog('✗ Sem acesso livre · A gerar email com Claude AI…','warn');
-      const emailText=await generateEmail({title,journal,year},{name:authorName,affil:authorAffil},req);
+      addLog('✗ Sem acesso livre · A gerar email…','warn');
+      const emailText=generateEmailLocally({title,journal,year},{name:authorName,affil:authorAffil},req);
       addLog('✓ Email gerado! Revê e envia.','info');
 
       g('authorName').textContent=authorName;
