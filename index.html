@@ -236,6 +236,19 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
       <button class="btn-lang" id="langPT" onclick="setLang('pt')">🇵🇹 Português</button>
     </div>
   </div>
+  <div class="divider"></div>
+  <div>
+    <div class="profile-header" style="margin-bottom:6px;">
+      <div class="card-title" style="margin-bottom:0;">Claude API Key <span style="font-size:11px;color:var(--text3)">(para resumos com IA)</span></div>
+      <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">✓ Guardada</span>
+    </div>
+    <div class="field" style="margin-bottom:6px;">
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
+    </div>
+    <div style="font-size:11px;color:var(--text3);line-height:1.6;">
+      Cria a tua chave gratuita em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> → API Keys → Create Key. Fica guardada só no teu dispositivo.
+    </div>
+  </div>
   <div class="btn-row">
     <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
     <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
@@ -350,7 +363,7 @@ var isRunning = false;
 var emailLang = 'en';
 var currentArticle = null;
 var currentFoundEmail = '';
-var CLAUDE_KEY = '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';
+var CLAUDE_KEY = localStorage.getItem('pq_apikey') || '';
 
 var CLINICAL_TAGS = ['ARDS','Sépsis','Ventilação','Analgesia','Sedação','Choque','PCR','Neonatal','Nutrição','Infecção','Neurologia','Cardiologia','Outro'];
 
@@ -414,6 +427,21 @@ function clearProfile(){
   g('profileSaved').style.display='none';g('btnClearProfile').style.display='none';
 }
 ['nameInput','roleInput','instInput'].forEach(function(id){g(id).addEventListener('input',saveProfile);});
+
+// API KEY
+function loadApiKey(){
+  var k=localStorage.getItem('pq_apikey')||'';
+  if(k){g('apiKeyInput').value=k;g('apiKeySaved').style.display='inline';CLAUDE_KEY=k;}
+}
+function saveApiKey(){
+  var k=g('apiKeyInput').value.trim();
+  if(k&&k.startsWith('sk-ant-')){
+    localStorage.setItem('pq_apikey',k);
+    CLAUDE_KEY=k;
+    g('apiKeySaved').style.display='inline';
+  }
+}
+g('apiKeyInput').addEventListener('input',saveApiKey);
 
 // HISTORY
 function getHistory(){try{return JSON.parse(localStorage.getItem('pq_history')||'[]');}catch(e){return[];}}
@@ -675,6 +703,14 @@ async function streamSummary(abstract, fullText){
   g('summaryText').style.display='none';
   g('summaryText').innerHTML='';
 
+  // Check for API key
+  if(!CLAUDE_KEY){
+    g('summaryLoading').style.display='none';
+    g('summaryText').style.display='block';
+    g('summaryText').innerHTML='<span style="color:var(--text3);font-size:12px;">💡 Adiciona a tua Claude API Key nas definições acima para activar os resumos com IA.</span>';
+    return;
+  }
+
   try {
     var response = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
@@ -905,7 +941,7 @@ async function selectResult(i){
 }
 
 // Init
-initTheme();loadProfile();restoreState();
+initTheme();loadProfile();loadApiKey();restoreState();
 </script>
 
 </body>
