@@ -54,7 +54,13 @@
     .btn-copy{padding:7px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
     .btn-copy.copied{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
     textarea.email-body{min-height:200px;resize:vertical;font-size:13px;line-height:1.8;color:var(--text);background:var(--cream);}
-    .warn-box{margin-top:12px;padding:12px 14px;background:var(--warn-light);border:1px solid #fde68a;border-radius:10px;font-size:12px;color:var(--warn);line-height:1.6;}
+    .find-email-box{margin-top:14px;padding:14px;background:var(--blue-light);border:1px solid #bfdbfe;border-radius:12px;}
+    .find-email-label{font-size:11px;font-weight:500;color:var(--blue);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;}
+    .find-email-btns{display:flex;gap:8px;flex-wrap:wrap;}
+    .btn-find{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-decoration:none;border:1.5px solid;cursor:pointer;transition:all 0.2s;}
+    .btn-find-scholar{background:#fff;border-color:#4285f4;color:#4285f4;}
+    .btn-find-pubmed{background:#fff;border-color:#2e86c1;color:#2e86c1;}
+    .btn-find-rgate{background:#fff;border-color:#c0392b;color:#c0392b;}
     .btn-sent{width:100%;margin-top:12px;padding:13px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
     .sent-confirm{margin-top:12px;padding:12px 14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:10px;font-size:13px;color:var(--accent);text-align:center;display:none;}
     .coffee-bar{position:fixed;bottom:env(safe-area-inset-bottom,0);left:0;right:0;background:rgba(248,246,241,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:100;}
@@ -116,12 +122,24 @@
       <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
     </div>
     <textarea class="email-body" id="emailBody"></textarea>
-    <div class="warn-box">⚠️ Procura o email do autor em <strong>PubMed · ResearchGate · Google Scholar</strong></div>
-    <button class="btn-sent" id="sentBtn" onclick="markSent()">✓ Marcar como enviado</button>
-    <div class="sent-confirm" id="sentConfirm">✓ Enviado! Se não houver resposta em 5–7 dias, tenta o ResearchGate.</div>
+
+```
+<div class="find-email-box">
+  <div class="find-email-label">📧 Encontrar email do autor</div>
+  <div class="find-email-btns">
+    <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Google Scholar</a>
+    <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
+    <a class="btn-find btn-find-rgate" id="btnRgate" href="#" target="_blank">ResearchGate</a>
+  </div>
+</div>
+
+<button class="btn-sent" id="sentBtn" onclick="markSent()">✓ Marcar como enviado</button>
+<div class="sent-confirm" id="sentConfirm">✓ Enviado! Se não houver resposta em 5–7 dias, tenta o ResearchGate.</div>
+```
+
   </div>
 
-  <div class="footer">CrossRef · Unpaywall · Claude Sonnet · Pedir artigos a autores é legal</div>
+  <div class="footer">CrossRef · Unpaywall · Pedir artigos a autores é legal</div>
 </div>
 
 <div class="coffee-bar">
@@ -131,6 +149,7 @@
 
 <script>
   let isRunning=false;
+  let currentAuthorName='';
   function g(id){return document.getElementById(id);}
   function show(id){g(id).classList.remove('hidden');}
   function hide(id){g(id).classList.add('hidden');}
@@ -159,6 +178,7 @@
     g('sentBtn').classList.remove('hidden');
     hide('resetBtn');
     setRunning(false);
+    currentAuthorName='';
   }
 
   function copyEmail(){
@@ -169,6 +189,13 @@
   }
 
   function markSent(){hide('sentBtn');g('sentConfirm').style.display='block';}
+
+  function setAuthorLinks(authorName){
+    const q=encodeURIComponent(authorName);
+    g('btnScholar').href='https://scholar.google.com/scholar?q='+q;
+    g('btnPubmed').href='https://pubmed.ncbi.nlm.nih.gov/?term='+q+'[author]';
+    g('btnRgate').href='https://www.researchgate.net/search/researcher?q='+q;
+  }
 
   async function fetchByDOI(doi){
     const r=await fetch('https://api.crossref.org/works/'+encodeURIComponent(doi));
@@ -193,29 +220,14 @@
     }catch{return null;}
   }
 
-  // Generate email locally — no API call needed
-  function generateEmailLocally(article, author, req){
-    const name = req.name || 'A colleague';
-    const role = req.role || 'researcher';
-    const inst = req.inst || 'our institution';
-    const authorFirst = author.name.split(' ')[0] || 'Dear Author';
-
-    const subject = `Request for PDF: ${article.title.substring(0,60)}${article.title.length>60?'...':''}`;
-
-    const body = `Dear ${authorFirst},
-
-I am ${name}, a ${role} at ${inst}. I came across your article "${article.title}"${article.journal?' published in '+article.journal:''}${article.year?' ('+article.year+')':''} and would greatly appreciate receiving a PDF copy, as I am unable to access it through our institutional subscription.
-
-Your work is directly relevant to my clinical practice and I look forward to reading it in full.
-
-Thank you very much for your time and consideration.
-
-Best regards,
-${name}
-${role}
-${inst}`;
-
-    return subject + '\n\n' + body;
+  function generateEmailLocally(article,author,req){
+    const name=req.name||'A colleague';
+    const role=req.role||'researcher';
+    const inst=req.inst||'our institution';
+    const authorFirst=author.name.split(' ')[0]||'Dear Author';
+    const subject='Request for PDF: '+article.title.substring(0,60)+(article.title.length>60?'...':'');
+    const body=`Dear ${authorFirst},\n\nI am ${name}, a ${role} at ${inst}. I came across your article "${article.title}"${article.journal?' published in '+article.journal:''}${article.year?' ('+article.year+')':''} and would greatly appreciate receiving a PDF copy, as I am unable to access it through our institutional subscription.\n\nYour work is directly relevant to my clinical practice and I look forward to reading it in full.\n\nThank you very much for your time and consideration.\n\nBest regards,\n${name}\n${role}\n${inst}`;
+    return subject+'\n\n'+body;
   }
 
   async function runAgent(){
@@ -264,11 +276,12 @@ ${inst}`;
 
       addLog('✗ Sem acesso livre · A gerar email…','warn');
       const emailText=generateEmailLocally({title,journal,year},{name:authorName,affil:authorAffil},req);
-      addLog('✓ Email gerado! Revê e envia.','info');
+      addLog('✓ Email gerado! Copia e encontra o email do autor.','info');
 
       g('authorName').textContent=authorName;
       g('authorAffil').textContent=authorAffil.substring(0,60);
       g('emailBody').value=emailText;
+      setAuthorLinks(authorName);
       g('resultEmail').style.display='block';
       g('sentBtn').classList.remove('hidden');
       g('sentConfirm').style.display='none';
