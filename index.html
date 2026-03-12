@@ -14,45 +14,29 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --cream:#f8f6f1;--cream2:#f0ede6;--sand:#e8e3d8;--border:#d8d2c4;
-      --text:#2c2820;--text2:#6b6358;--text3:#9e9488;
-      --accent:#c96442;--accent2:#cc785c;--accent-light:#fdf0eb;
-      --blue:#1d6fa4;--blue-light:#dbeafe;
-      --green:#1a7a4a;--green-light:#d1fae5;
-      --warn:#92400e;--warn-light:#fef3c7;--error:#991b1b;--white:#ffffff;
-      --card-bg:#ffffff;--body-bg:#f8f6f1;
-    }
-    [data-theme="dark"] {
-      --cream:#1a1612;--cream2:#22201c;--sand:#2e2b26;--border:#3d3930;
-      --text:#f0ede6;--text2:#b8b0a4;--text3:#7a7368;
-      --accent:#e07a56;--accent2:#cc785c;--accent-light:#2d1f18;
-      --blue:#4a9fd4;--blue-light:#1a2a38;
-      --green:#2ecc71;--green-light:#1a2e22;
-      --warn:#d4a44a;--warn-light:#2a2010;--error:#e06060;--white:#2a2520;
-      --card-bg:#22201c;--body-bg:#1a1612;
-    }
+    :root{--cream:#f8f6f1;--cream2:#f0ede6;--sand:#e8e3d8;--border:#d8d2c4;--text:#2c2820;--text2:#6b6358;--text3:#9e9488;--accent:#c96442;--accent2:#cc785c;--accent-light:#fdf0eb;--blue:#1d6fa4;--blue-light:#dbeafe;--green:#1a7a4a;--green-light:#d1fae5;--warn:#92400e;--card-bg:#ffffff;--body-bg:#f8f6f1;}
+    [data-theme="dark"]{--cream:#1a1612;--cream2:#22201c;--sand:#2e2b26;--border:#3d3930;--text:#f0ede6;--text2:#b8b0a4;--text3:#7a7368;--accent:#e07a56;--accent-light:#2d1f18;--blue:#4a9fd4;--blue-light:#1a2a38;--green:#2ecc71;--green-light:#1a2e22;--card-bg:#22201c;--body-bg:#1a1612;}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-    body{background:var(--body-bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,80px) 0;transition:background 0.3s,color 0.3s;}
-    .container{max-width:600px;margin:0 auto;padding:0 16px 100px;}
+    body{background:var(--body-bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;transition:background 0.3s,color 0.3s;}
 
 ```
-/* HEADER */
+/* PAGES */
+.page{display:none;min-height:100vh;}
+.page.active{display:block;}
+
+/* ======================== MAIN PAGE ======================== */
+#pageMain{padding:env(safe-area-inset-top,0) 0 80px;}
+.container{max-width:600px;margin:0 auto;padding:0 16px;}
 .header{display:flex;align-items:center;gap:12px;padding:24px 0 20px;border-bottom:1px solid var(--border);margin-bottom:20px;}
 .logo{width:42px;height:42px;border-radius:10px;}
 .header-text{flex:1;}
 .brand{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--text);}
 .brand-sub{font-size:11px;color:var(--text3);margin-top:1px;}
-.btn-icon{background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:16px;color:var(--text2);transition:all 0.2s;font-family:'DM Sans',sans-serif;}
-
-/* TABS */
+.btn-icon{background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:16px;color:var(--text2);font-family:'DM Sans',sans-serif;}
 .tabs{display:flex;gap:4px;background:var(--cream2);border-radius:12px;padding:4px;margin-bottom:18px;}
 .tab{flex:1;padding:8px;text-align:center;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text3);transition:all 0.2s;border:none;background:none;font-family:'DM Sans',sans-serif;}
-.tab.active{background:var(--white);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,0.1);}
-
+.tab.active{background:var(--card-bg);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,0.1);}
 .panel{display:none;}.panel.active{display:block;}
-
-/* CARD */
 .card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
 .card-title{font-family:'Fraunces',serif;font-size:13px;font-style:italic;color:var(--text3);margin-bottom:10px;}
 .field{margin-bottom:10px;}
@@ -63,29 +47,20 @@ input::placeholder,textarea::placeholder{color:var(--text3);}
 .divider{border:none;border-top:1px solid var(--sand);margin:14px 0;}
 .grid-3{display:grid;grid-template-columns:1fr;gap:8px;}
 @media(min-width:480px){.grid-3{grid-template-columns:1fr 1fr 1fr;}}
-
 .lang-row{display:flex;gap:6px;margin-bottom:12px;}
 .btn-lang{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--cream2);color:var(--text3);font-family:'DM Sans',sans-serif;transition:all 0.2s;}
 .btn-lang.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent);}
-
 .btn-row{display:flex;gap:10px;margin-top:12px;}
 .btn-primary{flex:1;padding:13px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
 .btn-primary:active{transform:scale(0.98);}
 .btn-primary:disabled{background:var(--border);color:var(--text3);cursor:not-allowed;}
 .btn-secondary{padding:13px 16px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
-
-/* SEARCH RESULTS LIST */
 .results-list{margin-bottom:14px;display:none;}
 .results-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
 .result-item{background:var(--card-bg);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;}
-.result-item:active,.result-item:hover{border-color:var(--accent);background:var(--accent-light);}
+.result-item:active{border-color:var(--accent);background:var(--accent-light);}
 .result-item-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:4px;}
 .result-item-meta{font-size:11px;color:var(--text3);}
-.result-item-badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;margin-left:6px;}
-.badge-oa{background:var(--green-light);color:var(--green);border:1px solid var(--green);}
-.badge-closed{background:var(--cream2);color:var(--text3);border:1px solid var(--border);}
-
-/* ARTICLE CARD — main result */
 .article-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;margin-bottom:14px;overflow:hidden;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.07);}
 .article-header{padding:18px 18px 14px;}
 .article-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;border-radius:20px;padding:4px 10px;margin-bottom:10px;border:1px solid;}
@@ -94,26 +69,11 @@ input::placeholder,textarea::placeholder{color:var(--text3);}
 .article-title{font-family:'Fraunces',serif;font-size:16px;color:var(--text);line-height:1.4;margin-bottom:6px;}
 .article-meta{font-size:12px;color:var(--text2);line-height:1.6;}
 .article-divider{border:none;border-top:1px solid var(--sand);}
-
-/* SUMMARY SECTION */
-.summary-section{padding:16px 18px;}
-.summary-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.summary-label .ai-badge{font-size:10px;background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:2px 7px;}
-.summary-text{font-size:13px;line-height:1.8;color:var(--text2);}
-.summary-text .summary-row{margin-bottom:6px;}
-.summary-text .summary-key{font-weight:500;color:var(--text);}
-.cursor-blink{display:inline-block;width:2px;height:14px;background:var(--accent);margin-left:2px;vertical-align:middle;animation:blink 1s infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-.summary-loading{display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;}
-.dot-pulse{display:flex;gap:4px;}
-.dot-pulse span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.2s infinite;}
-.dot-pulse span:nth-child(2){animation-delay:0.2s;}
-.dot-pulse span:nth-child(3){animation-delay:0.4s;}
-@keyframes pulse{0%,100%{opacity:0.3;transform:scale(0.8);}50%{opacity:1;transform:scale(1);}}
-
-/* ACTIONS SECTION */
-.actions-section{padding:0 18px 18px;}
-.btn-download{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:var(--green);border-radius:12px;color:white;text-decoration:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;margin-bottom:10px;width:100%;justify-content:center;}
+.article-actions{padding:14px 18px;display:flex;gap:8px;flex-wrap:wrap;}
+.btn-analyze{flex:1;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-dl{flex:1;padding:12px;background:var(--green);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-sm{padding:10px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.email-section{padding:0 18px 18px;}
 .find-email-box{padding:13px;background:var(--blue-light);border:1px solid var(--blue);border-radius:12px;margin-bottom:10px;}
 .find-email-label{font-size:11px;font-weight:500;color:var(--blue);margin-bottom:9px;text-transform:uppercase;letter-spacing:0.5px;}
 .find-email-btns{display:flex;gap:6px;flex-wrap:wrap;}
@@ -122,182 +82,201 @@ input::placeholder,textarea::placeholder{color:var(--text3);}
 .btn-find-pubmed{background:var(--card-bg);border-color:#2e86c1;color:#2e86c1;}
 .btn-find-google{background:var(--card-bg);border-color:#c0392b;color:#c0392b;}
 .btn-find-linkedin{background:var(--card-bg);border-color:#0077b5;color:#0077b5;}
-.email-box{margin-bottom:10px;}
 .email-header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
 .email-author{font-size:13px;font-weight:500;color:var(--text);}
 .email-found{font-size:12px;color:var(--accent);margin-top:1px;}
 .btn-copy{padding:6px 12px;background:var(--cream2);border:1.5px solid var(--border);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
 .btn-copy.copied{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
 textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:1.8;color:var(--text);background:var(--cream2);}
-.action-row{display:flex;gap:8px;}
-.btn-mail{flex:1;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;}
+.action-row{display:flex;gap:8px;margin-top:10px;}
+.btn-mail{flex:1;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;}
 .btn-sent{padding:12px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
-.sent-confirm{margin-top:8px;padding:10px 13px;background:var(--accent-light);border:1px solid var(--accent);border-radius:10px;font-size:13px;color:var(--accent);text-align:center;display:none;}
-
-/* LIBRARY */
+.sent-confirm{margin-top:8px;padding:10px;background:var(--accent-light);border:1px solid var(--accent);border-radius:10px;font-size:13px;color:var(--accent);text-align:center;display:none;}
 .lib-empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px;}
 .lib-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
 .lib-item-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;}
 .lib-item-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;flex:1;}
 .lib-item-meta{font-size:11px;color:var(--text3);margin-bottom:8px;}
 .lib-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
-.lib-tag{font-size:10px;padding:3px 8px;border-radius:20px;background:var(--cream2);color:var(--text2);border:1px solid var(--border);cursor:pointer;}
-.lib-tag.active{background:var(--accent-light);color:var(--accent);border-color:var(--accent);}
+.lib-tag{font-size:10px;padding:3px 8px;border-radius:20px;background:var(--cream2);color:var(--text2);border:1px solid var(--border);}
 .lib-note{font-size:12px;color:var(--text2);line-height:1.6;padding:8px;background:var(--cream2);border-radius:8px;margin-bottom:8px;}
 .lib-actions{display:flex;gap:6px;}
 .btn-lib-action{padding:5px 10px;border-radius:8px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--cream2);color:var(--text2);font-family:'DM Sans',sans-serif;}
-.btn-lib-delete{border-color:#fca5a5;color:var(--error);background:var(--card-bg);}
-
-/* HISTORY */
-.history-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.btn-lib-delete{border-color:#fca5a5;color:#991b1b;background:var(--card-bg);}
+.history-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
 .history-item:active{background:var(--cream2);}
 .history-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:2px;}
 .history-meta{font-size:11px;color:var(--text3);}
 .h-badge{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:500;flex-shrink:0;}
 .h-badge-oa{background:var(--green-light);color:var(--green);border:1px solid var(--green);}
 .h-badge-email{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue);}
-
-/* RESTORE */
 .restore-banner{background:var(--accent-light);border:1px solid var(--accent);border-radius:12px;padding:11px 14px;margin-bottom:14px;display:none;align-items:center;justify-content:space-between;gap:8px;}
-
-/* COFFEE */
 .coffee-bar{position:fixed;bottom:env(safe-area-inset-bottom,0);left:0;right:0;background:rgba(248,246,241,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;z-index:100;}
 [data-theme="dark"] .coffee-bar{background:rgba(26,22,18,0.95);}
 .coffee-text{font-size:12px;color:var(--text3);}
 .coffee-text strong{color:var(--text2);}
 .btn-coffee{display:flex;align-items:center;gap:6px;padding:7px 14px;background:#fff8e1;border:1.5px solid #f59e0b;border-radius:20px;color:#92400e;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;text-decoration:none;}
-
 .footer{font-size:11px;color:var(--text3);text-align:center;margin-top:16px;}
 .hidden{display:none!important;}
 .small-btn{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;padding:0;}
 .profile-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 
-/* TAGS PRESET */
-.tags-preset{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
-.tag-preset-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--cream2);color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
-.tag-preset-btn.sel{background:var(--accent-light);color:var(--accent);border-color:var(--accent);}
+/* ======================== ANALYSIS PAGE ======================== */
+#pageAnalysis{padding:env(safe-area-inset-top,0) 0 40px;background:var(--body-bg);}
+.analysis-header{background:var(--card-bg);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
+.btn-back{background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:14px;color:var(--text2);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:6px;}
+.analysis-header-title{flex:1;font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.analysis-body{max-width:680px;margin:0 auto;padding:16px;}
+
+/* SUMMARY CARD */
+.summary-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.summary-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.ai-badge{font-size:10px;background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:2px 8px;}
+.summary-text{font-size:14px;line-height:1.9;color:var(--text2);}
+.dot-pulse{display:flex;gap:4px;align-items:center;}
+.dot-pulse span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.2s infinite;}
+.dot-pulse span:nth-child(2){animation-delay:0.2s;}
+.dot-pulse span:nth-child(3){animation-delay:0.4s;}
+@keyframes pulse{0%,100%{opacity:0.3;transform:scale(0.8);}50%{opacity:1;transform:scale(1);}}
+
+/* PDF UPLOAD */
+.pdf-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;}
+.pdf-drop{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cream2);}
+.pdf-drop.dragover{border-color:var(--accent);background:var(--accent-light);}
+.pdf-drop-icon{font-size:28px;margin-bottom:8px;}
+.pdf-drop-text{font-size:13px;color:var(--text2);margin-bottom:4px;}
+.pdf-drop-sub{font-size:11px;color:var(--text3);}
+.pdf-loaded{display:flex;align-items:center;gap:10px;padding:12px;background:var(--green-light);border:1px solid var(--green);border-radius:10px;margin-top:10px;}
+.pdf-loaded-name{font-size:13px;color:var(--green);font-weight:500;flex:1;}
+.btn-pdf-clear{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;}
+.btn-analyze-pdf{width:100%;margin-top:10px;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-analyze-pdf:disabled{background:var(--border);color:var(--text3);}
+
+/* RELATED */
+.related-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;}
+.related-item{padding:12px 0;border-bottom:1px solid var(--sand);cursor:pointer;}
+.related-item:last-child{border-bottom:none;padding-bottom:0;}
+.related-item:first-child{padding-top:0;}
+.related-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:3px;}
+.related-meta{font-size:11px;color:var(--text3);}
+.related-item:active .related-title{color:var(--accent);}
+
+/* CHAT */
+.chat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+.chat-messages{padding:16px;max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
+.chat-msg{max-width:85%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.7;}
+.chat-msg-user{background:var(--accent);color:white;align-self:flex-end;border-bottom-right-radius:4px;}
+.chat-msg-ai{background:var(--cream2);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;}
+.chat-msg-ai strong{color:var(--accent);}
+.chat-input-row{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--cream2);}
+.chat-input{flex:1;background:var(--card-bg);border:1.5px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;-webkit-appearance:none;}
+.chat-input:focus{outline:none;border-color:var(--accent);}
+.btn-send{padding:10px 16px;background:var(--accent);border:none;border-radius:10px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
+.btn-send:disabled{background:var(--border);}
+.chat-suggestions{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 12px;}
+.chat-suggestion{font-size:11px;padding:6px 11px;border-radius:20px;border:1px solid var(--border);background:var(--cream2);color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.chat-suggestion:active{border-color:var(--accent);color:var(--accent);}
+.chat-empty{padding:20px 16px;text-align:center;color:var(--text3);font-size:13px;}
 ```
 
   </style>
 </head>
 <body>
-<div class="container">
 
-  <div class="header">
-    <img class="logo" src="icon.png" alt="PaperQuest"/>
-    <div class="header-text">
-      <div class="brand">PaperQuest</div>
-      <div class="brand-sub">CrossRef · Unpaywall · Claude AI</div>
+<!-- ======================== MAIN PAGE ======================== -->
+
+<div class="page active" id="pageMain">
+  <div class="container">
+    <div class="header">
+      <img class="logo" src="icon.png" alt="PaperQuest"/>
+      <div class="header-text">
+        <div class="brand">PaperQuest</div>
+        <div class="brand-sub">CrossRef · Unpaywall · Claude AI</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-icon" id="btnTheme" onclick="toggleTheme()">🌙</button>
+      </div>
     </div>
-    <div style="display:flex;gap:6px;">
-      <button class="btn-icon" id="btnTheme" onclick="toggleTheme()">🌙</button>
-    </div>
-  </div>
-
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('search')">🔍 Pesquisa</button>
-    <button class="tab" onclick="switchTab('library')">📚 Biblioteca</button>
-    <button class="tab" onclick="switchTab('history')">🕐 Histórico</button>
-  </div>
-
-  <!-- SEARCH PANEL -->
-
-  <div class="panel active" id="panelSearch">
 
 ```
-<div class="restore-banner" id="restoreBanner">
-  <span style="font-size:13px;color:var(--accent);">↩ Sessão anterior recuperada</span>
-  <button onclick="clearState()" class="small-btn">Limpar</button>
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('search')">🔍 Pesquisa</button>
+  <button class="tab" onclick="switchTab('library')">📚 Biblioteca</button>
+  <button class="tab" onclick="switchTab('history')">🕐 Histórico</button>
 </div>
 
-<div class="card">
-  <div class="card-title">Qual é o artigo que procuras?</div>
-  <div class="field">
-    <label>DOI, PMID ou Título</label>
-    <input type="text" id="queryInput" placeholder="10.1056/... · PMID:12345 · título do artigo..."/>
+<!-- SEARCH PANEL -->
+<div class="panel active" id="panelSearch">
+  <div class="restore-banner" id="restoreBanner">
+    <span style="font-size:13px;color:var(--accent);">↩ Sessão anterior recuperada</span>
+    <button onclick="clearState()" class="small-btn">Limpar</button>
   </div>
-  <div class="divider"></div>
-  <div class="profile-header">
-    <div class="card-title" style="margin-bottom:0">O teu perfil <span style="font-size:11px;color:var(--text3)">(opcional)</span></div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <span id="profileSaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">✓ Guardado</span>
-      <button id="btnClearProfile" onclick="clearProfile()" class="small-btn" style="display:none;">Limpar</button>
-    </div>
-  </div>
-  <div class="grid-3" style="margin-top:10px;">
-    <div class="field"><label>Nome</label><input type="text" id="nameInput" placeholder="Dr. Pedro Nunes"/></div>
-    <div class="field"><label>Função</label><input type="text" id="roleInput" placeholder="Intensivista Pediátrico"/></div>
-    <div class="field"><label>Instituição</label><input type="text" id="instInput" placeholder="Hospital Fernando Fonseca"/></div>
-  </div>
-  <div>
-    <div class="card-title" style="margin-bottom:6px;">Idioma do email e resumo</div>
-    <div class="lang-row">
-      <button class="btn-lang active" id="langEN" onclick="setLang('en')">🇬🇧 English</button>
-      <button class="btn-lang" id="langPT" onclick="setLang('pt')">🇵🇹 Português</button>
-    </div>
-  </div>
-  <div class="divider"></div>
-  <div>
-    <div class="profile-header" style="margin-bottom:6px;">
-      <div class="card-title" style="margin-bottom:0;">Claude API Key <span style="font-size:11px;color:var(--text3)">(para resumos com IA)</span></div>
-      <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">✓ Guardada</span>
-    </div>
-    <div class="field" style="margin-bottom:6px;">
-      <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
-    </div>
-    <div style="font-size:11px;color:var(--text3);line-height:1.6;">
-      Cria a tua chave gratuita em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> → API Keys → Create Key. Fica guardada só no teu dispositivo.
-    </div>
-  </div>
-  <div class="btn-row">
-    <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
-    <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
-  </div>
-</div>
 
-<!-- MULTIPLE RESULTS -->
-<div class="results-list" id="resultsList">
-  <div class="results-label">Selecciona o artigo correcto</div>
-  <div id="resultsItems"></div>
-</div>
-
-<!-- MAIN ARTICLE CARD -->
-<div class="article-card" id="articleCard">
-  <div class="article-header">
-    <div class="article-status" id="articleStatus"></div>
-    <div class="article-title" id="articleTitle"></div>
-    <div class="article-meta" id="articleMeta"></div>
-  </div>
-  <hr class="article-divider"/>
-
-  <!-- SUMMARY -->
-  <div class="summary-section" id="summarySection">
-    <div class="summary-label">
-      Resumo clínico <span class="ai-badge">Claude AI</span>
+  <div class="card">
+    <div class="card-title">Qual é o artigo que procuras?</div>
+    <div class="field">
+      <label>DOI, PMID ou Título</label>
+      <input type="text" id="queryInput" placeholder="10.1056/... · PMID:12345 · título..."/>
     </div>
-    <div id="summaryContent">
-      <div class="summary-loading" id="summaryLoading">
-        <div class="dot-pulse"><span></span><span></span><span></span></div>
-        <span>A analisar o artigo…</span>
-      </div>
-      <div class="summary-text" id="summaryText" style="display:none;"></div>
-    </div>
-  </div>
-  <hr class="article-divider"/>
-
-  <!-- ACTIONS -->
-  <div class="actions-section" id="actionsSection">
-    <!-- OA actions -->
-    <div id="oaActions" style="display:none;">
-      <a class="btn-download" id="oaLink" href="#" target="_blank">↓ Download PDF</a>
-      <div style="display:flex;gap:8px;margin-bottom:10px;">
-        <button class="btn-secondary" style="flex:1;" onclick="shareArticle()">↗ Partilhar</button>
-        <button class="btn-secondary" style="flex:1;" onclick="saveToLibrary()">🔖 Guardar</button>
+    <div class="divider"></div>
+    <div class="profile-header">
+      <div class="card-title" style="margin-bottom:0">O teu perfil <span style="font-size:11px;color:var(--text3)">(opcional)</span></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span id="profileSaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">✓ Guardado</span>
+        <button id="btnClearProfile" onclick="clearProfile()" class="small-btn" style="display:none;">Limpar</button>
       </div>
     </div>
-    <!-- Email actions -->
-    <div id="emailActions" style="display:none;">
-      <div class="find-email-box" style="margin-bottom:10px;">
+    <div class="grid-3" style="margin-top:10px;">
+      <div class="field"><label>Nome</label><input type="text" id="nameInput" placeholder="Dr. Pedro Nunes"/></div>
+      <div class="field"><label>Função</label><input type="text" id="roleInput" placeholder="Intensivista Pediátrico"/></div>
+      <div class="field"><label>Instituição</label><input type="text" id="instInput" placeholder="Hospital Fernando Fonseca"/></div>
+    </div>
+    <div>
+      <div class="card-title" style="margin-bottom:6px;">Idioma do email e resumo</div>
+      <div class="lang-row">
+        <button class="btn-lang active" id="langEN" onclick="setLang('en')">🇬🇧 English</button>
+        <button class="btn-lang" id="langPT" onclick="setLang('pt')">🇵🇹 Português</button>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <div class="profile-header" style="margin-bottom:6px;">
+        <div class="card-title" style="margin-bottom:0;">Claude API Key <span style="font-size:11px;color:var(--text3)">(para resumos com IA)</span></div>
+        <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">✓ Guardada</span>
+      </div>
+      <div class="field" style="margin-bottom:6px;">
+        <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
+      </div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.6;">
+        Cria a tua chave gratuita em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> → API Keys → Create Key.
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
+      <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
+    </div>
+  </div>
+
+  <div class="results-list" id="resultsList">
+    <div class="results-label">Selecciona o artigo correcto</div>
+    <div id="resultsItems"></div>
+  </div>
+
+  <div class="article-card" id="articleCard">
+    <div class="article-header">
+      <div class="article-status" id="articleStatus"></div>
+      <div class="article-title" id="articleTitle"></div>
+      <div class="article-meta" id="articleMeta"></div>
+    </div>
+    <hr class="article-divider"/>
+    <div class="article-actions">
+      <button class="btn-analyze" onclick="openAnalysis()">🧠 Analisar com IA</button>
+      <a class="btn-dl hidden" id="oaLink" href="#" target="_blank">↓ PDF</a>
+      <button class="btn-sm" onclick="saveToLibrary()">🔖</button>
+      <button class="btn-sm" onclick="shareArticle()">↗</button>
+    </div>
+    <div class="email-section" id="emailSection" style="display:none;">
+      <div class="find-email-box">
         <div class="find-email-label">📧 Encontrar email do autor</div>
         <div class="find-email-btns">
           <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Scholar</a>
@@ -306,7 +285,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
           <a class="btn-find btn-find-linkedin" id="btnLinkedIn" href="#" target="_blank">LinkedIn</a>
         </div>
       </div>
-      <div class="email-box">
+      <div>
         <div class="email-header-row">
           <div>
             <div class="email-author" id="emailAuthor"></div>
@@ -315,47 +294,118 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
           <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
         </div>
         <textarea class="email-body" id="emailBody"></textarea>
+        <div class="action-row">
+          <a class="btn-mail" id="btnMailto" href="#">✉️ Abrir no Mail</a>
+          <button class="btn-sent" id="sentBtn" onclick="markSent()">✓</button>
+        </div>
+        <div class="sent-confirm" id="sentConfirm">✓ Enviado! Follow-up em 7 dias.</div>
       </div>
-      <div class="action-row">
-        <a class="btn-mail" id="btnMailto" href="#">✉️ Abrir no Mail</a>
-        <button class="btn-sent" onclick="saveToLibrary()">🔖</button>
-        <button class="btn-sent" id="sentBtn" onclick="markSent()">✓</button>
-      </div>
-      <div class="sent-confirm" id="sentConfirm">✓ Enviado! Follow-up em 7 dias se não houver resposta.</div>
     </div>
   </div>
+  <div class="footer">CrossRef · Unpaywall · PubMed · Pedir artigos a autores é legal</div>
 </div>
 
-<div class="footer">CrossRef · Unpaywall · PubMed · Pedir artigos a autores é legal</div>
+<!-- LIBRARY PANEL -->
+<div class="panel" id="panelLibrary">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">A minha biblioteca</div>
+    <button class="small-btn" onclick="clearLibrary()">Limpar tudo</button>
+  </div>
+  <div id="libraryContent"></div>
+</div>
+
+<!-- HISTORY PANEL -->
+<div class="panel" id="panelHistory">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Histórico</div>
+    <button class="small-btn" onclick="clearHistory()">Limpar</button>
+  </div>
+  <div id="historyContent"></div>
+</div>
 ```
 
   </div>
 
-  <!-- LIBRARY PANEL -->
-
-  <div class="panel" id="panelLibrary">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">A minha biblioteca</div>
-      <button class="small-btn" onclick="clearLibrary()">Limpar tudo</button>
-    </div>
-    <div id="libraryContent"></div>
+  <div class="coffee-bar">
+    <div class="coffee-text">Feito por <strong>um médico, para médicos</strong></div>
+    <a class="btn-coffee" href="https://buymeacoffee.com/possn" target="_blank">☕ Buy me a coffee</a>
   </div>
-
-  <!-- HISTORY PANEL -->
-
-  <div class="panel" id="panelHistory">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Histórico</div>
-      <button class="small-btn" onclick="clearHistory()">Limpar</button>
-    </div>
-    <div id="historyContent"></div>
-  </div>
-
 </div>
 
-<div class="coffee-bar">
-  <div class="coffee-text">Feito por <strong>um médico, para médicos</strong></div>
-  <a class="btn-coffee" href="https://buymeacoffee.com/possn" target="_blank">☕ Buy me a coffee</a>
+<!-- ======================== ANALYSIS PAGE ======================== -->
+
+<div class="page" id="pageAnalysis">
+  <div class="analysis-header">
+    <button class="btn-back" onclick="closeAnalysis()">← Voltar</button>
+    <div class="analysis-header-title" id="analysisHeaderTitle">Análise do artigo</div>
+    <button class="btn-icon" onclick="saveToLibrary()">🔖</button>
+  </div>
+  <div class="analysis-body">
+
+```
+<!-- ARTICLE INFO -->
+<div class="summary-card" id="analysisArticleInfo" style="margin-bottom:14px;">
+  <div style="font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:6px;" id="analysisTitleFull"></div>
+  <div style="font-size:12px;color:var(--text2);" id="analysisMetaFull"></div>
+</div>
+
+<!-- SUMMARY -->
+<div class="summary-card">
+  <div class="summary-label">Revisão científica profunda <span class="ai-badge">Claude AI</span></div>
+  <div id="analysisSummaryLoading" style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;">
+    <div class="dot-pulse"><span></span><span></span><span></span></div>
+    <span>Painel de revisores a analisar…</span>
+  </div>
+  <div class="summary-text" id="analysisSummaryText" style="display:none;"></div>
+</div>
+
+<!-- PDF UPLOAD -->
+<div class="pdf-card">
+  <div class="summary-label">Upload de PDF <span class="ai-badge">Resumo completo</span></div>
+  <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Tens o PDF? Carrega-o aqui e o Claude analisa o artigo completo — não só o abstract.</div>
+  <div class="pdf-drop" id="pdfDrop" onclick="g('pdfInput').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+    <div class="pdf-drop-icon">📄</div>
+    <div class="pdf-drop-text">Clica ou arrasta o PDF aqui</div>
+    <div class="pdf-drop-sub">Máximo 10MB</div>
+  </div>
+  <input type="file" id="pdfInput" accept=".pdf" style="display:none;" onchange="onPdfSelected(event)"/>
+  <div class="pdf-loaded hidden" id="pdfLoaded">
+    <span>📄</span>
+    <span class="pdf-loaded-name" id="pdfName"></span>
+    <button class="btn-pdf-clear" onclick="clearPdf()">✕</button>
+  </div>
+  <button class="btn-analyze-pdf" id="btnAnalyzePdf" onclick="analyzePdf()" disabled>Analisar PDF completo</button>
+</div>
+
+<!-- RELATED ARTICLES -->
+<div class="related-card" id="relatedCard" style="display:none;">
+  <div class="summary-label">Artigos relacionados <span class="ai-badge">PubMed</span></div>
+  <div id="relatedItems"></div>
+</div>
+
+<!-- CHAT -->
+<div class="chat-card">
+  <div class="summary-label" style="padding:16px 16px 0;">Perguntas ao artigo <span class="ai-badge">Claude AI</span></div>
+  <div class="chat-suggestions" id="chatSuggestions">
+    <button class="chat-suggestion" onclick="askSuggestion(this)">Qual o NNT/NNH?</button>
+    <button class="chat-suggestion" onclick="askSuggestion(this)">Aplica-se a pediatria?</button>
+    <button class="chat-suggestion" onclick="askSuggestion(this)">Rigor metodológico?</button>
+    <button class="chat-suggestion" onclick="askSuggestion(this)">Explicações alternativas?</button>
+    <button class="chat-suggestion" onclick="askSuggestion(this)">Nível de evidência?</button>
+    <button class="chat-suggestion" onclick="askSuggestion(this)">Conclusões exageradas?</button>
+    <button class="chat-suggestion" onclick="askSuggestion(this)">Aplicar na minha UCI?</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-empty" id="chatEmpty">Faz uma pergunta sobre o artigo ↓</div>
+  </div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chatInput" type="text" placeholder="Pergunta sobre o artigo…" onkeydown="if(event.key==='Enter')sendChat()"/>
+    <button class="btn-send" id="btnSend" onclick="sendChat()">↑</button>
+  </div>
+</div>
+```
+
+  </div>
 </div>
 
 <script>
@@ -363,33 +413,47 @@ var isRunning = false;
 var emailLang = 'en';
 var currentArticle = null;
 var currentFoundEmail = '';
+var currentAbstract = '';
+var currentPdfBase64 = '';
+var chatHistory = [];
 var CLAUDE_KEY = localStorage.getItem('pq_apikey') || '';
-
-var CLINICAL_TAGS = ['ARDS','Sépsis','Ventilação','Analgesia','Sedação','Choque','PCR','Neonatal','Nutrição','Infecção','Neurologia','Cardiologia','Outro'];
 
 function g(id){ return document.getElementById(id); }
 function show(id){ g(id).classList.remove('hidden'); }
 function hide(id){ g(id).classList.add('hidden'); }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// PAGES
+function openAnalysis(){
+  g('pageMain').classList.remove('active');
+  g('pageAnalysis').classList.add('active');
+  window.scrollTo(0,0);
+  startAnalysis();
+}
+function closeAnalysis(){
+  g('pageAnalysis').classList.remove('active');
+  g('pageMain').classList.add('active');
+}
 
 // THEME
 function initTheme(){
-  var t = localStorage.getItem('pq_theme')||'light';
+  var t=localStorage.getItem('pq_theme')||'light';
   document.documentElement.setAttribute('data-theme',t);
-  g('btnTheme').textContent = t==='dark'?'☀️':'🌙';
+  g('btnTheme').textContent=t==='dark'?'☀️':'🌙';
 }
 function toggleTheme(){
-  var t = document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  var t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
   document.documentElement.setAttribute('data-theme',t);
   localStorage.setItem('pq_theme',t);
-  g('btnTheme').textContent = t==='dark'?'☀️':'🌙';
+  g('btnTheme').textContent=t==='dark'?'☀️':'🌙';
 }
 
 // TABS
 function switchTab(tab){
-  var tabs = ['search','library','history'];
+  var tabs=['search','library','history'];
   tabs.forEach(function(t,i){
-    document.querySelectorAll('.tab')[i].classList.toggle('active', t===tab);
-    g('panel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
+    document.querySelectorAll('.tab')[i].classList.toggle('active',t===tab);
+    g('panel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active',t===tab);
   });
   if(tab==='library') renderLibrary();
   if(tab==='history') renderHistory();
@@ -436,8 +500,7 @@ function loadApiKey(){
 function saveApiKey(){
   var k=g('apiKeyInput').value.trim();
   if(k&&k.startsWith('sk-ant-')){
-    localStorage.setItem('pq_apikey',k);
-    CLAUDE_KEY=k;
+    localStorage.setItem('pq_apikey',k);CLAUDE_KEY=k;
     g('apiKeySaved').style.display='inline';
   }
 }
@@ -446,8 +509,7 @@ g('apiKeyInput').addEventListener('input',saveApiKey);
 // HISTORY
 function getHistory(){try{return JSON.parse(localStorage.getItem('pq_history')||'[]');}catch(e){return[];}}
 function addToHistory(item){
-  var h=getHistory();h.unshift(item);
-  if(h.length>10)h=h.slice(0,10);
+  var h=getHistory();h.unshift(item);if(h.length>10)h=h.slice(0,10);
   try{localStorage.setItem('pq_history',JSON.stringify(h));}catch(e){}
 }
 function renderHistory(){
@@ -464,41 +526,24 @@ function renderHistory(){
 function clearHistory(){try{localStorage.removeItem('pq_history');}catch(e){}renderHistory();}
 function loadFromHistory(i){
   var h=getHistory();var item=h[i];if(!item)return;
-  g('queryInput').value=item.doi||item.title;
-  switchTab('search');
+  g('queryInput').value=item.doi||item.title;switchTab('search');
 }
 
 // LIBRARY
 function getLibrary(){try{return JSON.parse(localStorage.getItem('pq_library')||'[]');}catch(e){return[];}}
-function saveLibrary(lib){try{localStorage.setItem('pq_library',JSON.stringify(lib));}catch(e){}}
+function saveLibraryData(lib){try{localStorage.setItem('pq_library',JSON.stringify(lib));}catch(e){}}
 function saveToLibrary(){
   if(!currentArticle)return;
   var lib=getLibrary();
-  var exists=lib.find(function(x){return x.doi===currentArticle.doi&&x.doi;});
-  if(exists){alert('Já está na biblioteca!');return;}
-
-  var tags=[];
+  var exists=lib.find(function(x){return x.doi&&x.doi===currentArticle.doi;});
+  if(exists){alert(emailLang==='pt'?'Já está na biblioteca!':'Already in library!');return;}
   var note=prompt(emailLang==='pt'?'Nota clínica (opcional):':'Clinical note (optional):','')||'';
-
-  var tagStr=prompt(
-    (emailLang==='pt'?'Tags clínicas (separa com vírgula):\n':'Clinical tags (comma separated):\n')+CLINICAL_TAGS.join(', '),
-    ''
-  )||'';
-  tags=tagStr.split(',').map(function(t){return t.trim();}).filter(Boolean);
-
-  lib.unshift({
-    title:currentArticle.title,
-    journal:currentArticle.journal,
-    year:currentArticle.year,
-    doi:currentArticle.doi,
-    oa:currentArticle.oa,
-    oaUrl:currentArticle.oaUrl||'',
-    author:currentArticle.authorName||'',
-    note:note,
-    tags:tags,
-    saved:new Date().toISOString().split('T')[0]
-  });
-  saveLibrary(lib);
+  var tagStr=prompt(emailLang==='pt'?'Tags (ex: ARDS, Sépsis):':'Tags (ex: ARDS, Sepsis):','')||'';
+  var tags=tagStr.split(',').map(function(t){return t.trim();}).filter(Boolean);
+  lib.unshift({title:currentArticle.title,journal:currentArticle.journal,year:currentArticle.year,
+    doi:currentArticle.doi,oa:currentArticle.oa,oaUrl:currentArticle.oaUrl||'',
+    author:currentArticle.authorName||'',note:note,tags:tags,saved:new Date().toISOString().split('T')[0]});
+  saveLibraryData(lib);
   alert(emailLang==='pt'?'✓ Guardado na biblioteca!':'✓ Saved to library!');
 }
 function renderLibrary(){
@@ -513,34 +558,25 @@ function renderLibrary(){
       +(tagsHtml?'<div class="lib-tags">'+tagsHtml+'</div>':'')
       +(item.note?'<div class="lib-note">'+esc(item.note)+'</div>':'')
       +'<div class="lib-actions">'
-      +(item.oa&&item.oaUrl?'<a class="btn-lib-action" href="'+item.oaUrl+'" target="_blank">↓ PDF</a>':'')
+      +(item.oa&&item.oaUrl?'<a class="btn-lib-action" href="'+esc(item.oaUrl)+'" target="_blank">↓ PDF</a>':'')
       +'<button class="btn-lib-action btn-lib-delete" onclick="deleteFromLibrary('+i+')">✕ Remover</button>'
       +'</div></div>';
   }).join('');
 }
-function deleteFromLibrary(i){
-  var lib=getLibrary();lib.splice(i,1);saveLibrary(lib);renderLibrary();
-}
-function clearLibrary(){
-  if(confirm('Limpar toda a biblioteca?')){try{localStorage.removeItem('pq_library');}catch(e){}renderLibrary();}
-}
+function deleteFromLibrary(i){var lib=getLibrary();lib.splice(i,1);saveLibraryData(lib);renderLibrary();}
+function clearLibrary(){if(confirm('Limpar toda a biblioteca?')){try{localStorage.removeItem('pq_library');}catch(e){}renderLibrary();}}
 
 // STATE
 function saveState(){
   try{
-    if(g('articleCard').style.display==='none'||!currentArticle)return;
+    if(!currentArticle)return;
     localStorage.setItem('pq_state',JSON.stringify({
-      article:currentArticle,
-      email:g('emailBody').value,
-      emailAuthor:g('emailAuthor').textContent,
-      emailFound:g('emailFound').textContent,
-      scholar:g('btnScholar').href,
-      pubmed:g('btnPubmed').href,
-      rgate:g('btnRgate').href,
-      linkedin:g('btnLinkedIn').href,
-      mailto:g('btnMailto').href,
-      foundEmail:currentFoundEmail,
-      summary:g('summaryText').innerHTML
+      article:currentArticle,email:g('emailBody').value,
+      emailAuthor:g('emailAuthor').textContent,emailFound:g('emailFound').textContent,
+      scholar:g('btnScholar').href,pubmed:g('btnPubmed').href,
+      rgate:g('btnRgate').href,linkedin:g('btnLinkedIn').href,
+      mailto:g('btnMailto').href,foundEmail:currentFoundEmail,
+      abstract:currentAbstract
     }));
   }catch(e){}
 }
@@ -548,59 +584,41 @@ function restoreState(){
   try{
     var s=JSON.parse(localStorage.getItem('pq_state')||'null');
     if(!s||!s.article)return;
-    currentArticle=s.article;
-    currentFoundEmail=s.foundEmail||'';
-    showArticleCard(s.article, s.article.oa);
-    g('summaryLoading').style.display='none';
-    g('summaryText').innerHTML=s.summary||'';
-    g('summaryText').style.display='block';
+    currentArticle=s.article;currentFoundEmail=s.foundEmail||'';currentAbstract=s.abstract||'';
+    showArticleCard(s.article,s.article.oa);
     if(s.article.oa){
-      g('oaActions').style.display='block';
-      g('emailActions').style.display='none';
+      show('oaLink');g('oaLink').href=s.article.oaUrl||'#';
+      g('emailSection').style.display='none';
     } else {
-      g('oaActions').style.display='none';
-      g('emailActions').style.display='block';
-      g('emailBody').value=s.email||'';
-      g('emailAuthor').textContent=s.emailAuthor||'';
+      hide('oaLink');g('emailSection').style.display='block';
+      g('emailBody').value=s.email||'';g('emailAuthor').textContent=s.emailAuthor||'';
       g('emailFound').textContent=s.emailFound||'';
-      g('btnScholar').href=s.scholar||'#';
-      g('btnPubmed').href=s.pubmed||'#';
-      g('btnRgate').href=s.rgate||'#';
-      g('btnLinkedIn').href=s.linkedin||'#';
+      g('btnScholar').href=s.scholar||'#';g('btnPubmed').href=s.pubmed||'#';
+      g('btnRgate').href=s.rgate||'#';g('btnLinkedIn').href=s.linkedin||'#';
       g('btnMailto').href=s.mailto||'#';
     }
-    show('resetBtn');
-    g('restoreBanner').style.display='flex';
+    show('resetBtn');g('restoreBanner').style.display='flex';
   }catch(e){}
 }
 function clearState(){
   try{localStorage.removeItem('pq_state');}catch(e){}
-  g('restoreBanner').style.display='none';
-  g('articleCard').style.display='none';
-  hide('resetBtn');
+  g('restoreBanner').style.display='none';g('articleCard').style.display='none';hide('resetBtn');
 }
 document.addEventListener('visibilitychange',function(){if(document.hidden)saveState();});
 window.addEventListener('pagehide',saveState);
 
 // UTILS
-function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function setRunning(val){
-  isRunning=val;
-  g('runBtn').disabled=val;
+  isRunning=val;g('runBtn').disabled=val;
   g('runBtn').textContent=val?'A pesquisar…':'Pesquisar artigo';
 }
 function reset(){
   try{localStorage.removeItem('pq_state');}catch(e){}
-  g('restoreBanner').style.display='none';
-  g('queryInput').value='';
-  g('resultsList').style.display='none';
-  g('resultsItems').innerHTML='';
-  g('articleCard').style.display='none';
-  g('sentConfirm').style.display='none';
-  g('sentBtn').classList.remove('hidden');
-  hide('resetBtn');
-  setRunning(false);
-  currentArticle=null;currentFoundEmail='';
+  g('restoreBanner').style.display='none';g('queryInput').value='';
+  g('resultsList').style.display='none';g('resultsItems').innerHTML='';
+  g('articleCard').style.display='none';g('sentConfirm').style.display='none';
+  g('sentBtn').classList.remove('hidden');hide('resetBtn');setRunning(false);
+  currentArticle=null;currentFoundEmail='';currentAbstract='';
 }
 function copyEmail(){
   navigator.clipboard.writeText(g('emailBody').value).catch(function(){g('emailBody').select();document.execCommand('copy');});
@@ -609,11 +627,10 @@ function copyEmail(){
 }
 function markSent(){hide('sentBtn');g('sentConfirm').style.display='block';}
 function updateMailto(toEmail){
-  var body=g('emailBody').value;
-  var parts=body.split('\n\n');
-  var subject=encodeURIComponent(parts[0]||'Request for PDF');
+  var body=g('emailBody').value;var parts=body.split('\n\n');
+  var subj=encodeURIComponent(parts[0]||'Request for PDF');
   var bodyText=encodeURIComponent(parts.slice(1).join('\n\n'));
-  g('btnMailto').href='mailto:'+(toEmail?encodeURIComponent(toEmail):'')+'?subject='+subject+'&body='+bodyText;
+  g('btnMailto').href='mailto:'+(toEmail?encodeURIComponent(toEmail):'')+'?subject='+subj+'&body='+bodyText;
 }
 function setAuthorLinks(authorName){
   var q=encodeURIComponent(authorName);
@@ -623,40 +640,23 @@ function setAuthorLinks(authorName){
   g('btnLinkedIn').href='https://www.linkedin.com/search/results/people/?keywords='+q;
 }
 function shareArticle(){
-  var title=g('articleTitle').textContent;
-  var url=g('oaLink').href;
+  var title=currentArticle?currentArticle.title:'';var url=currentArticle&&currentArticle.oaUrl?currentArticle.oaUrl:window.location.href;
   if(navigator.share){navigator.share({title:title,url:url});}
   else{navigator.clipboard.writeText(url);alert('Link copiado!');}
 }
 
-// EMAIL GENERATION
-function generateEmail(article, authorName, req){
-  var name=req.name||'A colleague';
-  var role=req.role||'researcher';
-  var inst=req.inst||'our institution';
+// EMAIL
+function generateEmail(article,authorName,req){
+  var name=req.name||'A colleague';var role=req.role||'researcher';var inst=req.inst||'our institution';
   var firstName=authorName.split(' ')[0]||'Author';
   if(emailLang==='pt'){
-    var subj='Pedido de PDF: '+article.title.substring(0,60)+(article.title.length>60?'...':'');
-    var body='Caro/a '+firstName+',\n\n'
-      +'Sou '+name+', '+role+' no(a) '+inst+'. '
-      +'Li com interesse o seu artigo "'+article.title+'"'
-      +(article.journal?', publicado na '+article.journal:'')
-      +(article.year?' ('+article.year+')':'')
-      +', e gostaria muito de receber uma cópia em PDF, uma vez que não consigo aceder através da nossa subscrição institucional.\n\n'
-      +'O seu trabalho é directamente relevante para a minha prática clínica e ficaria muito agradecido pela partilha.\n\n'
-      +'Com os melhores cumprimentos,\n'+name+'\n'+role+'\n'+inst;
-    return subj+'\n\n'+body;
+    var s='Pedido de PDF: '+article.title.substring(0,60)+(article.title.length>60?'...':'');
+    var b='Caro/a '+firstName+',\n\nSou '+name+', '+role+' no(a) '+inst+'. Li com interesse o seu artigo "'+article.title+'"'+(article.journal?', publicado na '+article.journal:'')+(article.year?' ('+article.year+')':'')+', e gostaria muito de receber uma cópia em PDF, uma vez que não consigo aceder através da nossa subscrição institucional.\n\nO seu trabalho é directamente relevante para a minha prática clínica e ficaria muito agradecido pela partilha.\n\nCom os melhores cumprimentos,\n'+name+'\n'+role+'\n'+inst;
+    return s+'\n\n'+b;
   } else {
-    var subj='Request for PDF: '+article.title.substring(0,60)+(article.title.length>60?'...':'');
-    var body='Dear '+firstName+',\n\n'
-      +'I am '+name+', a '+role+' at '+inst+'. '
-      +'I came across your article "'+article.title+'"'
-      +(article.journal?' published in '+article.journal:'')
-      +(article.year?' ('+article.year+')':'')
-      +' and would greatly appreciate receiving a PDF copy, as I am unable to access it through our institutional subscription.\n\n'
-      +'Your work is directly relevant to my clinical practice and I look forward to reading it in full.\n\n'
-      +'Thank you very much for your time and consideration.\n\nBest regards,\n'+name+'\n'+role+'\n'+inst;
-    return subj+'\n\n'+body;
+    var s='Request for PDF: '+article.title.substring(0,60)+(article.title.length>60?'...':'');
+    var b='Dear '+firstName+',\n\nI am '+name+', a '+role+' at '+inst+'. I came across your article "'+article.title+'"'+(article.journal?' published in '+article.journal:'')+(article.year?' ('+article.year+')':'')+' and would greatly appreciate receiving a PDF copy, as I am unable to access it through our institutional subscription.\n\nYour work is directly relevant to my clinical practice and I look forward to reading it in full.\n\nThank you very much for your time and consideration.\n\nBest regards,\n'+name+'\n'+role+'\n'+inst;
+    return s+'\n\n'+b;
   }
 }
 function regenerateEmail(){
@@ -667,196 +667,395 @@ function regenerateEmail(){
 }
 
 // SHOW ARTICLE CARD
-function showArticleCard(article, isOA){
-  var statusEl=g('articleStatus');
-  if(isOA){
-    statusEl.className='article-status status-oa';
-    statusEl.textContent='✓ Acesso Livre';
-  } else {
-    statusEl.className='article-status status-closed';
-    statusEl.textContent='✉ Pedir ao autor';
-  }
+function showArticleCard(article,isOA){
+  var el=g('articleStatus');
+  if(isOA){el.className='article-status status-oa';el.textContent='✓ Acesso Livre';}
+  else{el.className='article-status status-closed';el.textContent='✉ Pedir ao autor';}
   g('articleTitle').textContent=article.title;
   g('articleMeta').textContent=(article.journal||'')+(article.year?' · '+article.year:'')+(article.doi?' · DOI: '+article.doi:'');
-  g('summaryLoading').style.display='flex';
-  g('summaryText').style.display='none';
-  g('summaryText').innerHTML='';
   g('articleCard').style.display='block';
 }
 
-// CLAUDE SUMMARY — streaming via fetch
-async function streamSummary(abstract, fullText){
-  var isOA = currentArticle && currentArticle.oa;
-  var lang = emailLang==='pt'?'Português':'English';
-
-  var systemPrompt = emailLang==='pt'
-    ? 'És um assistente clínico especializado em medicina intensiva pediátrica. Analisa artigos científicos e produz resumos clínicos concisos e práticos. Responde sempre em Português.'
-    : 'You are a clinical assistant specialised in paediatric intensive care medicine. Analyse scientific articles and produce concise, practical clinical summaries. Always respond in English.';
-
-  var content = fullText ? ('Full article text:\n'+fullText) : ('Abstract:\n'+abstract);
-
-  var userPrompt = emailLang==='pt'
-    ? 'Faz um resumo clínico estruturado deste artigo em 5 pontos:\n🎯 Objectivo:\n👥 População:\n📊 Resultado principal:\n⚠️ Limitações:\n💡 Relevância clínica:\n\nSê conciso e prático para um intensivista pediátrico.\n\n'+content
-    : 'Produce a structured clinical summary in 5 bullet points:\n🎯 Objective:\n👥 Population:\n📊 Main result:\n⚠️ Limitations:\n💡 Clinical relevance:\n\nBe concise and practical for a paediatric intensivist.\n\n'+content;
-
-  g('summaryLoading').style.display='flex';
-  g('summaryText').style.display='none';
-  g('summaryText').innerHTML='';
-
-  // Check for API key
-  if(!CLAUDE_KEY){
-    g('summaryLoading').style.display='none';
-    g('summaryText').style.display='block';
-    g('summaryText').innerHTML='<span style="color:var(--text3);font-size:12px;">💡 Adiciona a tua Claude API Key nas definições acima para activar os resumos com IA.</span>';
-    return;
-  }
-
-  try {
-    var response = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key': CLAUDE_KEY,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:600,
-        stream:true,
-        system: systemPrompt,
-        messages:[{role:'user',content:userPrompt}]
-      })
-    });
-
-    if(!response.ok){
-      var err=await response.text();
-      throw new Error('API error: '+err);
-    }
-
-    g('summaryLoading').style.display='none';
-    g('summaryText').style.display='block';
-
-    var reader=response.body.getReader();
-    var decoder=new TextDecoder();
-    var fullResponse='';
-
-    while(true){
-      var result=await reader.read();
-      if(result.done)break;
-      var chunk=decoder.decode(result.value,{stream:true});
-      var lines=chunk.split('\n');
-      for(var i=0;i<lines.length;i++){
-        var line=lines[i].trim();
-        if(line.startsWith('data: ')){
-          var data=line.slice(6);
-          if(data==='[DONE]')continue;
-          try{
-            var parsed=JSON.parse(data);
-            if(parsed.type==='content_block_delta'&&parsed.delta&&parsed.delta.text){
-              fullResponse+=parsed.delta.text;
-              g('summaryText').innerHTML=fullResponse.replace(/\n/g,'<br/>');
-            }
-          }catch(e){}
-        }
+// CLAUDE API — streaming
+async function streamClaude(systemPrompt, userPrompt, onChunk, onDone){
+  if(!CLAUDE_KEY){onDone('no-key');return;}
+  var resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,stream:true,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})
+  });
+  if(!resp.ok){var e=await resp.text();onDone('error:'+e);return;}
+  var reader=resp.body.getReader();var decoder=new TextDecoder();var full='';
+  while(true){
+    var res=await reader.read();if(res.done)break;
+    var lines=decoder.decode(res.value,{stream:true}).split('\n');
+    for(var i=0;i<lines.length;i++){
+      var line=lines[i].trim();
+      if(line.startsWith('data: ')){
+        var data=line.slice(6);if(data==='[DONE]')continue;
+        try{var p=JSON.parse(data);if(p.type==='content_block_delta'&&p.delta&&p.delta.text){full+=p.delta.text;onChunk(full);}}catch(e){}
       }
     }
-  } catch(e) {
-    g('summaryLoading').style.display='none';
-    g('summaryText').style.display='block';
-    g('summaryText').innerHTML='<span style="color:var(--text3);font-size:12px;">Resumo não disponível: '+esc(e.message)+'</span>';
   }
+  onDone('ok');
 }
 
 // FETCH ABSTRACT
-async function fetchAbstract(doi, pmid){
+async function fetchAbstract(doi,pmid){
   try{
     var id=pmid;
     if(!id&&doi){
       var r=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(doi)+'[doi]&retmode=json');
-      var d=await r.json();
-      id=d.esearchresult&&d.esearchresult.idlist&&d.esearchresult.idlist[0];
+      var d=await r.json();id=d.esearchresult&&d.esearchresult.idlist&&d.esearchresult.idlist[0];
     }
     if(!id)return null;
     var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id='+id+'&retmode=xml');
     var xml=await r2.text();
-    var abstract=xml.match(/<AbstractText[^>]*>([\s\S]*?)<\/AbstractText>/g);
-    if(!abstract)return null;
-    return abstract.map(function(a){return a.replace(/<[^>]+>/g,'');}).join(' ');
+    var abs=xml.match(/<AbstractText[^>]*>([\s\S]*?)<\/AbstractText>/g);
+    if(!abs)return null;
+    return abs.map(function(a){return a.replace(/<[^>]+>/g,'');}).join(' ');
   }catch(e){return null;}
 }
 
-async function findEmailPubMed(doi){
+// RELATED ARTICLES
+async function fetchRelated(doi, title){
   try{
-    var r1=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(doi)+'[doi]&retmode=json');
-    if(!r1.ok)return null;
-    var d1=await r1.json();
-    var pmid=d1.esearchresult&&d1.esearchresult.idlist&&d1.esearchresult.idlist[0];
-    if(!pmid)return null;
-    var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id='+pmid+'&retmode=xml');
-    if(!r2.ok)return null;
-    var xml=await r2.text();
-    var matches=xml.match(/[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}/g)||[];
-    var real=matches.filter(function(e){return!e.includes('nlm.nih.gov')&&!e.includes('example');});
-    return real.length>0?real[0]:null;
-  }catch(e){return null;}
+    var query=doi?doi+'[doi]':encodeURIComponent(title);
+    var r1=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(query)+'&retmode=json');
+    var d1=await r1.json();var pmid=d1.esearchresult&&d1.esearchresult.idlist&&d1.esearchresult.idlist[0];
+    if(!pmid)return[];
+    var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&db=pubmed&id='+pmid+'&cmd=neighbor_score&retmode=json');
+    var d2=await r2.json();
+    var links=d2.linksets&&d2.linksets[0]&&d2.linksets[0].linksetdbs&&d2.linksets[0].linksetdbs[0]&&d2.linksets[0].linksetdbs[0].links;
+    if(!links||!links.length)return[];
+    var relIds=links.slice(0,5).join(',');
+    var r3=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+relIds+'&retmode=json');
+    var d3=await r3.json();
+    return Object.values(d3.result||{}).filter(function(x){return x.uid;}).map(function(x){
+      return{pmid:x.uid,title:x.title,journal:x.source,year:x.pubdate?x.pubdate.substring(0,4):''};
+    });
+  }catch(e){return[];}
+}
+
+// START ANALYSIS PAGE
+async function startAnalysis(){
+  if(!currentArticle)return;
+  chatHistory=[];g('chatMessages').innerHTML='<div class="chat-empty" id="chatEmpty">Faz uma pergunta sobre o artigo ↓</div>';
+  g('analysisTitleFull').textContent=currentArticle.title;
+  g('analysisMetaFull').textContent=(currentArticle.journal||'')+(currentArticle.year?' · '+currentArticle.year:'')+(currentArticle.doi?' · '+currentArticle.doi:'');
+  g('analysisHeaderTitle').textContent=currentArticle.title.substring(0,40)+'…';
+  g('analysisSummaryLoading').style.display='flex';
+  g('analysisSummaryText').style.display='none';g('analysisSummaryText').innerHTML='';
+  g('relatedCard').style.display='none';clearPdf();
+
+  // Fetch abstract if not cached
+  if(!currentAbstract&&currentArticle.doi){
+    currentAbstract=await fetchAbstract(currentArticle.doi,null)||'';
+  }
+
+  // Stream summary
+  if(!CLAUDE_KEY){
+    g('analysisSummaryLoading').style.display='none';
+    g('analysisSummaryText').style.display='block';
+    g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px;">💡 Adiciona a tua Claude API Key nas definições para activar os resumos com IA.</span>';
+  } else {
+    var sysP = emailLang==='pt'
+      ? 'És um painel de revisores científicos especializados em medicina intensiva pediátrica. Conduz revisões profundas e rigorosas de artigos científicos. Responde sempre em Português.'
+      : 'You are a panel of scientific expert reviewers specialised in paediatric intensive care medicine. Conduct deep, rigorous peer reviews of scientific papers. Be intellectually honest and critical.';
+    var deepReviewPrompt = `You are conducting a deep multidisciplinary scientific review of the paper.
+
+Simulate a panel of expert reviewers, each representing a different scientific perspective.
+
+The panel must include:
+1. Domain Specialist (expert in the main biological field)
+2. Methodology / Biostatistics expert
+3. Preclinical model expert
+4. Pharmacology / drug mechanism expert
+5. Clinical translation expert
+6. Skeptical peer reviewer whose role is to challenge assumptions
+
+Each expert must independently analyze the paper.
+
+Structure the output as follows:
+
+SECTION 1 — Technical Summary
+Provide a rigorous summary of the study design, methods and findings.
+
+SECTION 2 — Independent Expert Reviews
+For each persona provide:
+- Their evaluation of the scientific validity
+- Key strengths
+- Major concerns
+- Important missing analyses
+- How convincing the results are
+
+SECTION 3 — Cross-Expert Debate
+Simulate a discussion between the experts addressing:
+- Are the results truly demonstrating the claimed phenomenon?
+- Could alternative explanations exist?
+- Are the conclusions overstated?
+- What experiments would resolve remaining doubts?
+
+SECTION 4 — Robustness Assessment
+Score the paper (1–5) for:
+- Methodological rigor
+- Novelty
+- Reproducibility likelihood
+- Translational potential
+
+SECTION 5 — Future Research Directions
+List the most important follow-up experiments.
+
+Be intellectually rigorous and avoid polite or superficial praise.`;
+    var usrP = deepReviewPrompt + '\n\nArticle title: ' + currentArticle.title + '\n' + (currentAbstract ? 'Abstract: ' + currentAbstract : '(No abstract available — base your review on the title and journal context.)');
+    streamClaude(sysP,usrP,function(full){
+      g('analysisSummaryLoading').style.display='none';
+      g('analysisSummaryText').style.display='block';
+      g('analysisSummaryText').innerHTML=full.replace(/\n/g,'<br/>');
+    },function(status){
+      if(status!=='ok'){
+        g('analysisSummaryLoading').style.display='none';
+        g('analysisSummaryText').style.display='block';
+        g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px;">Resumo não disponível.</span>';
+      }
+    });
+  }
+
+  // Related articles
+  fetchRelated(currentArticle.doi,currentArticle.title).then(function(related){
+    if(!related.length)return;
+    g('relatedCard').style.display='block';
+    g('relatedItems').innerHTML=related.map(function(r){
+      return '<div class="related-item" onclick="loadRelated(\''+esc(r.pmid)+'\')">'
+        +'<div class="related-title">'+esc(r.title)+'</div>'
+        +'<div class="related-meta">'+esc(r.journal||'')+(r.year?' · '+r.year:'')+'</div>'
+        +'</div>';
+    }).join('');
+  });
+}
+
+function loadRelated(pmid){
+  g('queryInput').value='PMID:'+pmid;
+  closeAnalysis();
+  runAgent();
+}
+
+// PDF
+function onDragOver(e){e.preventDefault();g('pdfDrop').classList.add('dragover');}
+function onDragLeave(e){g('pdfDrop').classList.remove('dragover');}
+function onDrop(e){e.preventDefault();g('pdfDrop').classList.remove('dragover');var f=e.dataTransfer.files[0];if(f)loadPdfFile(f);}
+function onPdfSelected(e){var f=e.target.files[0];if(f)loadPdfFile(f);}
+function loadPdfFile(file){
+  if(file.size>10*1024*1024){alert('PDF demasiado grande (máx 10MB)');return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    currentPdfBase64=e.target.result.split(',')[1];
+    g('pdfName').textContent=file.name;
+    g('pdfLoaded').classList.remove('hidden');
+    g('btnAnalyzePdf').disabled=false;
+  };
+  reader.readAsDataURL(file);
+}
+function clearPdf(){
+  currentPdfBase64='';g('pdfInput').value='';
+  g('pdfLoaded').classList.add('hidden');g('btnAnalyzePdf').disabled=true;
+}
+async function analyzePdf(){
+  if(!currentPdfBase64){return;}
+  if(!CLAUDE_KEY){alert('Adiciona a tua API Key primeiro.');return;}
+  g('btnAnalyzePdf').disabled=true;g('btnAnalyzePdf').textContent='A analisar…';
+  g('analysisSummaryLoading').style.display='flex';
+  g('analysisSummaryText').style.display='none';g('analysisSummaryText').innerHTML='';
+
+  var sysP = emailLang==='pt'
+    ? 'És um painel de revisores científicos especializados em medicina intensiva pediátrica. Conduz revisões profundas e rigorosas de artigos científicos completos. Responde em Português.'
+    : 'You are a panel of scientific expert reviewers specialised in paediatric intensive care medicine. Conduct deep, rigorous peer reviews of full scientific papers. Be intellectually honest, critical and structured.';
+  var deepReviewPdf = `You are conducting a deep multidisciplinary scientific review of the paper.
+
+Simulate a panel of expert reviewers, each representing a different scientific perspective.
+
+The panel must include:
+1. Domain Specialist (expert in the main biological field)
+2. Methodology / Biostatistics expert
+3. Preclinical model expert
+4. Pharmacology / drug mechanism expert
+5. Clinical translation expert
+6. Skeptical peer reviewer whose role is to challenge assumptions
+
+Each expert must independently analyze the paper.
+
+Structure the output as follows:
+
+SECTION 1 — Technical Summary
+Provide a rigorous summary of the study design, methods and findings.
+
+SECTION 2 — Independent Expert Reviews
+For each persona provide:
+- Their evaluation of the scientific validity
+- Key strengths
+- Major concerns
+- Important missing analyses
+- How convincing the results are
+
+SECTION 3 — Cross-Expert Debate
+Simulate a discussion between the experts addressing:
+- Are the results truly demonstrating the claimed phenomenon?
+- Could alternative explanations exist?
+- Are the conclusions overstated?
+- What experiments would resolve remaining doubts?
+
+SECTION 4 — Robustness Assessment
+Score the paper (1–5) for:
+- Methodological rigor
+- Novelty
+- Reproducibility likelihood
+- Translational potential
+
+SECTION 5 — Future Research Directions
+List the most important follow-up experiments.
+
+Be intellectually rigorous and avoid polite or superficial praise.`;
+  var usrP = deepReviewPdf + '\n\nAnalyse the full paper provided. Be rigorous, critical and detailed.';
+
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,stream:true,system:sysP,
+        messages:[{role:'user',content:[
+          {type:'document',source:{type:'base64',media_type:'application/pdf',data:currentPdfBase64}},
+          {type:'text',text:usrP}
+        ]}]})
+    });
+    if(!resp.ok)throw new Error(await resp.text());
+    var reader=resp.body.getReader();var decoder=new TextDecoder();var full='';
+    while(true){
+      var res=await reader.read();if(res.done)break;
+      var lines=decoder.decode(res.value,{stream:true}).split('\n');
+      for(var i=0;i<lines.length;i++){
+        var line=lines[i].trim();
+        if(line.startsWith('data: ')){
+          var data=line.slice(6);if(data==='[DONE]')continue;
+          try{var p=JSON.parse(data);if(p.type==='content_block_delta'&&p.delta&&p.delta.text){
+            full+=p.delta.text;
+            g('analysisSummaryLoading').style.display='none';
+            g('analysisSummaryText').style.display='block';
+            g('analysisSummaryText').innerHTML=full.replace(/\n/g,'<br/>');
+          }}catch(e){}
+        }
+      }
+    }
+  }catch(e){
+    g('analysisSummaryLoading').style.display='none';
+    g('analysisSummaryText').style.display='block';
+    g('analysisSummaryText').innerHTML='<span style="color:var(--text3);">Erro ao analisar PDF: '+esc(e.message)+'</span>';
+  }
+  g('btnAnalyzePdf').disabled=false;g('btnAnalyzePdf').textContent='Analisar PDF completo';
+}
+
+// CHAT
+function getArticleContext(){
+  var summary=g('analysisSummaryText').textContent||'';
+  return 'Article: '+( currentArticle?currentArticle.title:'')+'\n'
+    +(currentAbstract?'Abstract: '+currentAbstract+'\n':'')
+    +(summary?'Summary: '+summary.substring(0,500)+'\n':'');
+}
+function askSuggestion(btn){g('chatInput').value=btn.textContent;sendChat();}
+async function sendChat(){
+  var msg=g('chatInput').value.trim();if(!msg)return;
+  if(!CLAUDE_KEY){alert('Adiciona a tua API Key primeiro.');return;}
+  g('chatInput').value='';g('btnSend').disabled=true;
+  var empty=g('chatEmpty');if(empty)empty.remove();
+  var userDiv=document.createElement('div');
+  userDiv.className='chat-msg chat-msg-user';userDiv.textContent=msg;
+  g('chatMessages').appendChild(userDiv);
+  chatHistory.push({role:'user',content:msg});
+
+  var aiDiv=document.createElement('div');
+  aiDiv.className='chat-msg chat-msg-ai';aiDiv.innerHTML='<div class="dot-pulse"><span></span><span></span><span></span></div>';
+  g('chatMessages').appendChild(aiDiv);
+  g('chatMessages').scrollTop=g('chatMessages').scrollHeight;
+
+  var sysP=emailLang==='pt'
+    ?'És um assistente clínico especializado em medicina intensiva pediátrica. Responde a perguntas sobre artigos científicos de forma concisa e prática em Português. Contexto do artigo:\n'+getArticleContext()
+    :'You are a clinical assistant specialised in paediatric intensive care. Answer questions about scientific articles concisely and practically in English. Article context:\n'+getArticleContext();
+
+  var messages=chatHistory.map(function(m){return{role:m.role,content:m.content};});
+
+  var resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,stream:true,system:sysP,messages:messages})
+  });
+
+  if(!resp.ok){aiDiv.innerHTML='Erro ao responder.';g('btnSend').disabled=false;return;}
+  var reader=resp.body.getReader();var decoder=new TextDecoder();var full='';
+  while(true){
+    var res=await reader.read();if(res.done)break;
+    var lines=decoder.decode(res.value,{stream:true}).split('\n');
+    for(var i=0;i<lines.length;i++){
+      var line=lines[i].trim();
+      if(line.startsWith('data: ')){
+        var data=line.slice(6);if(data==='[DONE]')continue;
+        try{var p=JSON.parse(data);if(p.type==='content_block_delta'&&p.delta&&p.delta.text){
+          full+=p.delta.text;aiDiv.innerHTML=full.replace(/\n/g,'<br/>');
+          g('chatMessages').scrollTop=g('chatMessages').scrollHeight;
+        }}catch(e){}
+      }
+    }
+  }
+  chatHistory.push({role:'assistant',content:full});
+  g('btnSend').disabled=false;
 }
 
 // API
 async function fetchByDOI(doi){
-  // Try CrossRef first
-  try{
-    var r=await fetch('https://api.crossref.org/works/'+encodeURIComponent(doi));
-    if(r.ok) return[(await r.json()).message];
-  }catch(e){}
-
-  // Fallback: try PubMed search by DOI
+  try{var r=await fetch('https://api.crossref.org/works/'+encodeURIComponent(doi));if(r.ok)return[(await r.json()).message];}catch(e){}
   try{
     var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(doi)+'[doi]&retmode=json');
-    var d2=await r2.json();
-    var pmid=d2.esearchresult&&d2.esearchresult.idlist&&d2.esearchresult.idlist[0];
-    if(pmid){
-      var items=await fetchByPMID(pmid);
-      return items;
-    }
+    var d2=await r2.json();var pmid=d2.esearchresult&&d2.esearchresult.idlist&&d2.esearchresult.idlist[0];
+    if(pmid)return await fetchByPMID(pmid);
   }catch(e){}
-
-  // Fallback: search CrossRef by DOI as query
   try{
     var r3=await fetch('https://api.crossref.org/works?query='+encodeURIComponent(doi)+'&rows=1&select=DOI,title,author,published,container-title');
-    var d3=await r3.json();
-    var items3=d3.message&&d3.message.items;
-    if(items3&&items3.length) return[items3[0]];
+    var d3=await r3.json();var items3=d3.message&&d3.message.items;if(items3&&items3.length)return[items3[0]];
   }catch(e){}
-
   throw new Error('Artigo não encontrado. Tenta pesquisar pelo título.');
 }
 async function fetchByPMID(pmid){
   var r=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+pmid+'&retmode=json');
   if(!r.ok)throw new Error('PMID não encontrado');
-  var d=await r.json();var info=d.result&&d.result[pmid];
-  if(!info)throw new Error('PMID não encontrado');
+  var d=await r.json();var info=d.result&&d.result[pmid];if(!info)throw new Error('PMID não encontrado');
   return[{title:[info.title||''],author:(info.authors||[]).map(function(a){return{given:'',family:a.name};}),
-    'container-title':[info.source||''],published:{'date-parts':[[parseInt(info.pubdate)||'']],},DOI:info.elocationid||'',_pmid:pmid}];
+    'container-title':[info.source||''],published:{'date-parts':[[parseInt(info.pubdate)||'']]},DOI:info.elocationid||'',_pmid:pmid}];
 }
 async function fetchByTitle(title){
   var r=await fetch('https://api.crossref.org/works?query.title='+encodeURIComponent(title)+'&rows=5&select=DOI,title,author,published,container-title');
   if(!r.ok)throw new Error('Erro na pesquisa');
-  var data=await r.json();
-  var items=data.message&&data.message.items;
+  var data=await r.json();var items=data.message&&data.message.items;
   if(!items||!items.length)throw new Error('Nenhum resultado encontrado');
   return items;
 }
 async function checkOA(doi){
   try{
     var r=await fetch('https://api.unpaywall.org/v2/'+encodeURIComponent(doi)+'?email=agent@paperquest.io');
-    if(!r.ok)return null;
-    var d=await r.json();
+    if(!r.ok)return null;var d=await r.json();
     return(d.is_oa&&d.best_oa_location&&d.best_oa_location.url)?d.best_oa_location.url:null;
   }catch(e){return null;}
 }
+async function findEmailPubMed(doi){
+  try{
+    var r1=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(doi)+'[doi]&retmode=json');
+    if(!r1.ok)return null;var d1=await r1.json();
+    var pmid=d1.esearchresult&&d1.esearchresult.idlist&&d1.esearchresult.idlist[0];if(!pmid)return null;
+    var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id='+pmid+'&retmode=xml');
+    if(!r2.ok)return null;var xml=await r2.text();
+    var matches=xml.match(/[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}/g)||[];
+    var real=matches.filter(function(e){return!e.includes('nlm.nih.gov')&&!e.includes('example');});
+    return real.length>0?real[0]:null;
+  }catch(e){return null;}
+}
 
-// PROCESS SINGLE ARTICLE
 async function processArticle(meta){
   var doi=meta.DOI||'';
   var title=Array.isArray(meta.title)?meta.title[0]:(meta.title||'Sem título');
@@ -866,104 +1065,63 @@ async function processArticle(meta){
   var fa=authors[0];
   var authorName=fa?((fa.given||'')+' '+(fa.family||'')).trim():'Autor desconhecido';
   var pmid=meta._pmid||null;
-
   currentArticle={title:title,journal:journal,year:year,doi:doi,authorName:authorName,oa:false,oaUrl:''};
-
   var oaUrl=doi?await checkOA(doi):null;
-  currentArticle.oa=!!oaUrl;
-  currentArticle.oaUrl=oaUrl||'';
-
+  currentArticle.oa=!!oaUrl;currentArticle.oaUrl=oaUrl||'';
   showArticleCard(currentArticle,!!oaUrl);
-
-  if(oaUrl){
-    g('oaLink').href=oaUrl;
-    g('oaActions').style.display='block';
-    g('emailActions').style.display='none';
-    addToHistory({title:title,journal:journal,year:year,doi:doi,oa:true});
-  } else {
-    var foundEmail=doi?await findEmailPubMed(doi):null;
+  if(oaUrl){show('oaLink');g('oaLink').href=oaUrl;g('emailSection').style.display='none';addToHistory({title:title,journal:journal,year:year,doi:doi,oa:true});}
+  else{
+    hide('oaLink');var foundEmail=doi?await findEmailPubMed(doi):null;
     currentFoundEmail=foundEmail||'';
     var req={name:g('nameInput').value.trim(),role:g('roleInput').value.trim(),inst:g('instInput').value.trim()};
-    var emailText=generateEmail(currentArticle,authorName,req);
-    g('emailAuthor').textContent=authorName;
-    g('emailFound').textContent=foundEmail?'📧 '+foundEmail:'';
-    g('emailBody').value=emailText;
-    setAuthorLinks(authorName);
-    updateMailto(foundEmail||'');
-    g('oaActions').style.display='none';
-    g('emailActions').style.display='block';
-    g('sentBtn').classList.remove('hidden');
-    g('sentConfirm').style.display='none';
+    g('emailAuthor').textContent=authorName;g('emailFound').textContent=foundEmail?'📧 '+foundEmail:'';
+    g('emailBody').value=generateEmail(currentArticle,authorName,req);
+    setAuthorLinks(authorName);updateMailto(foundEmail||'');
+    g('emailSection').style.display='block';g('sentBtn').classList.remove('hidden');g('sentConfirm').style.display='none';
     addToHistory({title:title,journal:journal,year:year,doi:doi,oa:false});
   }
-
-  show('resetBtn');
-  setRunning(false);
-
-  // Fetch abstract and stream summary
-  var abstract=await fetchAbstract(doi,pmid);
-  streamSummary(abstract||title,'');
+  show('resetBtn');setRunning(false);
+  // Pre-fetch abstract in background
+  fetchAbstract(doi,pmid).then(function(abs){if(abs)currentAbstract=abs;});
 }
 
-// MAIN
 async function runAgent(){
-  var query=g('queryInput').value.trim();
-  if(!query||isRunning)return;
+  var query=g('queryInput').value.trim();if(!query||isRunning)return;
   saveProfile();setRunning(true);
-  g('articleCard').style.display='none';
-  g('resultsList').style.display='none';
-  g('resultsItems').innerHTML='';
-  g('restoreBanner').style.display='none';
-  hide('resetBtn');
-  currentArticle=null;currentFoundEmail='';
-
+  g('articleCard').style.display='none';g('resultsList').style.display='none';g('resultsItems').innerHTML='';
+  g('restoreBanner').style.display='none';hide('resetBtn');
+  currentArticle=null;currentFoundEmail='';currentAbstract='';
   try{
     var pmidMatch=query.match(/^(?:PMID:?\s*)?(\d{7,8})$/i);
     var doiMatch=query.match(/10\.\d{4,}\/\S+/);
     var items;
-
-    if(pmidMatch){
-      items=await fetchByPMID(pmidMatch[1]);
-      await processArticle(items[0]);
-    } else if(doiMatch){
-      items=await fetchByDOI(doiMatch[0]);
-      await processArticle(items[0]);
-    } else {
-      // Title search — show multiple results
-      items=await fetchByTitle(query);
-      setRunning(false);
-      if(items.length===1){
-        setRunning(true);
-        await processArticle(items[0]);
-      } else {
-        show('resetBtn');
-        g('resultsList').style.display='block';
+    if(pmidMatch){items=await fetchByPMID(pmidMatch[1]);await processArticle(items[0]);}
+    else if(doiMatch){items=await fetchByDOI(doiMatch[0]);await processArticle(items[0]);}
+    else{
+      items=await fetchByTitle(query);setRunning(false);
+      if(items.length===1){setRunning(true);await processArticle(items[0]);}
+      else{
+        show('resetBtn');g('resultsList').style.display='block';
         g('resultsItems').innerHTML=items.map(function(item,i){
           var t=Array.isArray(item.title)?item.title[0]:(item.title||'Sem título');
           var j=Array.isArray(item['container-title'])?item['container-title'][0]:(item['container-title']||'');
           var y=item.published&&item.published['date-parts']&&item.published['date-parts'][0]?item.published['date-parts'][0][0]:'';
-          return '<div class="result-item" onclick="selectResult('+i+')">'
+          return'<div class="result-item" onclick="selectResult('+i+')">'
             +'<div class="result-item-title">'+esc(t)+'</div>'
-            +'<div class="result-item-meta">'+esc(j)+(y?' · '+y:'')+(item.DOI?' · '+item.DOI:'')+'</div>'
-            +'</div>';
+            +'<div class="result-item-meta">'+esc(j)+(y?' · '+y:'')+(item.DOI?' · '+item.DOI:'')+'</div></div>';
         }).join('');
         window._searchResults=items;
       }
     }
-  }catch(err){
-    alert('Erro: '+err.message);
-    setRunning(false);show('resetBtn');
-  }
+  }catch(err){alert('Erro: '+err.message);setRunning(false);show('resetBtn');}
 }
 
 async function selectResult(i){
   var items=window._searchResults;if(!items||!items[i])return;
-  g('resultsList').style.display='none';
-  setRunning(true);
-  await processArticle(items[i]);
+  g('resultsList').style.display='none';setRunning(true);await processArticle(items[i]);
 }
 
-// Init
+// INIT
 initTheme();loadProfile();loadApiKey();restoreState();
 </script>
 
