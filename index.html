@@ -255,6 +255,22 @@
     return items[0];
   }
 
+  async function findEmailPubMed(doi){
+    try{
+      const searchR=await fetch("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term="+encodeURIComponent(doi)+"[doi]&retmode=json");
+      if(!searchR.ok) return null;
+      const searchD=await searchR.json();
+      const pmid=searchD.esearchresult?.idlist?.[0];
+      if(!pmid) return null;
+      const fetchR=await fetch("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id="+pmid+"&retmode=xml");
+      if(!fetchR.ok) return null;
+      const xml=await fetchR.text();
+      const emails=[...xml.matchAll(/[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}/g)].map(m=>m[0]);
+      const real=emails.filter(e=>!e.includes("nlm.nih.gov")&&!e.includes("pubmed"));
+      return real.length>0?real[0]:null;
+    }catch{return null;}
+  }
+
   async function checkOA(doi){
     try{
       const r=await fetch('https://api.unpaywall.org/v2/'+encodeURIComponent(doi)+'?email=agent@paperquest.io');
@@ -319,12 +335,18 @@
         return;
       }
 
-      addLog('✗ Sem acesso livre · A gerar email…','warn');
+      addLog('✗ Sem acesso livre · A procurar email do autor…','warn');
+      const foundEmail = doi ? await findEmailPubMed(doi) : null;
+      if(foundEmail){
+        addLog('✓ Email encontrado via PubMed: '+foundEmail,'info');
+      } else {
+        addLog('✗ Email não encontrado automaticamente.','dim');
+      }
       const emailText=generateEmailLocally({title,journal,year},{name:authorName,affil:authorAffil},req);
-      addLog('✓ Email gerado! Copia e encontra o email do autor.','info');
+      addLog('✓ Email gerado! Copia e envia.','info');
 
       g('authorName').textContent=authorName;
-      g('authorAffil').textContent=authorAffil.substring(0,60);
+      g('authorAffil').textContent=foundEmail ? '📧 '+foundEmail : (authorAffil.substring(0,60)||'Email não encontrado automaticamente');
       g('emailBody').value=emailText;
       setAuthorLinks(authorName);
       g('resultEmail').style.display='block';
