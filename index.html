@@ -194,6 +194,19 @@
 .score-bar{flex:1;height:8px;border-radius:4px;background:var(--sand);overflow:hidden;}
 .score-fill{height:100%;border-radius:4px;background:var(--accent);}
 .score-val{font-size:12px;font-weight:600;color:var(--accent);min-width:28px;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:500;padding:20px;}
+.modal-box{background:var(--card-bg);border-radius:18px;padding:24px;width:100%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.2);}
+.modal-title{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.modal-label{font-size:13px;color:var(--text2);margin-bottom:10px;}
+.modal-input{width:100%;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;-webkit-appearance:none;margin-bottom:14px;}
+.modal-input:focus{outline:none;border-color:var(--accent);}
+.modal-btns{display:flex;gap:10px;}
+.modal-ok{flex:1;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;}
+.modal-cancel{padding:12px 16px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
+/* TOAST */
+#toastEl{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#2c2820;color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-family:'DM Sans',sans-serif;opacity:0;transition:opacity 0.3s,transform 0.3s;z-index:600;white-space:nowrap;pointer-events:none;}
 ```
 
   </style>
@@ -417,7 +430,66 @@
   </div>
 </div>
 
+<!-- MODAL -->
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-label" id="modalLabel"></div>
+    <input class="modal-input" id="modalInput" type="text"/>
+    <div class="modal-btns">
+      <button class="modal-cancel" id="modalCancel">Cancelar</button>
+      <button class="modal-ok" id="modalOk">OK</button>
+    </div>
+  </div>
+</div>
+<!-- CONFIRM -->
+<div class="modal-overlay" id="confirmOverlay">
+  <div class="modal-box">
+    <div class="modal-title" id="confirmMsg" style="margin-bottom:20px;"></div>
+    <div class="modal-btns">
+      <button class="modal-cancel" id="confirmCancel">Cancelar</button>
+      <button class="modal-ok" id="confirmOk">Confirmar</button>
+    </div>
+  </div>
+</div>
+<!-- TOAST -->
+<div id="toastEl"></div>
+
 <script>
+
+// ── MODAL / TOAST (replace prompt/confirm for iOS PWA) ──
+function showModal(title, label, defaultVal, onOk) {
+  g('modalTitle').textContent = title;
+  g('modalLabel').textContent = label;
+  g('modalInput').value = defaultVal || '';
+  g('modalOverlay').style.display = 'flex';
+  setTimeout(function() { g('modalInput').focus(); }, 100);
+  g('modalOk').onclick = function() {
+    var val = g('modalInput').value.trim();
+    hideModal();
+    onOk(val);
+  };
+  g('modalCancel').onclick = hideModal;
+  g('modalInput').onkeydown = function(e) { if (e.key === 'Enter') g('modalOk').click(); };
+}
+function hideModal() {
+  g('modalOverlay').style.display = 'none';
+}
+function showConfirm(msg, onOk) {
+  g('confirmMsg').textContent = msg;
+  g('confirmOverlay').style.display = 'flex';
+  g('confirmOk').onclick = function() { g('confirmOverlay').style.display = 'none'; onOk(); };
+  g('confirmCancel').onclick = function() { g('confirmOverlay').style.display = 'none'; };
+}
+function showToast(msg) {
+  var t = g('toastEl');
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateY(0)';
+  setTimeout(function() { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; }, 2200);
+}
+
 // ── GLOBALS ──
 var isRunning = false;
 var emailLang = 'en';
@@ -462,7 +534,7 @@ function toggleTheme() {
 
 // ── TABS ──
 function switchTab(tab) {
-  var tabs = ['search', 'library', 'history', 'jclub'];
+  var tabs = ['search', 'library', 'history'];
   tabs.forEach(function(t, i) {
     var tabEl = document.querySelectorAll('.tab')[i];
     if (tabEl) tabEl.classList.toggle('active', t === tab);
@@ -471,7 +543,6 @@ function switchTab(tab) {
   });
   if (tab === 'library') renderLibrary();
   if (tab === 'history') renderHistory();
-  if (tab === 'jclub') renderJclub();
 }
 
 // ── LANG ──
@@ -568,18 +639,15 @@ function saveToLibrary() {
   var lib = getLibrary();
   var exists = lib.find(function(x) { return x.doi && x.doi === currentArticle.doi; });
   if (exists) { alert(emailLang === 'pt' ? 'J\u00e1 est\u00e1 na biblioteca!' : 'Already in library!'); return; }
-  var note = prompt(emailLang === 'pt' ? 'Nota cl\u00ednica (opcional):' : 'Clinical note (optional):', '') || '';
-  var tagStr = prompt(emailLang === 'pt' ? 'Tags (ex: ARDS, S\u00e9psis):' : 'Tags (ex: ARDS, Sepsis):', '') || '';
-  var tags = tagStr.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
   lib.unshift({
     title: currentArticle.title, journal: currentArticle.journal, year: currentArticle.year,
     doi: currentArticle.doi, oa: currentArticle.oa, oaUrl: currentArticle.oaUrl || '',
-    author: currentArticle.authorName || '', note: note, tags: tags,
+    author: currentArticle.authorName || '', note: '', tags: [],
     saved: new Date().toISOString().split('T')[0]
   });
   saveLibraryData(lib);
   renderLibrary();
-  alert(emailLang === 'pt' ? '\u2713 Guardado na biblioteca!' : '\u2713 Saved to library!');
+  showToast(emailLang === 'pt' ? '\u2713 Guardado na biblioteca!' : '\u2713 Saved to library!');
 }
 function renderLibrary() {
   var lib = getLibrary();
@@ -601,35 +669,45 @@ function renderLibrary() {
 }
 function deleteFromLibrary(i) { var lib = getLibrary(); lib.splice(i, 1); saveLibraryData(lib); renderLibrary(); }
 function clearLibrary() {
-  if (confirm('Limpar toda a biblioteca?')) { try { localStorage.removeItem('pq_library'); } catch(e) {} renderLibrary(); }
+  showConfirm('Limpar toda a biblioteca?', function() { try { localStorage.removeItem('pq_library'); } catch(e) {} renderLibrary(); });
 }
 
 // ── JOURNAL CLUB ──
 function getJclubSessions() { try { return JSON.parse(localStorage.getItem('pq_jclub') || '[]'); } catch(e) { return []; } }
 function saveJclubSessions(s) { try { localStorage.setItem('pq_jclub', JSON.stringify(s)); } catch(e) {} }
 function newJclubSession() {
-  var name = prompt('Nome da sess\u00e3o:', 'Journal Club ' + new Date().toLocaleDateString('pt-PT', {month:'long', year:'numeric'})) || '';
-  if (!name) return;
-  var sessions = getJclubSessions();
-  sessions.unshift({ id: Date.now(), name: name, date: new Date().toISOString().split('T')[0], papers: [], analysis: '' });
-  saveJclubSessions(sessions);
-  renderJclub();
+  var def = 'Journal Club ' + new Date().toLocaleDateString('pt-PT', {month:'long', year:'numeric'});
+  showModal('Nova sess\u00e3o', 'Nome:', def, function(name) {
+    if (!name) return;
+    var sessions = getJclubSessions();
+    sessions.unshift({ id: Date.now(), name: name, date: new Date().toISOString().split('T')[0], papers: [], analysis: '' });
+    saveJclubSessions(sessions);
+    renderJclub();
+    switchTab('jclub');
+  });
 }
 function addCurrentToJclub() {
-  if (!currentArticle) { alert('Pesquisa um artigo primeiro.'); return; }
+  if (!currentArticle) { showToast('Pesquisa um artigo primeiro.'); return; }
   var sessions = getJclubSessions();
   if (!sessions.length) {
-    if (!confirm('Sem sess\u00f5es de Journal Club. Criar uma nova?')) return;
-    var name = prompt('Nome da sess\u00e3o:', 'Journal Club ' + new Date().toLocaleDateString('pt-PT', {month:'long', year:'numeric'})) || '';
-    if (!name) return;
-    sessions.unshift({ id: Date.now(), name: name, date: new Date().toISOString().split('T')[0], papers: [], analysis: '' });
+    var def = 'Journal Club ' + new Date().toLocaleDateString('pt-PT', {month:'long', year:'numeric'});
+    showModal('Nova sess\u00e3o', 'Sem sess\u00f5es. Cria uma para continuar:', def, function(name) {
+      if (!name) return;
+      sessions = [{ id: Date.now(), name: name, date: new Date().toISOString().split('T')[0], papers: [], analysis: '' }];
+      saveJclubSessions(sessions);
+      _addArticleToSession(sessions, 0);
+    });
+    return;
   }
-  var s = sessions[0];
+  _addArticleToSession(sessions, 0);
+}
+function _addArticleToSession(sessions, idx) {
+  var s = sessions[idx];
   var exists = s.papers.find(function(p) { return p.doi && p.doi === currentArticle.doi; });
-  if (exists) { alert('J\u00e1 est\u00e1 na sess\u00e3o!'); return; }
+  if (exists) { showToast('J\u00e1 est\u00e1 na sess\u00e3o!'); return; }
   s.papers.push({ doi: currentArticle.doi, title: currentArticle.title, journal: currentArticle.journal, year: currentArticle.year });
   saveJclubSessions(sessions);
-  alert('\u2713 Adicionado ao Journal Club: ' + s.name);
+  showToast('\u2713 Adicionado: ' + s.name);
 }
 function addPaperToSession(sessionId) {
   var sessions = getJclubSessions();
@@ -656,10 +734,10 @@ function removePaperFromSession(sessionId, paperIdx) {
   renderJclub();
 }
 function deleteSession(sessionId) {
-  if (!confirm('Eliminar esta sess\u00e3o?')) return;
-  var sessions = getJclubSessions().filter(function(x) { return x.id !== sessionId; });
-  saveJclubSessions(sessions);
-  renderJclub();
+  showConfirm('Eliminar esta sess\u00e3o?', function() {
+    var sessions = getJclubSessions().filter(function(x) { return x.id !== sessionId; });
+    saveJclubSessions(sessions); renderJclub();
+  });
 }
 async function analyzeSession(sessionId) {
   if (!CLAUDE_KEY) { alert('Adiciona a tua API Key primeiro.'); return; }
