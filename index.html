@@ -84,6 +84,11 @@
     </div>
   </div>
 
+  <div id="restoreBanner" style="display:none;background:var(--accent-light);border:1px solid var(--accent);border-radius:12px;padding:12px 16px;margin-bottom:16px;align-items:center;justify-content:space-between;gap:10px;">
+    <span style="font-size:13px;color:var(--accent);">↩ Sessão anterior recuperada</span>
+    <button onclick="clearState()" style="font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;">Limpar</button>
+  </div>
+
   <div class="card">
     <div class="card-title">Qual é o artigo que procuras?</div>
     <div class="field">
@@ -199,6 +204,53 @@
   // Load on start
   loadProfile();
 
+  // Save current result state before leaving app
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) saveState();
+  });
+  window.addEventListener('pagehide', saveState);
+
+  function saveState(){
+    try{
+      const emailEl = document.getElementById('emailBody');
+      const authorEl = document.getElementById('authorName');
+      const affilEl = document.getElementById('authorAffil');
+      const emailVisible = document.getElementById('resultEmail').style.display !== 'none';
+      if(emailVisible){
+        localStorage.setItem('pq_state', JSON.stringify({
+          email: emailEl.value,
+          author: authorEl.textContent,
+          affil: affilEl.textContent,
+          scholar: document.getElementById('btnScholar').href,
+          pubmed: document.getElementById('btnPubmed').href,
+          rgate: document.getElementById('btnRgate').href,
+        }));
+      }
+    }catch(e){}
+  }
+
+  function restoreState(){
+    try{
+      const s = JSON.parse(localStorage.getItem('pq_state')||'null');
+      if(!s || !s.email) return;
+      document.getElementById('emailBody').value = s.email;
+      document.getElementById('authorName').textContent = s.author;
+      document.getElementById('authorAffil').textContent = s.affil;
+      document.getElementById('btnScholar').href = s.scholar||'#';
+      document.getElementById('btnPubmed').href = s.pubmed||'#';
+      document.getElementById('btnRgate').href = s.rgate||'#';
+      document.getElementById('resultEmail').style.display = 'block';
+      document.getElementById('sentBtn').classList.remove('hidden');
+      document.getElementById('sentConfirm').style.display = 'none';
+      document.getElementById('resetBtn').classList.remove('hidden');
+      // Show restore banner
+      const banner = document.getElementById('restoreBanner');
+      if(banner) banner.style.display = 'flex';
+    }catch(e){}
+  }
+
+  restoreState();
+
   function addLog(text,type){
     const d=document.createElement('div');
     d.className='log-line log-'+(type||'info');
@@ -214,6 +266,8 @@
   }
 
   function reset(){
+    try{localStorage.removeItem('pq_state');}catch(e){}
+    const b=document.getElementById('restoreBanner');if(b)b.style.display='none';
     g('queryInput').value='';
     g('logLines').innerHTML='';
     g('logPanel').style.display='none';
@@ -223,6 +277,13 @@
     g('sentBtn').classList.remove('hidden');
     hide('resetBtn');
     setRunning(false);
+  }
+
+  function clearState(){
+    try{localStorage.removeItem('pq_state');}catch(e){}
+    const b=document.getElementById('restoreBanner');if(b)b.style.display='none';
+    document.getElementById('resultEmail').style.display='none';
+    document.getElementById('resetBtn').classList.add('hidden');
   }
 
   function copyEmail(){
