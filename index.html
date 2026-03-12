@@ -22,11 +22,10 @@
     .logo{width:48px;height:48px;border-radius:12px;}
     .brand{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--text);}
     .brand-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+    .restore-banner{background:var(--accent-light);border:1px solid var(--accent);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:none;align-items:center;justify-content:space-between;gap:10px;}
     .card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
     .card-title{font-family:'Fraunces',serif;font-size:13px;font-style:italic;color:var(--text3);margin-bottom:14px;}
     .profile-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
-    .profile-saved{font-size:11px;color:var(--accent);font-weight:500;display:none;}
-    .btn-clear-profile{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;}
     .field{margin-bottom:14px;}
     label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:6px;letter-spacing:0.5px;text-transform:uppercase;}
     input,textarea{width:100%;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;transition:border-color 0.2s;-webkit-appearance:none;}
@@ -36,7 +35,7 @@
     .grid-3{display:grid;grid-template-columns:1fr;gap:10px;}
     @media(min-width:480px){.grid-3{grid-template-columns:1fr 1fr 1fr;}}
     .btn-row{display:flex;gap:10px;margin-top:16px;}
-    .btn-primary{flex:1;padding:14px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+    .btn-primary{flex:1;padding:14px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;}
     .btn-primary:active{background:var(--accent2);}
     .btn-primary:disabled{background:var(--border);color:var(--text3);cursor:not-allowed;}
     .btn-secondary{padding:14px 18px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
@@ -54,17 +53,19 @@
     .author-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;}
     .author-name{font-size:14px;font-weight:500;color:var(--text);}
     .author-affil{font-size:12px;color:var(--text3);margin-top:1px;}
-    .btn-copy{padding:7px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+    .btn-copy{padding:7px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;}
     .btn-copy.copied{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
     textarea.email-body{min-height:200px;resize:vertical;font-size:13px;line-height:1.8;color:var(--text);background:var(--cream);}
     .find-email-box{margin-top:14px;padding:14px;background:var(--blue-light);border:1px solid #bfdbfe;border-radius:12px;}
     .find-email-label{font-size:11px;font-weight:500;color:var(--blue);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;}
     .find-email-btns{display:flex;gap:8px;flex-wrap:wrap;}
-    .btn-find{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-decoration:none;border:1.5px solid;cursor:pointer;}
+    .btn-find{display:inline-flex;align-items:center;padding:8px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-decoration:none;border:1.5px solid;cursor:pointer;}
     .btn-find-scholar{background:#fff;border-color:#4285f4;color:#4285f4;}
     .btn-find-pubmed{background:#fff;border-color:#2e86c1;color:#2e86c1;}
-    .btn-find-rgate{background:#fff;border-color:#c0392b;color:#c0392b;}
-    .btn-sent{width:100%;margin-top:12px;padding:13px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
+    .btn-find-google{background:#fff;border-color:#c0392b;color:#c0392b;}
+    .action-row{display:flex;gap:10px;margin-top:12px;}
+    .btn-mail{flex:1;padding:13px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;}
+    .btn-sent{padding:13px 18px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;flex-shrink:0;}
     .sent-confirm{margin-top:12px;padding:12px 14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:10px;font-size:13px;color:var(--accent);text-align:center;display:none;}
     .coffee-bar{position:fixed;bottom:env(safe-area-inset-bottom,0);left:0;right:0;background:rgba(248,246,241,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:100;}
     .coffee-text{font-size:12px;color:var(--text3);}
@@ -84,7 +85,7 @@
     </div>
   </div>
 
-  <div id="restoreBanner" style="display:none;background:var(--accent-light);border:1px solid var(--accent);border-radius:12px;padding:12px 16px;margin-bottom:16px;align-items:center;justify-content:space-between;gap:10px;">
+  <div class="restore-banner" id="restoreBanner">
     <span style="font-size:13px;color:var(--accent);">↩ Sessão anterior recuperada</span>
     <button onclick="clearState()" style="font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;">Limpar</button>
   </div>
@@ -99,8 +100,8 @@
     <div class="profile-header">
       <div class="card-title" style="margin-bottom:0">O teu perfil <span style="font-size:11px;color:var(--text3)">(opcional)</span></div>
       <div style="display:flex;align-items:center;gap:10px;">
-        <span class="profile-saved" id="profileSaved">✓ Guardado</span>
-        <button class="btn-clear-profile" id="btnClearProfile" onclick="clearProfile()" style="display:none">Limpar</button>
+        <span id="profileSaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">✓ Guardado</span>
+        <button id="btnClearProfile" onclick="clearProfile()" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;display:none;">Limpar</button>
       </div>
     </div>
     <div class="grid-3" style="margin-top:14px;">
@@ -141,11 +142,14 @@
       <div class="find-email-btns">
         <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Google Scholar</a>
         <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
-        <a class="btn-find btn-find-rgate" id="btnRgate" href="#" target="_blank">Google + Email</a>
+        <a class="btn-find btn-find-google" id="btnRgate" href="#" target="_blank">Google + Email</a>
       </div>
     </div>
-    <button class="btn-sent" id="sentBtn" onclick="markSent()">✓ Marcar como enviado</button>
-    <div class="sent-confirm" id="sentConfirm">✓ Enviado! Se não houver resposta em 5–7 dias, tenta o ResearchGate.</div>
+    <div class="action-row">
+      <a class="btn-mail" id="btnMailto" href="#">✉️ Abrir no Mail</a>
+      <button class="btn-sent" id="sentBtn" onclick="markSent()">✓ Enviado</button>
+    </div>
+    <div class="sent-confirm" id="sentConfirm">✓ Enviado! Se não houver resposta em 5–7 dias, tenta o Google + Email.</div>
   </div>
 
   <div class="footer">CrossRef · Unpaywall · Pedir artigos a autores é legal</div>
@@ -157,271 +161,300 @@
 </div>
 
 <script>
-  let isRunning=false;
-  function g(id){return document.getElementById(id);}
-  function show(id){g(id).classList.remove('hidden');}
-  function hide(id){g(id).classList.add('hidden');}
+  var isRunning = false;
 
-  // --- PROFILE PERSISTENCE ---
+  function g(id){ return document.getElementById(id); }
+  function show(id){ g(id).classList.remove('hidden'); }
+  function hide(id){ g(id).classList.add('hidden'); }
+
+  // --- PROFILE ---
   function loadProfile(){
     try{
-      const p=JSON.parse(localStorage.getItem('pq_profile')||'{}');
-      if(p.name) g('nameInput').value=p.name;
-      if(p.role) g('roleInput').value=p.role;
-      if(p.inst) g('instInput').value=p.inst;
-      if(p.name||p.role||p.inst){
-        g('profileSaved').style.display='inline';
-        g('btnClearProfile').style.display='inline';
+      var p = JSON.parse(localStorage.getItem('pq_profile') || '{}');
+      if(p.name) g('nameInput').value = p.name;
+      if(p.role) g('roleInput').value = p.role;
+      if(p.inst) g('instInput').value = p.inst;
+      if(p.name || p.role || p.inst){
+        g('profileSaved').style.display = 'inline';
+        g('btnClearProfile').style.display = 'inline';
       }
     }catch(e){}
   }
 
   function saveProfile(){
-    const name=g('nameInput').value.trim();
-    const role=g('roleInput').value.trim();
-    const inst=g('instInput').value.trim();
-    if(name||role||inst){
+    var name = g('nameInput').value.trim();
+    var role = g('roleInput').value.trim();
+    var inst = g('instInput').value.trim();
+    if(name || role || inst){
       try{
-        localStorage.setItem('pq_profile',JSON.stringify({name,role,inst}));
-        g('profileSaved').style.display='inline';
-        g('btnClearProfile').style.display='inline';
+        localStorage.setItem('pq_profile', JSON.stringify({name:name, role:role, inst:inst}));
+        g('profileSaved').style.display = 'inline';
+        g('btnClearProfile').style.display = 'inline';
       }catch(e){}
     }
   }
 
   function clearProfile(){
     try{ localStorage.removeItem('pq_profile'); }catch(e){}
-    ['nameInput','roleInput','instInput'].forEach(id=>g(id).value='');
-    g('profileSaved').style.display='none';
-    g('btnClearProfile').style.display='none';
+    g('nameInput').value = '';
+    g('roleInput').value = '';
+    g('instInput').value = '';
+    g('profileSaved').style.display = 'none';
+    g('btnClearProfile').style.display = 'none';
   }
 
-  // Save on every keystroke
-  ['nameInput','roleInput','instInput'].forEach(id=>{
+  ['nameInput','roleInput','instInput'].forEach(function(id){
     g(id).addEventListener('input', saveProfile);
   });
 
-  // Load on start
-  loadProfile();
-
-  // Save current result state before leaving app
-  document.addEventListener('visibilitychange', function(){
-    if(document.hidden) saveState();
-  });
-  window.addEventListener('pagehide', saveState);
-
+  // --- STATE (email result) ---
   function saveState(){
     try{
-      const emailEl = document.getElementById('emailBody');
-      const authorEl = document.getElementById('authorName');
-      const affilEl = document.getElementById('authorAffil');
-      const emailVisible = document.getElementById('resultEmail').style.display !== 'none';
-      if(emailVisible){
-        localStorage.setItem('pq_state', JSON.stringify({
-          email: emailEl.value,
-          author: authorEl.textContent,
-          affil: affilEl.textContent,
-          scholar: document.getElementById('btnScholar').href,
-          pubmed: document.getElementById('btnPubmed').href,
-          rgate: document.getElementById('btnRgate').href,
-        }));
-      }
+      if(g('resultEmail').style.display === 'none') return;
+      localStorage.setItem('pq_state', JSON.stringify({
+        email: g('emailBody').value,
+        author: g('authorName').textContent,
+        affil: g('authorAffil').textContent,
+        scholar: g('btnScholar').href,
+        pubmed: g('btnPubmed').href,
+        rgate: g('btnRgate').href,
+        mailto: g('btnMailto').href
+      }));
     }catch(e){}
   }
 
   function restoreState(){
     try{
-      const s = JSON.parse(localStorage.getItem('pq_state')||'null');
+      var s = JSON.parse(localStorage.getItem('pq_state') || 'null');
       if(!s || !s.email) return;
-      document.getElementById('emailBody').value = s.email;
-      document.getElementById('authorName').textContent = s.author;
-      document.getElementById('authorAffil').textContent = s.affil;
-      document.getElementById('btnScholar').href = s.scholar||'#';
-      document.getElementById('btnPubmed').href = s.pubmed||'#';
-      document.getElementById('btnRgate').href = s.rgate||'#';
-      document.getElementById('resultEmail').style.display = 'block';
-      document.getElementById('sentBtn').classList.remove('hidden');
-      document.getElementById('sentConfirm').style.display = 'none';
-      document.getElementById('resetBtn').classList.remove('hidden');
-      // Show restore banner
-      const banner = document.getElementById('restoreBanner');
-      if(banner) banner.style.display = 'flex';
+      g('emailBody').value = s.email;
+      g('authorName').textContent = s.author;
+      g('authorAffil').textContent = s.affil;
+      g('btnScholar').href = s.scholar || '#';
+      g('btnPubmed').href = s.pubmed || '#';
+      g('btnRgate').href = s.rgate || '#';
+      g('btnMailto').href = s.mailto || '#';
+      g('resultEmail').style.display = 'block';
+      g('sentBtn').classList.remove('hidden');
+      g('sentConfirm').style.display = 'none';
+      show('resetBtn');
+      g('restoreBanner').style.display = 'flex';
     }catch(e){}
   }
 
-  restoreState();
+  function clearState(){
+    try{ localStorage.removeItem('pq_state'); }catch(e){}
+    g('restoreBanner').style.display = 'none';
+    g('resultEmail').style.display = 'none';
+    hide('resetBtn');
+  }
 
-  function addLog(text,type){
-    const d=document.createElement('div');
-    d.className='log-line log-'+(type||'info');
-    d.textContent=text;
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) saveState();
+  });
+  window.addEventListener('pagehide', saveState);
+
+  // --- UTILS ---
+  function addLog(text, type){
+    var d = document.createElement('div');
+    d.className = 'log-line log-' + (type || 'info');
+    d.textContent = text;
     g('logLines').appendChild(d);
-    g('logPanel').scrollTop=g('logPanel').scrollHeight;
+    g('logPanel').scrollTop = g('logPanel').scrollHeight;
   }
 
   function setRunning(val){
-    isRunning=val;
-    g('runBtn').disabled=val;
-    g('runBtn').textContent=val?'A pesquisar…':'Pesquisar artigo';
+    isRunning = val;
+    g('runBtn').disabled = val;
+    g('runBtn').textContent = val ? 'A pesquisar…' : 'Pesquisar artigo';
   }
 
   function reset(){
-    try{localStorage.removeItem('pq_state');}catch(e){}
-    const b=document.getElementById('restoreBanner');if(b)b.style.display='none';
-    g('queryInput').value='';
-    g('logLines').innerHTML='';
-    g('logPanel').style.display='none';
-    g('resultOA').style.display='none';
-    g('resultEmail').style.display='none';
-    g('sentConfirm').style.display='none';
+    try{ localStorage.removeItem('pq_state'); }catch(e){}
+    g('restoreBanner').style.display = 'none';
+    g('queryInput').value = '';
+    g('logLines').innerHTML = '';
+    g('logPanel').style.display = 'none';
+    g('resultOA').style.display = 'none';
+    g('resultEmail').style.display = 'none';
+    g('sentConfirm').style.display = 'none';
     g('sentBtn').classList.remove('hidden');
     hide('resetBtn');
     setRunning(false);
   }
 
-  function clearState(){
-    try{localStorage.removeItem('pq_state');}catch(e){}
-    const b=document.getElementById('restoreBanner');if(b)b.style.display='none';
-    document.getElementById('resultEmail').style.display='none';
-    document.getElementById('resetBtn').classList.add('hidden');
-  }
-
   function copyEmail(){
-    navigator.clipboard.writeText(g('emailBody').value).catch(()=>{g('emailBody').select();document.execCommand('copy');});
-    g('copyBtn').textContent='✓ Copiado!';
+    navigator.clipboard.writeText(g('emailBody').value).catch(function(){
+      g('emailBody').select();
+      document.execCommand('copy');
+    });
+    g('copyBtn').textContent = '✓ Copiado!';
     g('copyBtn').classList.add('copied');
-    setTimeout(()=>{g('copyBtn').textContent='Copiar';g('copyBtn').classList.remove('copied');},2000);
+    setTimeout(function(){ g('copyBtn').textContent = 'Copiar'; g('copyBtn').classList.remove('copied'); }, 2000);
   }
 
-  function markSent(){hide('sentBtn');g('sentConfirm').style.display='block';}
+  function markSent(){
+    hide('sentBtn');
+    g('sentConfirm').style.display = 'block';
+  }
+
+  function updateMailto(toEmail){
+    var body = g('emailBody').value;
+    var parts = body.split('\n\n');
+    var subject = encodeURIComponent(parts[0] || 'Request for PDF');
+    var bodyText = encodeURIComponent(parts.slice(1).join('\n\n'));
+    var to = toEmail ? encodeURIComponent(toEmail) : '';
+    g('btnMailto').href = 'mailto:' + to + '?subject=' + subject + '&body=' + bodyText;
+  }
 
   function setAuthorLinks(authorName){
-    const q=encodeURIComponent(authorName);
-    g('btnScholar').href='https://scholar.google.com/scholar?q='+q;
-    g('btnPubmed').href='https://pubmed.ncbi.nlm.nih.gov/?term='+q+'[author]';
-    g('btnRgate').href='https://www.google.com/search?q='+q+'+email+researcher';
+    var q = encodeURIComponent(authorName);
+    g('btnScholar').href = 'https://scholar.google.com/scholar?q=' + q;
+    g('btnPubmed').href = 'https://pubmed.ncbi.nlm.nih.gov/?term=' + q + '[author]';
+    g('btnRgate').href = 'https://www.google.com/search?q=' + q + '+researcher+email';
   }
 
+  // --- API ---
   async function fetchByDOI(doi){
-    const r=await fetch('https://api.crossref.org/works/'+encodeURIComponent(doi));
+    var r = await fetch('https://api.crossref.org/works/' + encodeURIComponent(doi));
     if(!r.ok) throw new Error('DOI não encontrado');
     return (await r.json()).message;
   }
 
   async function fetchByTitle(title){
-    const r=await fetch('https://api.crossref.org/works?query.title='+encodeURIComponent(title)+'&rows=1&select=DOI,title,author,published,container-title');
+    var r = await fetch('https://api.crossref.org/works?query.title=' + encodeURIComponent(title) + '&rows=1&select=DOI,title,author,published,container-title');
     if(!r.ok) throw new Error('Erro na pesquisa');
-    const items=(await r.json()).message?.items;
-    if(!items?.length) throw new Error('Nenhum resultado encontrado');
+    var data = await r.json(); var items = data.message && data.message.items;
+    if(!items || !items.length) throw new Error('Nenhum resultado encontrado');
     return items[0];
-  }
-
-  async function findEmailPubMed(doi){
-    try{
-      const searchR=await fetch("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term="+encodeURIComponent(doi)+"[doi]&retmode=json");
-      if(!searchR.ok) return null;
-      const searchD=await searchR.json();
-      const pmid=searchD.esearchresult?.idlist?.[0];
-      if(!pmid) return null;
-      const fetchR=await fetch("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id="+pmid+"&retmode=xml");
-      if(!fetchR.ok) return null;
-      const xml=await fetchR.text();
-      const emails=[...xml.matchAll(/[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}/g)].map(m=>m[0]);
-      const real=emails.filter(e=>!e.includes("nlm.nih.gov")&&!e.includes("pubmed"));
-      return real.length>0?real[0]:null;
-    }catch{return null;}
   }
 
   async function checkOA(doi){
     try{
-      const r=await fetch('https://api.unpaywall.org/v2/'+encodeURIComponent(doi)+'?email=agent@paperquest.io');
+      var r = await fetch('https://api.unpaywall.org/v2/' + encodeURIComponent(doi) + '?email=agent@paperquest.io');
       if(!r.ok) return null;
-      const d=await r.json();
-      return d.is_oa&&d.best_oa_location?.url?d.best_oa_location.url:null;
-    }catch{return null;}
+      var d = await r.json();
+      return (d.is_oa && d.best_oa_location && d.best_oa_location.url) ? d.best_oa_location.url : null;
+    }catch(e){ return null; }
   }
 
-  function generateEmailLocally(article,author,req){
-    const name=req.name||'A colleague';
-    const role=req.role||'researcher';
-    const inst=req.inst||'our institution';
-    const authorFirst=author.name.split(' ')[0]||'Dear Author';
-    const subject='Request for PDF: '+article.title.substring(0,60)+(article.title.length>60?'...':'');
-    const body=`Dear ${authorFirst},\n\nI am ${name}, a ${role} at ${inst}. I came across your article "${article.title}"${article.journal?' published in '+article.journal:''}${article.year?' ('+article.year+')':''} and would greatly appreciate receiving a PDF copy, as I am unable to access it through our institutional subscription.\n\nYour work is directly relevant to my clinical practice and I look forward to reading it in full.\n\nThank you very much for your time and consideration.\n\nBest regards,\n${name}\n${role}\n${inst}`;
-    return subject+'\n\n'+body;
+  async function findEmailPubMed(doi){
+    try{
+      var r1 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=' + encodeURIComponent(doi) + '[doi]&retmode=json');
+      if(!r1.ok) return null;
+      var d1 = await r1.json();
+      var pmid = d1.esearchresult && d1.esearchresult.idlist && d1.esearchresult.idlist[0];
+      if(!pmid) return null;
+      var r2 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=' + pmid + '&retmode=xml');
+      if(!r2.ok) return null;
+      var xml = await r2.text();
+      var matches = xml.match(/[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}/g) || [];
+      var real = matches.filter(function(e){ return !e.includes('nlm.nih.gov') && !e.includes('example'); });
+      return real.length > 0 ? real[0] : null;
+    }catch(e){ return null; }
   }
 
+  function generateEmail(article, author, req){
+    var name = req.name || 'A colleague';
+    var role = req.role || 'researcher';
+    var inst = req.inst || 'our institution';
+    var firstName = author.name.split(' ')[0] || 'Dear Author';
+    var subject = 'Request for PDF: ' + article.title.substring(0,60) + (article.title.length > 60 ? '...' : '');
+    var body = 'Dear ' + firstName + ',\n\n'
+      + 'I am ' + name + ', a ' + role + ' at ' + inst + '. I came across your article "'
+      + article.title + '"'
+      + (article.journal ? ' published in ' + article.journal : '')
+      + (article.year ? ' (' + article.year + ')' : '')
+      + ' and would greatly appreciate receiving a PDF copy, as I am unable to access it through our institutional subscription.\n\n'
+      + 'Your work is directly relevant to my clinical practice and I look forward to reading it in full.\n\n'
+      + 'Thank you very much for your time and consideration.\n\n'
+      + 'Best regards,\n' + name + '\n' + role + '\n' + inst;
+    return subject + '\n\n' + body;
+  }
+
+  // --- MAIN ---
   async function runAgent(){
-    const query=g('queryInput').value.trim();
-    if(!query||isRunning) return;
+    var query = g('queryInput').value.trim();
+    if(!query || isRunning) return;
     saveProfile();
     setRunning(true);
-    g('resultOA').style.display='none';
-    g('resultEmail').style.display='none';
+    g('resultOA').style.display = 'none';
+    g('resultEmail').style.display = 'none';
+    g('restoreBanner').style.display = 'none';
     hide('resetBtn');
-    g('logLines').innerHTML='';
-    g('logPanel').style.display='block';
+    g('logLines').innerHTML = '';
+    g('logPanel').style.display = 'block';
 
-    const req={name:g('nameInput').value.trim(),role:g('roleInput').value.trim(),inst:g('instInput').value.trim()};
+    var req = {
+      name: g('nameInput').value.trim(),
+      role: g('roleInput').value.trim(),
+      inst: g('instInput').value.trim()
+    };
 
     try{
-      const doiMatch=query.match(/10\.\d{4,}\/\S+/);
-      addLog((doiMatch?'→ DOI detectado':'→ Título detectado')+' · A consultar CrossRef…','accent');
+      var doiMatch = query.match(/10\.\d{4,}\/\S+/);
+      addLog((doiMatch ? '→ DOI detectado' : '→ Título detectado') + ' · A consultar CrossRef…', 'accent');
 
-      const meta=doiMatch?await fetchByDOI(doiMatch[0]):await fetchByTitle(query);
-      const doi=meta.DOI||'';
-      const title=Array.isArray(meta.title)?meta.title[0]:meta.title||'Sem título';
-      const authors=meta.author||[];
-      const journal=Array.isArray(meta['container-title'])?meta['container-title'][0]:meta['container-title']||'';
-      const year=meta.published?.['date-parts']?.[0]?.[0]||'';
-      const fa=authors[0];
-      const authorName=fa?((fa.given||'')+' '+(fa.family||'')).trim():'Autor desconhecido';
-      const authorAffil=fa?.affiliation?.[0]?.name||'';
+      var meta = doiMatch ? await fetchByDOI(doiMatch[0]) : await fetchByTitle(query);
+      var doi = meta.DOI || '';
+      var title = Array.isArray(meta.title) ? meta.title[0] : (meta.title || 'Sem título');
+      var authors = meta.author || [];
+      var journal = Array.isArray(meta['container-title']) ? meta['container-title'][0] : (meta['container-title'] || '');
+      var year = meta.published && meta.published['date-parts'] && meta.published['date-parts'][0] ? meta.published['date-parts'][0][0] : '';
+      var fa = authors[0];
+      var authorName = fa ? ((fa.given || '') + ' ' + (fa.family || '')).trim() : 'Autor desconhecido';
+      var authorAffil = fa && fa.affiliation && fa.affiliation[0] ? fa.affiliation[0].name : '';
 
-      addLog('✓ '+title.substring(0,65)+(title.length>65?'…':''),'white');
-      addLog(journal+(year?' · '+year:'')+' · '+authors.length+' autor(es)','dim');
-      addLog('→ Primeiro autor: '+authorName,'accent');
-      addLog('→ A verificar acesso livre (Unpaywall)…','dim');
+      addLog('✓ ' + title.substring(0,65) + (title.length > 65 ? '…' : ''), 'white');
+      addLog(journal + (year ? ' · ' + year : '') + ' · ' + authors.length + ' autor(es)', 'dim');
+      addLog('→ Primeiro autor: ' + authorName, 'accent');
+      addLog('→ A verificar acesso livre (Unpaywall)…', 'dim');
 
-      const oaUrl=doi?await checkOA(doi):null;
+      var oaUrl = doi ? await checkOA(doi) : null;
 
       if(oaUrl){
-        addLog('✓ Versão open access encontrada!','info');
-        g('oaTitle').textContent=title;
-        g('oaMeta').textContent=journal+' · '+year+(doi?' · DOI: '+doi:'');
-        g('oaLink').href=oaUrl;
-        g('resultOA').style.display='block';
+        addLog('✓ Versão open access encontrada!', 'info');
+        g('oaTitle').textContent = title;
+        g('oaMeta').textContent = journal + ' · ' + year + (doi ? ' · DOI: ' + doi : '');
+        g('oaLink').href = oaUrl;
+        g('resultOA').style.display = 'block';
         setRunning(false);
         show('resetBtn');
         return;
       }
 
-      addLog('✗ Sem acesso livre · A procurar email do autor…','warn');
-      const foundEmail = doi ? await findEmailPubMed(doi) : null;
+      addLog('✗ Sem acesso livre · A procurar email do autor…', 'warn');
+      var foundEmail = doi ? await findEmailPubMed(doi) : null;
       if(foundEmail){
-        addLog('✓ Email encontrado via PubMed: '+foundEmail,'info');
+        addLog('✓ Email encontrado: ' + foundEmail, 'info');
       } else {
-        addLog('✗ Email não encontrado automaticamente.','dim');
+        addLog('✗ Email não encontrado automaticamente.', 'dim');
       }
-      const emailText=generateEmailLocally({title,journal,year},{name:authorName,affil:authorAffil},req);
-      addLog('✓ Email gerado! Copia e envia.','info');
 
-      g('authorName').textContent=authorName;
-      g('authorAffil').textContent=foundEmail ? '📧 '+foundEmail : (authorAffil.substring(0,60)||'Email não encontrado automaticamente');
-      g('emailBody').value=emailText;
+      var emailText = generateEmail({title:title, journal:journal, year:year}, {name:authorName}, req);
+      addLog('✓ Email gerado! Abre no Mail e envia.', 'info');
+
+      g('authorName').textContent = authorName;
+      g('authorAffil').textContent = foundEmail ? '📧 ' + foundEmail : (authorAffil.substring(0,60) || 'Email não encontrado automaticamente');
+      g('emailBody').value = emailText;
       setAuthorLinks(authorName);
-      g('resultEmail').style.display='block';
+      updateMailto(foundEmail || '');
+      g('resultEmail').style.display = 'block';
       g('sentBtn').classList.remove('hidden');
-      g('sentConfirm').style.display='none';
+      g('sentConfirm').style.display = 'none';
 
     }catch(err){
-      addLog('✗ Erro: '+err.message,'error');
-      addLog('Tenta com o DOI completo ou título mais específico.','dim');
+      addLog('✗ Erro: ' + err.message, 'error');
+      addLog('Tenta com o DOI completo ou título mais específico.', 'dim');
     }
 
     setRunning(false);
     show('resetBtn');
   }
+
+  // Init
+  loadProfile();
+  restoreState();
 </script>
 
 </body>
