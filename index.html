@@ -525,7 +525,7 @@
 
 <script>
 
-// ── MODAL / TOAST (replace prompt/confirm for iOS PWA) ──
+// -- MODAL / TOAST (replace prompt/confirm for iOS PWA) --
 function showModal(title, label, defaultVal, onOk) {
   g('modalTitle').textContent = title;
   g('modalLabel').textContent = label;
@@ -557,7 +557,7 @@ function showToast(msg) {
   setTimeout(function() { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; }, 2200);
 }
 
-// ── GLOBALS ──
+// -- GLOBALS --
 var isRunning = false;
 var emailLang = 'en';
 var currentArticle = null;
@@ -577,7 +577,7 @@ function show(id) { g(id).classList.remove('hidden'); }
 function hide(id) { g(id).classList.add('hidden'); }
 function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── PAGES ──
+// -- PAGES --
 function openAnalysis() {
   g('pageMain').classList.remove('active');
   g('pageAnalysis').classList.add('active');
@@ -589,7 +589,7 @@ function closeAnalysis() {
   g('pageMain').classList.add('active');
 }
 
-// ── THEME ──
+// -- THEME --
 function initTheme() {
   var t = localStorage.getItem('pq_theme') || 'light';
   document.documentElement.setAttribute('data-theme', t);
@@ -602,7 +602,7 @@ function toggleTheme() {
   g('btnTheme').textContent = t === 'dark' ? '\u2600\ufe0f' : '\ud83c\udf19';
 }
 
-// ── TABS ──
+// -- TABS --
 function switchTab(tab) {
   var tabs = ['search', 'library', 'history', 'jclub'];
   tabs.forEach(function(t, i) {
@@ -616,7 +616,7 @@ function switchTab(tab) {
   if (tab === 'jclub') renderJclub();
 }
 
-// ── LANG ──
+// -- LANG --
 function setLang(lang) {
   emailLang = lang;
   g('langEN').classList.toggle('active', lang === 'en');
@@ -624,7 +624,7 @@ function setLang(lang) {
   if (currentArticle) regenerateEmail();
 }
 
-// ── LLM SELECTOR ──
+// -- LLM SELECTOR --
 var LLM_CONFIG = {
   claude:  { label: 'Claude API Key',  placeholder: 'sk-ant-api03-...', hint: 'Cria a tua chave em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> &rarr; API Keys.', storageKey: 'pq_apikey' },
   gemini:  { label: 'Gemini API Key',  placeholder: 'AIza...', hint: 'Cria a tua chave em <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com</a> &rarr; API Keys. Gr&aacute;tis!', storageKey: 'pq_geminikey' },
@@ -680,7 +680,7 @@ function loadLLM() {
   }, 100);
 }
 
-// ── PROFILE ──
+// -- PROFILE --
 function loadProfile() {
   try {
     var p = JSON.parse(localStorage.getItem('pq_profile') || '{}');
@@ -715,7 +715,7 @@ function clearProfile() {
   g('btnClearProfile').style.display = 'none';
 }
 
-// ── API KEY ──
+// -- API KEY --
 function loadApiKey() {
   CLAUDE_KEY = localStorage.getItem('pq_apikey') || '';
   GEMINI_KEY = localStorage.getItem('pq_geminikey') || '';
@@ -733,7 +733,7 @@ function saveApiKey() {
   g('apiKeySaved').style.display = 'inline';
 }
 
-// ── HISTORY ──
+// -- HISTORY --
 function getHistory() { try { return JSON.parse(localStorage.getItem('pq_history') || '[]'); } catch(e) { return []; } }
 function addToHistory(item) {
   var h = getHistory();
@@ -762,7 +762,7 @@ function loadFromHistory(i) {
   switchTab('search');
 }
 
-// ── LIBRARY ──
+// -- LIBRARY --
 function getLibrary() { try { return JSON.parse(localStorage.getItem('pq_library') || '[]'); } catch(e) { return []; } }
 function saveLibraryData(lib) { try { localStorage.setItem('pq_library', JSON.stringify(lib)); } catch(e) {} }
 function saveToLibrary() {
@@ -829,7 +829,7 @@ function clearLibrary() {
   showConfirm('Limpar toda a biblioteca?', function() { try { localStorage.removeItem('pq_library'); } catch(e) {} renderLibrary(); });
 }
 
-// ── JOURNAL CLUB ──
+// -- JOURNAL CLUB --
 function getJclubSessions() { try { return JSON.parse(localStorage.getItem('pq_jclub') || '[]'); } catch(e) { return []; } }
 function saveJclubSessions(s) { try { localStorage.setItem('pq_jclub', JSON.stringify(s)); } catch(e) {} }
 function createSession() {
@@ -1008,7 +1008,7 @@ function renderJclub() {
   el.innerHTML = html;
 }
 
-// ── FORMAT AI OUTPUT ──
+// -- FORMAT AI OUTPUT --
 function formatAIOutput(text) {
   if (!text) return '';
   var html = text;
@@ -1024,7 +1024,7 @@ function formatAIOutput(text) {
   return '<div class="ai-output">' + html + '</div>';
 }
 
-// ── EXPORT ──
+// -- EXPORT --
 function exportAnalysis() {
   var title = currentArticle ? currentArticle.title : 'Artigo';
   var summary = g('analysisSummaryText').innerText || '';
@@ -1033,7 +1033,7 @@ function exportAnalysis() {
   else { navigator.clipboard.writeText(text); alert('An\u00e1lise copiada!'); }
 }
 
-// ── STATE ──
+// -- STATE --
 function saveState() {
   try {
     if (!currentArticle) return;
@@ -1073,7 +1073,7 @@ function clearState() {
 document.addEventListener('visibilitychange', function() { if (document.hidden) saveState(); });
 window.addEventListener('pagehide', saveState);
 
-// ── UTILS ──
+// -- UTILS --
 function setRunning(val) {
   isRunning = val;
   g('runBtn').disabled = val;
@@ -1084,7 +1084,7 @@ function setRunning(val) {
   if (loader) loader.classList.toggle('active', val);
 }
 
-// ── ONBOARDING ──
+// -- ONBOARDING --
 function checkOnboarding() {
   try {
     var seen = localStorage.getItem('pq_onboarding_seen');
@@ -1134,7 +1134,7 @@ function shareArticle() {
   else { navigator.clipboard.writeText(url); alert('Link copiado!'); }
 }
 
-// ── EMAIL ──
+// -- EMAIL --
 function generateEmail(article, authorName, req) {
   var name = req.name || 'A colleague';
   var role = req.role || 'researcher';
@@ -1157,7 +1157,7 @@ function regenerateEmail() {
   updateMailto(currentFoundEmail);
 }
 
-// ── ARTICLE CARD ──
+// -- ARTICLE CARD --
 function showArticleCard(article, isOA) {
   var el = g('articleStatus');
   if (isOA) { el.className = 'article-status status-oa'; el.textContent = '\u2713 Acesso Livre'; }
@@ -1167,7 +1167,7 @@ function showArticleCard(article, isOA) {
   g('articleCard').style.display = 'block';
 }
 
-// ── CLAUDE STREAMING ──
+// -- CLAUDE STREAMING --
 async function streamClaudeTokens(sysP, usrP, maxTok, onChunk, onDone, signal) {
   if (!CLAUDE_KEY) { onDone('no-key'); return; }
   try {
@@ -1227,7 +1227,7 @@ async function streamClaude(sysP, usrP, onChunk, onDone) {
   } catch(e) { onDone('error:' + e.message); }
 }
 
-// ── GEMINI STREAMING ──
+// -- GEMINI STREAMING --
 async function streamGemini(sysP, usrP, maxTok, onChunk, onDone, signal) {
   if (!GEMINI_KEY) { onDone('no-key'); return; }
   try {
@@ -1263,7 +1263,7 @@ async function streamGemini(sysP, usrP, maxTok, onChunk, onDone, signal) {
   }
 }
 
-// ── OPENAI STREAMING ──
+// -- OPENAI STREAMING --
 async function streamOpenAI(sysP, usrP, maxTok, onChunk, onDone, signal) {
   if (!OPENAI_KEY) { onDone('no-key'); return; }
   try {
@@ -1297,7 +1297,7 @@ async function streamOpenAI(sysP, usrP, maxTok, onChunk, onDone, signal) {
   }
 }
 
-// ── UNIFIED STREAM ──
+// -- UNIFIED STREAM --
 async function streamLLM(sysP, usrP, maxTok, onChunk, onDone, signal) {
   if (currentLLM === 'gemini') return streamGemini(sysP, usrP, maxTok, onChunk, onDone, signal);
   if (currentLLM === 'openai') return streamOpenAI(sysP, usrP, maxTok, onChunk, onDone, signal);
@@ -1309,7 +1309,7 @@ function getActiveKey() {
   return CLAUDE_KEY;
 }
 
-// ── SUGGESTIONS ──
+// -- SUGGESTIONS --
 function showSuggestModal() {
   var el = g('suggestOverlay');
   if (el) { el.style.display = 'flex'; }
@@ -1330,7 +1330,7 @@ async function sendSuggestion() {
   } catch(e) { showToast('Erro: ' + e.message); }
 }
 
-// ── ABSTRACT ──
+// -- ABSTRACT --
 async function fetchAbstract(doi, pmid) {
   try {
     var id = pmid;
@@ -1348,7 +1348,7 @@ async function fetchAbstract(doi, pmid) {
   } catch(e) { return null; }
 }
 
-// ── RELATED ──
+// -- RELATED --
 async function fetchRelated(doi, title) {
   try {
     var query = doi ? doi + '[doi]' : title;
@@ -1369,7 +1369,7 @@ async function fetchRelated(doi, title) {
   } catch(e) { return []; }
 }
 
-// ── ANALYSIS MODE TOGGLE ──
+// -- ANALYSIS MODE TOGGLE --
 var currentMode = 'resume';
 var analysisAbortController = null;
 
@@ -1428,7 +1428,7 @@ function runAnalysisMode() {
   }, signal);
 }
 
-// ── ANALYSIS PAGE ──
+// -- ANALYSIS PAGE --
 async function startAnalysis() {
   if (!currentArticle) return;
   // reset mode to resume on each new article open
@@ -1461,7 +1461,7 @@ async function startAnalysis() {
 
 function loadRelated(pmid) { g('queryInput').value = 'PMID:' + pmid; closeAnalysis(); runAgent(); }
 
-// ── PDF ──
+// -- PDF --
 function onDragOver(e) { e.preventDefault(); g('pdfDrop').classList.add('dragover'); }
 function onDragLeave(e) { g('pdfDrop').classList.remove('dragover'); }
 function onDrop(e) { e.preventDefault(); g('pdfDrop').classList.remove('dragover'); var f = e.dataTransfer.files[0]; if (f) loadPdfFile(f); }
@@ -1526,7 +1526,7 @@ async function analyzePdf() {
   g('btnAnalyzePdf').disabled = false; g('btnAnalyzePdf').textContent = 'Analisar PDF completo';
 }
 
-// ── CHAT ──
+// -- CHAT --
 function getArticleContext() {
   var summary = g('analysisSummaryText').textContent || '';
   return 'Article: ' + (currentArticle ? currentArticle.title : '') + '\n'
@@ -1578,7 +1578,7 @@ async function sendChat() {
   g('btnSend').disabled = false;
 }
 
-// ── API ──
+// -- API --
 async function fetchByDOI(doi) {
   try { var r = await fetch('https://api.crossref.org/works/' + encodeURIComponent(doi)); if (r.ok) return [(await r.json()).message]; } catch(e) {}
   try {
@@ -1693,7 +1693,7 @@ async function selectResult(i) {
   g('resultsList').style.display = 'none'; setRunning(true); await processArticle(items[i]);
 }
 
-// ── INIT ──
+// -- INIT --
 document.getElementById('apiKeyInput').addEventListener('input', saveApiKey);
 ['nameInput','roleInput','instInput'].forEach(function(id){ document.getElementById(id).addEventListener('input', saveProfile); });
 initTheme(); loadProfile(); loadApiKey(); loadLLM(); restoreState(); checkOnboarding();
