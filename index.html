@@ -230,7 +230,7 @@
       <img class="logo" src="icon.png" alt="PaperQuest"/>
       <div class="header-text">
         <div class="brand">PaperQuest</div>
-        <div class="brand-sub">CrossRef &middot; Unpaywall &middot; Claude AI</div>
+        <div class="brand-sub">CrossRef &middot; Unpaywall &middot; Claude &middot; Gemini</div>
       </div>
       <div style="display:flex;gap:6px;">
         <button class="btn-icon" id="btnTheme" onclick="toggleTheme()">&#127769;</button>
@@ -279,99 +279,99 @@
           <div class="lang-row" style="margin-bottom:10px;">
             <button class="btn-lang active" id="llmClaude" onclick="setLLM('claude')">&#129504; Claude</button>
             <button class="btn-lang" id="llmGemini" onclick="setLLM('gemini')">&#10024; Gemini</button>
-            <button class="btn-lang" id="llmOpenai" onclick="setLLM('openai')">&#129302; ChatGPT</button>
-          </div>
-          <div class="profile-header" style="margin-bottom:6px;">
-            <div class="card-title" style="margin-bottom:0;" id="apiKeyLabel">Claude API Key</div>
-            <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">&#10003; Guardada</span>
-          </div>
-          <div class="field" style="margin-bottom:6px;">
-            <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
-          </div>
-          <div style="font-size:11px;color:var(--text3);line-height:1.6;" id="apiKeyHint">
-            Cria a tua chave em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> &rarr; API Keys.
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
-          <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
-        </div>
-        <div class="search-loading" id="searchLoader">
-          <div class="spinner"></div>
-          <span>A pesquisar em CrossRef, Unpaywall e PubMed&hellip;</span>
-        </div>
-      </div>
-      <div class="results-list" id="resultsList">
-        <div class="results-label">Selecciona o artigo correcto</div>
-        <div id="resultsItems"></div>
-      </div>
-      <div class="article-card" id="articleCard">
-        <div class="article-header">
-          <div class="article-status" id="articleStatus"></div>
-          <div class="article-title" id="articleTitle"></div>
-          <div class="article-meta" id="articleMeta"></div>
-        </div>
-        <hr class="article-divider"/>
-        <div class="article-actions">
-          <button class="btn-analyze" onclick="openAnalysis()">&#129504; Analisar com IA</button>
-          <a class="btn-dl hidden" id="oaLink" href="#" target="_blank">&#8595; PDF</a>
-          <button class="btn-sm" onclick="saveToLibrary()" title="Guardar na biblioteca">&#128278;</button>
-          <button class="btn-sm" onclick="addCurrentToJclub()" title="Adicionar ao Journal Club">&#127942;</button>
-          <button class="btn-sm" onclick="shareArticle()" title="Partilhar">&#8599;</button>
-        </div>
-        <div class="email-section" id="emailSection" style="display:none;">
-          <div class="find-email-box">
-            <div class="find-email-label">&#128231; Encontrar email do autor</div>
-            <div class="find-email-btns">
-              <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Scholar</a>
-              <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
-              <a class="btn-find btn-find-google" id="btnRgate" href="#" target="_blank">Google</a>
-              <a class="btn-find btn-find-linkedin" id="btnLinkedIn" href="#" target="_blank">LinkedIn</a>
-            </div>
-          </div>
-          <div>
-            <div class="email-header-row">
-              <div>
-                <div class="email-author" id="emailAuthor"></div>
-                <div class="email-found" id="emailFound"></div>
-              </div>
-              <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
-            </div>
-            <textarea class="email-body" id="emailBody"></textarea>
-            <div class="action-row">
-              <a class="btn-mail" id="btnMailto" href="#">&#9993;&#65039; Abrir no Mail</a>
-              <button class="btn-sent" id="sentBtn" onclick="markSent()">&#10003;</button>
-            </div>
-            <div class="sent-confirm" id="sentConfirm">&#10003; Enviado! Follow-up em 7 dias.</div>
-          </div>
-        </div>
-      </div>
-      <div class="footer">CrossRef &middot; Unpaywall &middot; PubMed &middot; Pedir artigos a autores &eacute; legal</div>
-    </div>
-    <div class="panel" id="panelLibrary">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">A minha biblioteca</div>
-        <button class="small-btn" onclick="clearLibrary()">Limpar tudo</button>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:12px;">
-        <select id="libFilter" onchange="renderLibrary()" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text1);font-size:12px;font-family:'DM Sans',sans-serif;">
-          <option value="recent">&#128336; Mais recentes</option>
-          <option value="year">&#128197; Ano de publica&ccedil;&atilde;o</option>
-          <option value="journal">&#128218; Journal (A-Z)</option>
-          <option value="analysis">&#129504; Com an&aacute;lise</option>
-        </select>
-      </div>
-      <div id="libraryContent"></div>
-    </div>
-    <div class="panel" id="panelHistory">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Hist&oacute;rico</div>
-        <button class="small-btn" onclick="clearHistory()">Limpar</button>
-      </div>
-      <div id="historyContent"></div>
-    </div>
 
 ```
+      </div>
+      <div class="profile-header" style="margin-bottom:6px;">
+        <div class="card-title" style="margin-bottom:0;" id="apiKeyLabel">Claude API Key</div>
+        <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">&#10003; Guardada</span>
+      </div>
+      <div class="field" style="margin-bottom:6px;">
+        <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
+      </div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.6;" id="apiKeyHint">
+        Cria a tua chave em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> &rarr; API Keys.
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
+      <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
+    </div>
+    <div class="search-loading" id="searchLoader">
+      <div class="spinner"></div>
+      <span>A pesquisar em CrossRef, Unpaywall e PubMed&hellip;</span>
+    </div>
+  </div>
+  <div class="results-list" id="resultsList">
+    <div class="results-label">Selecciona o artigo correcto</div>
+    <div id="resultsItems"></div>
+  </div>
+  <div class="article-card" id="articleCard">
+    <div class="article-header">
+      <div class="article-status" id="articleStatus"></div>
+      <div class="article-title" id="articleTitle"></div>
+      <div class="article-meta" id="articleMeta"></div>
+    </div>
+    <hr class="article-divider"/>
+    <div class="article-actions">
+      <button class="btn-analyze" onclick="openAnalysis()">&#129504; Analisar com IA</button>
+      <a class="btn-dl hidden" id="oaLink" href="#" target="_blank">&#8595; PDF</a>
+      <button class="btn-sm" onclick="saveToLibrary()" title="Guardar na biblioteca">&#128278;</button>
+      <button class="btn-sm" onclick="addCurrentToJclub()" title="Adicionar ao Journal Club">&#127942;</button>
+      <button class="btn-sm" onclick="shareArticle()" title="Partilhar">&#8599;</button>
+    </div>
+    <div class="email-section" id="emailSection" style="display:none;">
+      <div class="find-email-box">
+        <div class="find-email-label">&#128231; Encontrar email do autor</div>
+        <div class="find-email-btns">
+          <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Scholar</a>
+          <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
+          <a class="btn-find btn-find-google" id="btnRgate" href="#" target="_blank">Google</a>
+          <a class="btn-find btn-find-linkedin" id="btnLinkedIn" href="#" target="_blank">LinkedIn</a>
+        </div>
+      </div>
+      <div>
+        <div class="email-header-row">
+          <div>
+            <div class="email-author" id="emailAuthor"></div>
+            <div class="email-found" id="emailFound"></div>
+          </div>
+          <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
+        </div>
+        <textarea class="email-body" id="emailBody"></textarea>
+        <div class="action-row">
+          <a class="btn-mail" id="btnMailto" href="#">&#9993;&#65039; Abrir no Mail</a>
+          <button class="btn-sent" id="sentBtn" onclick="markSent()">&#10003;</button>
+        </div>
+        <div class="sent-confirm" id="sentConfirm">&#10003; Enviado! Follow-up em 7 dias.</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CrossRef &middot; Unpaywall &middot; PubMed &middot; Pedir artigos a autores &eacute; legal</div>
+</div>
+<div class="panel" id="panelLibrary">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">A minha biblioteca</div>
+    <button class="small-btn" onclick="clearLibrary()">Limpar tudo</button>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;">
+    <select id="libFilter" onchange="renderLibrary()" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text1);font-size:12px;font-family:'DM Sans',sans-serif;">
+      <option value="recent">&#128336; Mais recentes</option>
+      <option value="year">&#128197; Ano de publica&ccedil;&atilde;o</option>
+      <option value="journal">&#128218; Journal (A-Z)</option>
+      <option value="analysis">&#129504; Com an&aacute;lise</option>
+    </select>
+  </div>
+  <div id="libraryContent"></div>
+</div>
+<div class="panel" id="panelHistory">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Hist&oacute;rico</div>
+    <button class="small-btn" onclick="clearHistory()">Limpar</button>
+  </div>
+  <div id="historyContent"></div>
+</div>
+
 <div class="panel" id="panelJclub">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
     <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Journal Club</div>
@@ -567,8 +567,7 @@ var currentPdfBase64 = '';
 var chatHistory = [];
 var CLAUDE_KEY = localStorage.getItem('pq_apikey') || '';
 var GEMINI_KEY = localStorage.getItem('pq_geminikey') || '';
-var OPENAI_KEY = localStorage.getItem('pq_openaikey') || '';
-var currentLLM = localStorage.getItem('pq_llm') || 'claude';
+var currentLLM = (localStorage.getItem('pq_llm') === 'openai') ? 'claude' : (localStorage.getItem('pq_llm') || 'claude');
 
 var DEEP_REVIEW = 'You are conducting a deep multidisciplinary scientific review of the paper.\n\nSimulate a panel of expert reviewers:\n1. Domain Specialist\n2. Methodology / Biostatistics expert\n3. Preclinical model expert\n4. Pharmacology / drug mechanism expert\n5. Clinical translation expert\n6. Skeptical peer reviewer\n\nStructure the output:\n\nSECTION 1 - Technical Summary\nRigorous summary of study design, methods and findings.\n\nSECTION 2 - Independent Expert Reviews\nFor each expert: scientific validity, key strengths, major concerns, missing analyses, how convincing.\n\nSECTION 3 - Cross-Expert Debate\nAre results truly demonstrating the claimed phenomenon? Alternative explanations? Conclusions overstated? What experiments resolve doubts?\n\nSECTION 4 - Robustness Assessment\nScore 1-5 for: methodological rigor, novelty, reproducibility likelihood, translational potential.\n\nSECTION 5 - Future Research Directions\nMost important follow-up experiments.\n\nBe intellectually rigorous. Avoid polite or superficial praise.';
 
@@ -627,13 +626,12 @@ function setLang(lang) {
 // -- LLM SELECTOR --
 var LLM_CONFIG = {
   claude:  { label: 'Claude API Key',  placeholder: 'sk-ant-api03-...', hint: 'Cria a tua chave em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> &rarr; API Keys.', storageKey: 'pq_apikey' },
-  gemini:  { label: 'Gemini API Key',  placeholder: 'AIza...', hint: 'Cria a tua chave em <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com</a> &rarr; API Keys. Gr&aacute;tis!', storageKey: 'pq_geminikey' },
-  openai:  { label: 'OpenAI API Key',  placeholder: 'sk-proj-...', hint: 'Cria a tua chave em <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--accent);">platform.openai.com</a> &rarr; API Keys.', storageKey: 'pq_openaikey' }
+  gemini:  { label: 'Gemini API Key',  placeholder: 'AIza...', hint: 'Cria a tua chave em <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com</a> &rarr; API Keys. Gr&aacute;tis!', storageKey: 'pq_geminikey' }
 };
 function setLLM(llm) {
   currentLLM = llm;
   try { localStorage.setItem('pq_llm', llm); } catch(e) {}
-  ['claude','gemini','openai'].forEach(function(l) {
+  ['claude','gemini'].forEach(function(l) {
     var btn = g('llm' + l.charAt(0).toUpperCase() + l.slice(1));
     if (btn) btn.classList.toggle('active', l === llm);
   });
@@ -650,16 +648,13 @@ function setLLM(llm) {
   var label = labels[llm] || 'IA';
   if (g('aiBadgeMain')) g('aiBadgeMain').textContent = label;
   if (g('aiBadgeChat')) g('aiBadgeChat').textContent = label;
-  // Warn about OpenAI CORS limitation
-  if (llm === 'openai') {
-    showToast('ChatGPT não suporta chamadas directas do browser. Usa Claude ou Gemini.');
-  }
+
 }
 function loadLLM() {
   var llm = localStorage.getItem('pq_llm') || 'claude';
   currentLLM = llm;
   // Don't warn on load, just set silently
-  ['claude','gemini','openai'].forEach(function(l) {
+  ['claude','gemini'].forEach(function(l) {
     var btn = g('llm' + l.charAt(0).toUpperCase() + l.slice(1));
     if (btn) btn.classList.toggle('active', l === llm);
   });
@@ -1263,49 +1258,14 @@ async function streamGemini(sysP, usrP, maxTok, onChunk, onDone, signal) {
   }
 }
 
-// -- OPENAI STREAMING --
-async function streamOpenAI(sysP, usrP, maxTok, onChunk, onDone, signal) {
-  if (!OPENAI_KEY) { onDone('no-key'); return; }
-  try {
-    var resp = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      signal: signal || null,
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_KEY },
-      body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: maxTok || 2000, stream: true, messages: [{ role: 'system', content: sysP }, { role: 'user', content: usrP }] })
-    });
-    if (!resp.ok) { onDone('error:' + await resp.text()); return; }
-    var reader = resp.body.getReader(); var decoder = new TextDecoder(); var full = '';
-    while (true) {
-      if (signal && signal.aborted) { reader.cancel(); onDone('aborted'); return; }
-      var res = await reader.read(); if (res.done) break;
-      var lines = decoder.decode(res.value, { stream: true }).split('\n');
-      for (var i = 0; i < lines.length; i++) {
-        var line = lines[i].trim();
-        if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-          try {
-            var p = JSON.parse(line.slice(6));
-            var txt = p.choices && p.choices[0] && p.choices[0].delta && p.choices[0].delta.content;
-            if (txt) { full += txt; onChunk(full); }
-          } catch(e) {}
-        }
-      }
-    }
-    onDone('ok');
-  } catch(e) {
-    if (e.name === 'AbortError') { onDone('aborted'); return; }
-    onDone('error:' + e.message);
-  }
-}
 
 // -- UNIFIED STREAM --
 async function streamLLM(sysP, usrP, maxTok, onChunk, onDone, signal) {
   if (currentLLM === 'gemini') return streamGemini(sysP, usrP, maxTok, onChunk, onDone, signal);
-  if (currentLLM === 'openai') return streamOpenAI(sysP, usrP, maxTok, onChunk, onDone, signal);
   return streamClaudeTokens(sysP, usrP, maxTok, onChunk, onDone, signal);
 }
 function getActiveKey() {
   if (currentLLM === 'gemini') return GEMINI_KEY;
-  if (currentLLM === 'openai') return OPENAI_KEY;
   return CLAUDE_KEY;
 }
 
