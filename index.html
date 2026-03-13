@@ -734,6 +734,17 @@ function clearLibrary() {
 // ── JOURNAL CLUB ──
 function getJclubSessions() { try { return JSON.parse(localStorage.getItem('pq_jclub') || '[]'); } catch(e) { return []; } }
 function saveJclubSessions(s) { try { localStorage.setItem('pq_jclub', JSON.stringify(s)); } catch(e) {} }
+function createSession() {
+  var def = 'Journal Club ' + new Date().toLocaleDateString('pt-PT', {month:'long', year:'numeric'});
+  showModal('Nova sessão', 'Nome:', def, function(name) {
+    if (!name) return;
+    var sessions = getJclubSessions();
+    sessions.unshift({ id: Date.now(), name: name, date: new Date().toISOString().split('T')[0], papers: [], analysis: '' });
+    saveJclubSessions(sessions);
+    renderJclub();
+    switchTab('jclub');
+  });
+}
 function newJclubSession() {
   var def = 'Journal Club ' + new Date().toLocaleDateString('pt-PT', {month:'long', year:'numeric'});
   showModal('Nova sess\u00e3o', 'Nome:', def, function(name) {
@@ -1192,7 +1203,7 @@ function closeSuggestModal() {
 async function sendSuggestion() {
   var text = (g('suggestText') && g('suggestText').value.trim()) || '';
   if (!text) { showToast('Escreve a tua sugest\u00e3o primeiro.'); return; }
-  var FORM_URL = 'https://formspree.io/f/myknjrka';
+  var FORM_URL = 'FORMSPREE_URL_PLACEHOLDER';
   if (FORM_URL === 'FORMSPREE_URL_PLACEHOLDER') {
     // fallback: open email client
     var p = JSON.parse(localStorage.getItem('pq_profile') || '{}');
