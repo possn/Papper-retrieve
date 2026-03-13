@@ -3,6 +3,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -227,7 +230,7 @@
 <div class="page active" id="pageMain">
   <div class="container">
     <div class="header">
-      <img class="logo" src="icon.png" alt="PaperQuest"/>
+      <img class="logo" src="icon.png" alt="PaperQuest" onclick="document.getElementById('aboutOverlay').style.display='flex'" style="cursor:pointer;"/>
       <div class="header-text">
         <div class="brand">PaperQuest</div>
         <div class="brand-sub">CrossRef &middot; Unpaywall &middot; Claude &middot; Gemini</div>
@@ -428,6 +431,37 @@
       </div>
     </div>
     <button onclick="closeOnboarding()" style="width:100%;padding:14px;background:#c96442;color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;">Come&ccedil;ar &#8594;</button>
+  </div>
+</div>
+
+<!-- ABOUT MODAL -->
+
+<div id="aboutOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#f8f6f1;border-radius:20px;padding:28px 24px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,0.3);">
+    <div style="text-align:center;margin-bottom:20px;">
+      <img src="icon.png" style="width:64px;height:64px;border-radius:16px;margin-bottom:12px;"/>
+      <div style="font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:#1a1610;">PaperQuest</div>
+      <div style="font-size:12px;color:#6b5e4e;margin-top:4px;">Vers&atilde;o 3.3 &mdash; Março 2026</div>
+    </div>
+    <div style="font-size:13px;color:#3d3128;line-height:1.7;margin-bottom:16px;">
+      Criado por <strong>Dr. Pedro Nunes</strong>, Intensivista Pedi&aacute;trico no Hospital Prof. Dr. Fernando Fonseca.<br/><br/>
+      O PaperQuest surgiu da necessidade di&aacute;ria de pesquisar, analisar e partilhar literatura cient&iacute;fica de forma r&aacute;pida e eficaz &mdash; directamente do telemo&oacute;vel, na enfermaria ou no bloco.
+    </div>
+    <div style="background:#f0ece6;border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:600;color:#6b5e4e;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Fontes de dados</div>
+      <div style="font-size:12px;color:#3d3128;line-height:1.8;">
+        &#128269; <strong>CrossRef</strong> &mdash; Metadados de artigos<br/>
+        &#128275; <strong>Unpaywall</strong> &mdash; Acesso aberto<br/>
+        &#128196; <strong>PubMed / NCBI</strong> &mdash; Abstracts e rela&ccedil;&otilde;es<br/>
+        &#129504; <strong>Claude AI</strong> &mdash; An&aacute;lise inteligente<br/>
+        &#10024; <strong>Gemini AI</strong> &mdash; An&aacute;lise (gratuito)
+      </div>
+    </div>
+    <div style="font-size:11px;color:#9a8878;text-align:center;margin-bottom:16px;">
+      Feito por um m&eacute;dico, para m&eacute;dicos.<br/>
+      Todo o processamento &eacute; local &mdash; os teus dados n&atilde;o saem do dispositivo.
+    </div>
+    <button onclick="document.getElementById('aboutOverlay').style.display='none'" style="width:100%;padding:12px;background:#c96442;color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">Fechar</button>
   </div>
 </div>
 <!-- ANALYSIS PAGE -->
