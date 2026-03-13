@@ -1231,15 +1231,7 @@ function closeSuggestModal() {
 async function sendSuggestion() {
   var text = (g('suggestText') && g('suggestText').value.trim()) || '';
   if (!text) { showToast('Escreve a tua sugest\u00e3o primeiro.'); return; }
-  var FORM_URL = 'FORMSPREE_URL_PLACEHOLDER';
-  if (FORM_URL === 'FORMSPREE_URL_PLACEHOLDER') {
-    // fallback: open email client
-    var p = JSON.parse(localStorage.getItem('pq_profile') || '{}');
-    var from = p.name ? p.name + ' (' + (p.inst || '') + ')' : 'Utilizador PaperQuest';
-    window.location.href = 'mailto:pedrossnunes@gmail.com?subject=PaperQuest%20Sugest%C3%A3o&body=' + encodeURIComponent(from + ':\n\n' + text);
-    closeSuggestModal();
-    return;
-  }
+  var FORM_URL = 'https://formspree.io/f/myknjrka';
   try {
     var resp = await fetch(FORM_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ message: text }) });
     if (resp.ok) { showToast('\u2713 Sugest\u00e3o enviada! Obrigado.'); closeSuggestModal(); }
