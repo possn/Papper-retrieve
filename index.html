@@ -400,7 +400,7 @@
     </div>
     <div class="summary-card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-        <div class="summary-label" style="margin-bottom:0;">An&aacute;lise com IA <span class="ai-badge">Claude AI</span></div>
+        <div class="summary-label" style="margin-bottom:0;">An&aacute;lise com IA <span class="ai-badge" id="aiBadgeMain"></span></div>
         <div style="display:flex;gap:6px;">
           <button class="btn-mode btn-mode-active" id="btnModeResume" onclick="switchMode('resume')">&#128203; Resumo</button>
           <button class="btn-mode" id="btnModeDeep" onclick="switchMode('deep')">&#128300; An&aacute;lise</button>
@@ -433,7 +433,7 @@
       <div id="relatedItems"></div>
     </div>
     <div class="chat-card">
-      <div class="summary-label" style="padding:16px 16px 0;">Perguntas ao artigo <span class="ai-badge">Claude AI</span></div>
+      <div class="summary-label" style="padding:16px 16px 0;">Perguntas ao artigo <span class="ai-badge" id="aiBadgeChat"></span></div>
       <div class="chat-suggestions" id="chatSuggestions">
         <button class="chat-suggestion" onclick="askSuggestion(this)">Qual o NNT/NNH?</button>
         <button class="chat-suggestion" onclick="askSuggestion(this)">Aplica-se a pediatria?</button>
@@ -601,11 +601,39 @@ function setLLM(llm) {
   var saved = localStorage.getItem(cfg.storageKey) || '';
   g('apiKeyInput').value = saved;
   g('apiKeySaved').style.display = saved ? 'inline' : 'none';
+  // Update badges
+  var labels = { claude: 'Claude AI', gemini: 'Gemini', openai: 'ChatGPT' };
+  var label = labels[llm] || 'IA';
+  if (g('aiBadgeMain')) g('aiBadgeMain').textContent = label;
+  if (g('aiBadgeChat')) g('aiBadgeChat').textContent = label;
+  // Warn about OpenAI CORS limitation
+  if (llm === 'openai') {
+    showToast('ChatGPT não suporta chamadas directas do browser. Usa Claude ou Gemini.');
+  }
 }
 function loadLLM() {
   var llm = localStorage.getItem('pq_llm') || 'claude';
   currentLLM = llm;
-  setLLM(llm);
+  // Don't warn on load, just set silently
+  ['claude','gemini','openai'].forEach(function(l) {
+    var btn = g('llm' + l.charAt(0).toUpperCase() + l.slice(1));
+    if (btn) btn.classList.toggle('active', l === llm);
+  });
+  var cfg = LLM_CONFIG[llm];
+  if (cfg) {
+    if (g('apiKeyLabel')) g('apiKeyLabel').textContent = cfg.label;
+    if (g('apiKeyInput')) { g('apiKeyInput').placeholder = cfg.placeholder; }
+    if (g('apiKeyHint')) g('apiKeyHint').innerHTML = cfg.hint;
+    var saved = localStorage.getItem(cfg.storageKey) || '';
+    if (g('apiKeyInput')) g('apiKeyInput').value = saved;
+    if (g('apiKeySaved')) g('apiKeySaved').style.display = saved ? 'inline' : 'none';
+  }
+  var labels = { claude: 'Claude AI', gemini: 'Gemini', openai: 'ChatGPT' };
+  var label = labels[llm] || 'IA';
+  setTimeout(function() {
+    if (g('aiBadgeMain')) g('aiBadgeMain').textContent = label;
+    if (g('aiBadgeChat')) g('aiBadgeChat').textContent = label;
+  }, 100);
 }
 
 // ── PROFILE ──
