@@ -111,6 +111,7 @@
     .coffee-text{font-size:12px;color:var(--text3);}
     .coffee-text strong{color:var(--text2);}
     .btn-coffee{display:flex;align-items:center;gap:6px;padding:7px 14px;background:#fff8e1;border:1.5px solid #f59e0b;border-radius:20px;color:#92400e;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;text-decoration:none;}
+    .btn-suggest{display:flex;align-items:center;gap:4px;padding:7px 12px;background:transparent;border:1.5px solid var(--border);border-radius:20px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
     .footer{font-size:11px;color:var(--text3);text-align:center;margin-top:16px;}
     .hidden{display:none!important;}
     .small-btn{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;padding:0;}
@@ -267,14 +268,20 @@
         </div>
         <div class="divider"></div>
         <div>
+          <div class="card-title" style="margin-bottom:8px;">Modelo de IA</div>
+          <div class="lang-row" style="margin-bottom:10px;">
+            <button class="btn-lang active" id="llmClaude" onclick="setLLM('claude')">&#129504; Claude</button>
+            <button class="btn-lang" id="llmGemini" onclick="setLLM('gemini')">&#10024; Gemini</button>
+            <button class="btn-lang" id="llmOpenai" onclick="setLLM('openai')">&#129302; ChatGPT</button>
+          </div>
           <div class="profile-header" style="margin-bottom:6px;">
-            <div class="card-title" style="margin-bottom:0;">Claude API Key <span style="font-size:11px;color:var(--text3)">(para IA)</span></div>
+            <div class="card-title" style="margin-bottom:0;" id="apiKeyLabel">Claude API Key</div>
             <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">&#10003; Guardada</span>
           </div>
           <div class="field" style="margin-bottom:6px;">
             <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
           </div>
-          <div style="font-size:11px;color:var(--text3);line-height:1.6;">
+          <div style="font-size:11px;color:var(--text3);line-height:1.6;" id="apiKeyHint">
             Cria a tua chave em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> &rarr; API Keys.
           </div>
         </div>
@@ -359,7 +366,22 @@
   </div>
   <div class="coffee-bar">
     <div class="coffee-text">Feito por <strong>um m&eacute;dico, para m&eacute;dicos</strong></div>
-    <a class="btn-coffee" href="https://buymeacoffee.com/possn" target="_blank">&#9749; Buy me a coffee</a>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn-suggest" onclick="showSuggestModal()">&#128161; Sugest&atilde;o</button>
+      <a class="btn-coffee" href="https://buymeacoffee.com/possn" target="_blank">&#9749; Buy me a coffee</a>
+    </div>
+  </div>
+  <!-- SUGGESTION MODAL -->
+  <div id="suggestOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:none;align-items:center;justify-content:center;padding:24px;">
+    <div style="background:var(--card);border-radius:16px;padding:24px;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.2);">
+      <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;margin-bottom:6px;">&#128161; Sugest&atilde;o</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">A tua opini&atilde;o ajuda a melhorar o PaperQuest</div>
+      <textarea id="suggestText" style="width:100%;min-height:100px;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:13px;font-family:inherit;background:var(--bg);color:var(--text1);resize:vertical;box-sizing:border-box;" placeholder="Descreve a tua ideia ou problema..."></textarea>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button onclick="closeSuggestModal()" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text2);font-size:13px;cursor:pointer;">Cancelar</button>
+        <button onclick="sendSuggestion()" style="flex:1;padding:10px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">Enviar</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -500,6 +522,9 @@ var currentAbstract = '';
 var currentPdfBase64 = '';
 var chatHistory = [];
 var CLAUDE_KEY = localStorage.getItem('pq_apikey') || '';
+var GEMINI_KEY = localStorage.getItem('pq_geminikey') || '';
+var OPENAI_KEY = localStorage.getItem('pq_openaikey') || '';
+var currentLLM = localStorage.getItem('pq_llm') || 'claude';
 
 var DEEP_REVIEW = 'You are conducting a deep multidisciplinary scientific review of the paper.\n\nSimulate a panel of expert reviewers:\n1. Domain Specialist\n2. Methodology / Biostatistics expert\n3. Preclinical model expert\n4. Pharmacology / drug mechanism expert\n5. Clinical translation expert\n6. Skeptical peer reviewer\n\nStructure the output:\n\nSECTION 1 - Technical Summary\nRigorous summary of study design, methods and findings.\n\nSECTION 2 - Independent Expert Reviews\nFor each expert: scientific validity, key strengths, major concerns, missing analyses, how convincing.\n\nSECTION 3 - Cross-Expert Debate\nAre results truly demonstrating the claimed phenomenon? Alternative explanations? Conclusions overstated? What experiments resolve doubts?\n\nSECTION 4 - Robustness Assessment\nScore 1-5 for: methodological rigor, novelty, reproducibility likelihood, translational potential.\n\nSECTION 5 - Future Research Directions\nMost important follow-up experiments.\n\nBe intellectually rigorous. Avoid polite or superficial praise.';
 
@@ -555,6 +580,34 @@ function setLang(lang) {
   if (currentArticle) regenerateEmail();
 }
 
+// ── LLM SELECTOR ──
+var LLM_CONFIG = {
+  claude:  { label: 'Claude API Key',  placeholder: 'sk-ant-api03-...', hint: 'Cria a tua chave em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> &rarr; API Keys.', storageKey: 'pq_apikey' },
+  gemini:  { label: 'Gemini API Key',  placeholder: 'AIza...', hint: 'Cria a tua chave em <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com</a> &rarr; API Keys. Gr&aacute;tis!', storageKey: 'pq_geminikey' },
+  openai:  { label: 'OpenAI API Key',  placeholder: 'sk-proj-...', hint: 'Cria a tua chave em <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--accent);">platform.openai.com</a> &rarr; API Keys.', storageKey: 'pq_openaikey' }
+};
+function setLLM(llm) {
+  currentLLM = llm;
+  try { localStorage.setItem('pq_llm', llm); } catch(e) {}
+  ['claude','gemini','openai'].forEach(function(l) {
+    var btn = g('llm' + l.charAt(0).toUpperCase() + l.slice(1));
+    if (btn) btn.classList.toggle('active', l === llm);
+  });
+  var cfg = LLM_CONFIG[llm];
+  if (!cfg) return;
+  g('apiKeyLabel').textContent = cfg.label;
+  g('apiKeyInput').placeholder = cfg.placeholder;
+  g('apiKeyHint').innerHTML = cfg.hint;
+  var saved = localStorage.getItem(cfg.storageKey) || '';
+  g('apiKeyInput').value = saved;
+  g('apiKeySaved').style.display = saved ? 'inline' : 'none';
+}
+function loadLLM() {
+  var llm = localStorage.getItem('pq_llm') || 'claude';
+  currentLLM = llm;
+  setLLM(llm);
+}
+
 // ── PROFILE ──
 function loadProfile() {
   try {
@@ -592,16 +645,20 @@ function clearProfile() {
 
 // ── API KEY ──
 function loadApiKey() {
-  var k = localStorage.getItem('pq_apikey') || '';
-  if (k) { g('apiKeyInput').value = k; g('apiKeySaved').style.display = 'inline'; CLAUDE_KEY = k; }
+  CLAUDE_KEY = localStorage.getItem('pq_apikey') || '';
+  GEMINI_KEY = localStorage.getItem('pq_geminikey') || '';
+  OPENAI_KEY = localStorage.getItem('pq_openaikey') || '';
 }
 function saveApiKey() {
   var k = g('apiKeyInput').value.trim();
-  if (k && k.startsWith('sk-ant-')) {
-    localStorage.setItem('pq_apikey', k);
-    CLAUDE_KEY = k;
-    g('apiKeySaved').style.display = 'inline';
-  }
+  if (!k) return;
+  var cfg = LLM_CONFIG[currentLLM];
+  if (!cfg) return;
+  localStorage.setItem(cfg.storageKey, k);
+  if (currentLLM === 'claude') CLAUDE_KEY = k;
+  else if (currentLLM === 'gemini') GEMINI_KEY = k;
+  else if (currentLLM === 'openai') OPENAI_KEY = k;
+  g('apiKeySaved').style.display = 'inline';
 }
 
 // ── HISTORY ──
@@ -1040,6 +1097,117 @@ async function streamClaude(sysP, usrP, onChunk, onDone) {
   } catch(e) { onDone('error:' + e.message); }
 }
 
+// ── GEMINI STREAMING ──
+async function streamGemini(sysP, usrP, maxTok, onChunk, onDone, signal) {
+  if (!GEMINI_KEY) { onDone('no-key'); return; }
+  try {
+    var model = 'gemini-2.0-flash';
+    var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':streamGenerateContent?alt=sse&key=' + GEMINI_KEY;
+    var resp = await fetch(url, {
+      method: 'POST',
+      signal: signal || null,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sysP + '\n\n' + usrP }] }], generationConfig: { maxOutputTokens: maxTok || 2000 } })
+    });
+    if (!resp.ok) { onDone('error:' + await resp.text()); return; }
+    var reader = resp.body.getReader(); var decoder = new TextDecoder(); var full = '';
+    while (true) {
+      if (signal && signal.aborted) { reader.cancel(); onDone('aborted'); return; }
+      var res = await reader.read(); if (res.done) break;
+      var lines = decoder.decode(res.value, { stream: true }).split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (line.startsWith('data: ')) {
+          try {
+            var p = JSON.parse(line.slice(6));
+            var txt = p.candidates && p.candidates[0] && p.candidates[0].content && p.candidates[0].content.parts && p.candidates[0].content.parts[0] && p.candidates[0].content.parts[0].text;
+            if (txt) { full += txt; onChunk(full); }
+          } catch(e) {}
+        }
+      }
+    }
+    onDone('ok');
+  } catch(e) {
+    if (e.name === 'AbortError') { onDone('aborted'); return; }
+    onDone('error:' + e.message);
+  }
+}
+
+// ── OPENAI STREAMING ──
+async function streamOpenAI(sysP, usrP, maxTok, onChunk, onDone, signal) {
+  if (!OPENAI_KEY) { onDone('no-key'); return; }
+  try {
+    var resp = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      signal: signal || null,
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_KEY },
+      body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: maxTok || 2000, stream: true, messages: [{ role: 'system', content: sysP }, { role: 'user', content: usrP }] })
+    });
+    if (!resp.ok) { onDone('error:' + await resp.text()); return; }
+    var reader = resp.body.getReader(); var decoder = new TextDecoder(); var full = '';
+    while (true) {
+      if (signal && signal.aborted) { reader.cancel(); onDone('aborted'); return; }
+      var res = await reader.read(); if (res.done) break;
+      var lines = decoder.decode(res.value, { stream: true }).split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+          try {
+            var p = JSON.parse(line.slice(6));
+            var txt = p.choices && p.choices[0] && p.choices[0].delta && p.choices[0].delta.content;
+            if (txt) { full += txt; onChunk(full); }
+          } catch(e) {}
+        }
+      }
+    }
+    onDone('ok');
+  } catch(e) {
+    if (e.name === 'AbortError') { onDone('aborted'); return; }
+    onDone('error:' + e.message);
+  }
+}
+
+// ── UNIFIED STREAM ──
+async function streamLLM(sysP, usrP, maxTok, onChunk, onDone, signal) {
+  if (currentLLM === 'gemini') return streamGemini(sysP, usrP, maxTok, onChunk, onDone, signal);
+  if (currentLLM === 'openai') return streamOpenAI(sysP, usrP, maxTok, onChunk, onDone, signal);
+  return streamClaudeTokens(sysP, usrP, maxTok, onChunk, onDone, signal);
+}
+function getActiveKey() {
+  if (currentLLM === 'gemini') return GEMINI_KEY;
+  if (currentLLM === 'openai') return OPENAI_KEY;
+  return CLAUDE_KEY;
+}
+
+// ── SUGGESTIONS ──
+function showSuggestModal() {
+  var el = g('suggestOverlay');
+  if (el) { el.style.display = 'flex'; }
+}
+function closeSuggestModal() {
+  var el = g('suggestOverlay');
+  if (el) { el.style.display = 'none'; }
+  var t = g('suggestText'); if (t) t.value = '';
+}
+async function sendSuggestion() {
+  var text = (g('suggestText') && g('suggestText').value.trim()) || '';
+  if (!text) { showToast('Escreve a tua sugest\u00e3o primeiro.'); return; }
+  var FORM_URL = 'https://formspree.io/f/myknjrka';
+  if (FORM_URL === 'FORMSPREE_URL_PLACEHOLDER') {
+    // fallback: open email client
+    var p = JSON.parse(localStorage.getItem('pq_profile') || '{}');
+    var from = p.name ? p.name + ' (' + (p.inst || '') + ')' : 'Utilizador PaperQuest';
+    window.location.href = 'mailto:pedrossnunes@gmail.com?subject=PaperQuest%20Sugest%C3%A3o&body=' + encodeURIComponent(from + ':\n\n' + text);
+    closeSuggestModal();
+    return;
+  }
+  try {
+    var resp = await fetch(FORM_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ message: text }) });
+    if (resp.ok) { showToast('\u2713 Sugest\u00e3o enviada! Obrigado.'); closeSuggestModal(); }
+    else { showToast('Erro ao enviar. Tenta novamente.'); }
+  } catch(e) { showToast('Erro: ' + e.message); }
+}
+
 // ── ABSTRACT ──
 async function fetchAbstract(doi, pmid) {
   try {
@@ -1123,7 +1291,7 @@ function runAnalysisMode() {
   var prompt = isDeep ? DEEP_REVIEW : QUICK_RESUME;
   var usrP = prompt + '\n\nArticle: ' + currentArticle.title + '\n' + (currentAbstract ? 'Abstract: ' + currentAbstract : '(No abstract available)');
   var maxTok = isDeep ? 4000 : 800;
-  streamClaudeTokens(sysP, usrP, maxTok, function(full) {
+  streamLLM(sysP, usrP, maxTok, function(full) {
     if (signal.aborted) return;
     g('analysisSummaryLoading').style.display = 'none';
     g('analysisSummaryText').style.display = 'block';
@@ -1406,7 +1574,7 @@ async function selectResult(i) {
 // ── INIT ──
 document.getElementById('apiKeyInput').addEventListener('input', saveApiKey);
 ['nameInput','roleInput','instInput'].forEach(function(id){ document.getElementById(id).addEventListener('input', saveProfile); });
-initTheme(); loadProfile(); loadApiKey(); restoreState();
+initTheme(); loadProfile(); loadApiKey(); loadLLM(); restoreState();
 
 </script>
 
