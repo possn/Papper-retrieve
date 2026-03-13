@@ -111,6 +111,13 @@
     .coffee-text{font-size:12px;color:var(--text3);}
     .coffee-text strong{color:var(--text2);}
     .btn-coffee{display:flex;align-items:center;gap:6px;padding:7px 14px;background:#fff8e1;border:1.5px solid #f59e0b;border-radius:20px;color:#92400e;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;text-decoration:none;}
+    .lib-analysis-preview{margin:6px 0;cursor:pointer;}
+    .lib-analysis-toggle{font-size:11px;color:var(--accent);font-weight:500;}
+    .lib-analysis-text{font-size:11px;color:var(--text2);line-height:1.6;margin-top:6px;white-space:pre-wrap;}
+    .search-loading{display:none;align-items:center;gap:8px;padding:12px 0;color:var(--text3);font-size:13px;}
+    .search-loading.active{display:flex;}
+    .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
     .btn-suggest{display:flex;align-items:center;gap:4px;padding:7px 12px;background:transparent;border:1.5px solid var(--border);border-radius:20px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
     .footer{font-size:11px;color:var(--text3);text-align:center;margin-top:16px;}
     .hidden{display:none!important;}
@@ -231,7 +238,7 @@
     </div>
     <div class="tabs">
       <button class="tab active" onclick="switchTab('search')">&#128269; Pesquisa</button>
-      <button class="tab" onclick="switchTab('library')">&#128218; Biblioteca</button>
+      <button class="tab" id="tabLibrary" onclick="switchTab('library')"><span class="tab-label">&#128218; Biblioteca</span></button>
       <button class="tab" onclick="switchTab('history')">&#128336; Hist&oacute;rico</button>
       <button class="tab" onclick="switchTab('jclub')">&#127942; JClub</button>
     </div>
@@ -289,6 +296,10 @@
           <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
           <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
         </div>
+        <div class="search-loading" id="searchLoader">
+          <div class="spinner"></div>
+          <span>A pesquisar em CrossRef, Unpaywall e PubMed&hellip;</span>
+        </div>
       </div>
       <div class="results-list" id="resultsList">
         <div class="results-label">Selecciona o artigo correcto</div>
@@ -338,9 +349,17 @@
       <div class="footer">CrossRef &middot; Unpaywall &middot; PubMed &middot; Pedir artigos a autores &eacute; legal</div>
     </div>
     <div class="panel" id="panelLibrary">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">A minha biblioteca</div>
         <button class="small-btn" onclick="clearLibrary()">Limpar tudo</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <select id="libFilter" onchange="renderLibrary()" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text1);font-size:12px;font-family:'DM Sans',sans-serif;">
+          <option value="recent">&#128336; Mais recentes</option>
+          <option value="year">&#128197; Ano de publica&ccedil;&atilde;o</option>
+          <option value="journal">&#128218; Journal (A-Z)</option>
+          <option value="analysis">&#129504; Com an&aacute;lise</option>
+        </select>
       </div>
       <div id="libraryContent"></div>
     </div>
@@ -385,8 +404,33 @@
   </div>
 </div>
 
-<!-- ANALYSIS PAGE -->
+<!-- ONBOARDING -->
 
+<div id="onboardingOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10000;align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#f8f6f1;border-radius:20px;padding:28px 24px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,0.3);">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:40px;margin-bottom:8px;">&#129504;</div>
+      <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:#1a1610;margin-bottom:6px;">Bem-vindo ao PaperQuest</div>
+      <div style="font-size:13px;color:#6b5e4e;line-height:1.6;">Pesquisa artigos cient&iacute;ficos, analisa com IA e contacta autores &mdash; tudo num s&oacute; lugar.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:32px;height:32px;background:#c96442;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#fff;font-weight:700;">1</div>
+        <div><div style="font-size:13px;font-weight:600;color:#1a1610;">Preenche o teu perfil</div><div style="font-size:12px;color:#6b5e4e;">Nome, fun&ccedil;&atilde;o e institui&ccedil;&atilde;o para personalizar os emails aos autores.</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:32px;height:32px;background:#c96442;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#fff;font-weight:700;">2</div>
+        <div><div style="font-size:13px;font-weight:600;color:#1a1610;">Adiciona a tua API Key</div><div style="font-size:12px;color:#6b5e4e;">Claude (pago) ou Gemini (gratuito) para an&aacute;lise com IA. Obt&eacute;m em console.anthropic.com ou aistudio.google.com.</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:32px;height:32px;background:#c96442;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#fff;font-weight:700;">3</div>
+        <div><div style="font-size:13px;font-weight:600;color:#1a1610;">Pesquisa um artigo</div><div style="font-size:12px;color:#6b5e4e;">Por t&iacute;tulo, DOI ou PMID. A IA resume, analisa e encontra o email do autor.</div></div>
+      </div>
+    </div>
+    <button onclick="closeOnboarding()" style="width:100%;padding:14px;background:#c96442;color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;">Come&ccedil;ar &#8594;</button>
+  </div>
+</div>
+<!-- ANALYSIS PAGE -->
 <div class="page" id="pageAnalysis">
   <div class="analysis-header">
     <button class="btn-back" onclick="closeAnalysis()">&#8592; Voltar</button>
@@ -724,13 +768,20 @@ function saveLibraryData(lib) { try { localStorage.setItem('pq_library', JSON.st
 function saveToLibrary() {
   if (!currentArticle) return;
   var lib = getLibrary();
-  var exists = lib.find(function(x) { return x.doi && x.doi === currentArticle.doi; });
-  if (exists) { alert(emailLang === 'pt' ? 'J\u00e1 est\u00e1 na biblioteca!' : 'Already in library!'); return; }
+  var existsIdx = lib.findIndex(function(x) { return x.doi && x.doi === currentArticle.doi; });
+  var analysis = (g('analysisSummaryText') && g('analysisSummaryText').innerText) || '';
+  if (existsIdx >= 0) {
+    // Update analysis if now available
+    if (analysis) { lib[existsIdx].analysis = analysis; saveLibraryData(lib); renderLibrary(); showToast('\u2713 An\u00e1lise actualizada!'); }
+    else { showToast(emailLang === 'pt' ? 'J\u00e1 est\u00e1 na biblioteca!' : 'Already in library!'); }
+    return;
+  }
   lib.unshift({
     title: currentArticle.title, journal: currentArticle.journal, year: currentArticle.year,
     doi: currentArticle.doi, oa: currentArticle.oa, oaUrl: currentArticle.oaUrl || '',
     author: currentArticle.authorName || '', note: '', tags: [],
-    saved: new Date().toISOString().split('T')[0]
+    saved: new Date().toISOString().split('T')[0],
+    analysis: analysis
   });
   saveLibraryData(lib);
   renderLibrary();
@@ -739,20 +790,39 @@ function saveToLibrary() {
 function renderLibrary() {
   var lib = getLibrary();
   var el = g('libraryContent');
-  if (!lib.length) { el.innerHTML = '<div class="lib-empty">Biblioteca vazia.<br>Guarda artigos com o bot&#227;o &#128278;</div>'; return; }
-  el.innerHTML = lib.map(function(item, i) {
-    var tagsHtml = item.tags && item.tags.length ? item.tags.map(function(t) { return '<span class="lib-tag">' + esc(t) + '</span>'; }).join('') : '';
-    return '<div class="lib-item">'
-      + '<div class="lib-item-header"><div class="lib-item-title">' + esc(item.title.substring(0, 100)) + (item.title.length > 100 ? '&hellip;' : '') + '</div>'
-      + '<span class="h-badge ' + (item.oa ? 'h-badge-oa' : 'h-badge-email') + '">' + (item.oa ? 'OA' : 'Email') + '</span></div>'
-      + '<div class="lib-item-meta">' + esc(item.journal || '') + (item.year ? ' &middot; ' + item.year : '') + (item.author ? ' &middot; ' + item.author : '') + (item.saved ? ' &middot; ' + item.saved : '') + '</div>'
-      + (tagsHtml ? '<div class="lib-tags">' + tagsHtml + '</div>' : '')
-      + (item.note ? '<div class="lib-note">' + esc(item.note) + '</div>' : '')
-      + '<div class="lib-actions">'
-      + (item.oa && item.oaUrl ? '<a class="btn-lib-action" href="' + esc(item.oaUrl) + '" target="_blank">\u2193 PDF</a>' : '')
-      + '<button class="btn-lib-action btn-lib-delete" onclick="deleteFromLibrary(' + i + ')">\u2715 Remover</button>'
-      + '</div></div>';
+  if (!el) return;
+  // Update tab counter
+  var tabLib = g('tabLibrary');
+  if (tabLib) {
+    var lbl = tabLib.querySelector('.tab-label');
+    if (lbl) lbl.textContent = lib.length ? '\ud83d\udcda Biblioteca (' + lib.length + ')' : '\ud83d\udcda Biblioteca';
+  }
+  if (!lib.length) {
+    el.innerHTML = '<div class="lib-empty">Biblioteca vazia.<br>Guarda artigos com o bot&#227;o &#128278;</div>';
+    return;
+  }
+  // Apply filter
+  var filter = (g('libFilter') && g('libFilter').value) || 'recent';
+  var sorted = lib.slice();
+  if (filter === 'year') sorted.sort(function(a,b) { return (b.year||0) - (a.year||0); });
+  else if (filter === 'journal') sorted.sort(function(a,b) { return (a.journal||'').localeCompare(b.journal||''); });
+  else if (filter === 'analysis') sorted = sorted.filter(function(x) { return x.analysis && x.analysis.length > 10; });
+  el.innerHTML = sorted.map(function(item) {
+    var realIdx = lib.indexOf(item);
+    return '<div class="lib-item">'      + '<div class="lib-item-header"><div class="lib-item-title">' + esc(item.title.substring(0, 100)) + (item.title.length > 100 ? '&hellip;' : '') + '</div>'      + '<span class="h-badge ' + (item.oa ? 'h-badge-oa' : 'h-badge-email') + '">' + (item.oa ? 'OA' : 'Email') + '</span></div>'      + '<div class="lib-item-meta">' + esc(item.journal || '') + (item.year ? ' &middot; ' + item.year : '') + (item.author ? ' &middot; ' + item.author : '') + (item.saved ? ' &middot; ' + item.saved : '') + '</div>'      + (item.analysis ? '<div class="lib-analysis-preview" onclick="toggleLibAnalysis(this)"><span class="lib-analysis-toggle">&#129504; Ver an\u00e1lise &#9662;</span><div class="lib-analysis-text" style="display:none;">' + esc(item.analysis.substring(0, 600)) + (item.analysis.length > 600 ? '\u2026' : '') + '</div></div>' : '')      + '<div class="lib-actions">'      + (item.oa && item.oaUrl ? '<a class="btn-lib-action" href="' + esc(item.oaUrl) + '" target="_blank">\u2193 PDF</a>' : '')      + '<button class="btn-lib-action" onclick="shareLibItem(' + realIdx + ')">&#8599; Partilhar</button>'      + '<button class="btn-lib-action btn-lib-delete" onclick="deleteFromLibrary(' + realIdx + ')">\u2715 Remover</button>'      + '</div></div>';
   }).join('');
+}
+function toggleLibAnalysis(el) {
+  var txt = el.querySelector('.lib-analysis-text');
+  var toggle = el.querySelector('.lib-analysis-toggle');
+  if (txt.style.display === 'none') { txt.style.display = 'block'; toggle.innerHTML = '&#129504; Esconder &#9652;'; }
+  else { txt.style.display = 'none'; toggle.innerHTML = '&#129504; Ver an\u00e1lise &#9662;'; }
+}
+function shareLibItem(i) {
+  var lib = getLibrary(); var item = lib[i]; if (!item) return;
+  var text = item.title + '\n' + (item.journal || '') + (item.year ? ' \u00b7 ' + item.year : '') + (item.doi ? '\nhttps://doi.org/' + item.doi : '');
+  if (navigator.share) navigator.share({ title: item.title, text: text });
+  else { navigator.clipboard.writeText(text); showToast('\u2713 Copiado!'); }
 }
 function deleteFromLibrary(i) { var lib = getLibrary(); lib.splice(i, 1); saveLibraryData(lib); renderLibrary(); }
 function clearLibrary() {
@@ -1005,8 +1075,29 @@ window.addEventListener('pagehide', saveState);
 
 // ── UTILS ──
 function setRunning(val) {
-  isRunning = val; g('runBtn').disabled = val;
+  isRunning = val;
+  g('runBtn').disabled = val;
   g('runBtn').textContent = val ? 'A pesquisar\u2026' : 'Pesquisar artigo';
+  g('runBtn').style.opacity = val ? '0.8' : '1';
+  // Show/hide inline loading indicator
+  var loader = g('searchLoader');
+  if (loader) loader.classList.toggle('active', val);
+}
+
+// ── ONBOARDING ──
+function checkOnboarding() {
+  try {
+    var seen = localStorage.getItem('pq_onboarding_seen');
+    if (!seen) {
+      var ov = g('onboardingOverlay');
+      if (ov) { ov.style.display = 'flex'; }
+    }
+  } catch(e) {}
+}
+function closeOnboarding() {
+  try { localStorage.setItem('pq_onboarding_seen', '1'); } catch(e) {}
+  var ov = g('onboardingOverlay');
+  if (ov) ov.style.display = 'none';
 }
 function reset() {
   try { localStorage.removeItem('pq_state'); } catch(e) {}
@@ -1605,7 +1696,7 @@ async function selectResult(i) {
 // ── INIT ──
 document.getElementById('apiKeyInput').addEventListener('input', saveApiKey);
 ['nameInput','roleInput','instInput'].forEach(function(id){ document.getElementById(id).addEventListener('input', saveProfile); });
-initTheme(); loadProfile(); loadApiKey(); loadLLM(); restoreState();
+initTheme(); loadProfile(); loadApiKey(); loadLLM(); restoreState(); checkOnboarding();
 
 </script>
 
