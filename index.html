@@ -114,6 +114,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg);}}
 #articleIF{font-size:10px;color:var(--text3);margin-top:4px;background:var(--cream2);border-radius:6px;padding:3px 8px;display:none;max-width:fit-content;}
+.btn-ver-mais{width:100%;margin-top:8px;padding:9px;background:var(--cream2);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;text-align:center;}
 .cl-section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;}
 .cl-entry{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);}
 .cl-entry:last-of-type{border-bottom:none;}
@@ -494,7 +495,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div class="analysis-header">
 <button class="btn-back" onclick="closeAnalysis()">&#8592; Voltar</button>
 <div class="analysis-header-title" id="analysisHeaderTitle">An&aacute;lise do artigo</div>
-<button class="btn-icon" onclick="saveToLibrary()">&#128278;</button>
+<button class="btn-icon" onclick="saveToLibrary()">&#128278;</button><button class="btn-icon" onclick="exportPDF()" title="Exportar PDF">&#128196;</button>
 </div>
 <div class="analysis-body">
 <div class="summary-card" style="margin-bottom:14px">
@@ -615,11 +616,24 @@ function loadFromHistory(query){g('queryInput').value=decodeURIComponent(query);
 function getLibrary(){try{return JSON.parse(localStorage.getItem('pq_library')||'[]');}catch(e){return[];}}
 function saveLibraryData(lib){try{localStorage.setItem('pq_library',JSON.stringify(lib));}catch(e){}}
 function saveToLibrary(){if(!currentArticle)return;var lib=getLibrary();var idx=lib.findIndex(function(x){return x.doi&&x.doi===currentArticle.doi;});var analysis=(g('analysisSummaryText')&&g('analysisSummaryText').innerText)||'';if(idx>=0){if(analysis){lib[idx].analysis=analysis;saveLibraryData(lib);showToast('\u2713 An\u00e1lise actualizada!');}else{showToast('J\u00e1 est\u00e1 na biblioteca!');}return;}lib.unshift({title:currentArticle.title,journal:currentArticle.journal,year:currentArticle.year,doi:currentArticle.doi,oa:currentArticle.oa,oaUrl:currentArticle.oaUrl||'',author:currentArticle.authorName||'',saved:new Date().toISOString().split('T')[0],analysis:analysis});saveLibraryData(lib);showToast('\u2713 Guardado na biblioteca!');}
-function renderLibrary(){var lib=getLibrary();var el=g('libraryContent');if(!el)return;var tl=g('tabLibrary');if(tl){var lbl=tl.querySelector('.tab-label');if(lbl)lbl.textContent=lib.length?'\uD83D\uDCDA Biblioteca('+lib.length+')':'\uD83D\uDCDA Biblioteca';}if(!lib.length){el.innerHTML='<div class="lib-empty">Biblioteca vazia.<br>Guarda artigos com o bot\u00e3o &#128278;</div>';return;}var filter=(g('libFilter')&&g('libFilter').value)||'recent';var sorted=lib.slice();if(filter==='year')sorted.sort(function(a,b){return(b.year||0)-(a.year||0);});else if(filter==='journal')sorted.sort(function(a,b){return(a.journal||'').localeCompare(b.journal||'');});else if(filter==='analysis')sorted=sorted.filter(function(x){return x.analysis&&x.analysis.length>10;});el.innerHTML=sorted.map(function(item){var ri=lib.indexOf(item);return'<div class="lib-item"><div class="lib-item-header"><div class="lib-item-title">'+esc((item.title||'').substring(0,100))+'</div><span class="h-badge '+(item.oa?'h-badge-oa':'h-badge-email')+'">'+(item.oa?'OA':'Email')+'</span></div><div class="lib-item-meta">'+esc(item.journal||'')+(item.year?' \u00b7 '+item.year:'')+(item.author?' \u00b7 '+item.author:'')+(item.saved?' \u00b7 '+item.saved:'')+'</div>'+(item.analysis?'<div class="lib-analysis-preview" onclick="toggleLibAnalysis(this)"><span class="lib-analysis-toggle">\uD83E\uDDE0 Ver an\u00e1lise</span><div class="lib-analysis-text" style="display:none">'+esc(item.analysis.substring(0,600))+'</div></div>':'')+'<div class="lib-actions">'+(item.oa&&item.oaUrl?'<a class="btn-lib-action" href="'+esc(item.oaUrl)+'" target="_blank">\u2193 PDF</a>':'')+'<button class="btn-lib-action" onclick="shareLibItem('+ri+')">&#8599; Partilhar</button><button class="btn-lib-action btn-lib-delete" onclick="deleteFromLibrary('+ri+')">\u2715 Remover</button></div></div>';}).join('');}
+function renderLibrary(){var lib=getLibrary();var el=g('libraryContent');if(!el)return;var tl=g('tabLibrary');if(tl){var lbl=tl.querySelector('.tab-label');if(lbl)lbl.textContent=lib.length?'\uD83D\uDCDA Biblioteca('+lib.length+')':'\uD83D\uDCDA Biblioteca';}if(!lib.length){el.innerHTML='<div class="lib-empty">Biblioteca vazia.<br>Guarda artigos com o bot\u00e3o &#128278;</div>';return;}var filter=(g('libFilter')&&g('libFilter').value)||'recent';var sorted=lib.slice();if(filter==='year')sorted.sort(function(a,b){return(b.year||0)-(a.year||0);});else if(filter==='journal')sorted.sort(function(a,b){return(a.journal||'').localeCompare(b.journal||'');});else if(filter==='analysis')sorted=sorted.filter(function(x){return x.analysis&&x.analysis.length>10;});el.innerHTML=sorted.map(function(item){var ri=lib.indexOf(item);return'<div class="lib-item"><div class="lib-item-header"><div class="lib-item-title">'+esc((item.title||'').substring(0,100))+'</div><span class="h-badge '+(item.oa?'h-badge-oa':'h-badge-email')+'">'+(item.oa?'OA':'Email')+'</span></div><div class="lib-item-meta">'+esc(item.journal||'')+(item.year?' \u00b7 '+item.year:'')+(item.author?' \u00b7 '+item.author:'')+(item.saved?' \u00b7 '+item.saved:'')+'</div>'+(item.analysis?'<div class="lib-analysis-preview" onclick="toggleLibAnalysis(this)"><span class="lib-analysis-toggle">\uD83E\uDDE0 Ver an\u00e1lise</span><div class="lib-analysis-text" style="display:none">'+esc(item.analysis.substring(0,600))+'</div></div>':'')+'<div class="lib-actions"><button class="btn-lib-action" style="background:var(--accent);color:#fff;border-color:var(--accent)" onclick="loadFromLibrary('+ri+')">&#128269; Abrir</button>'+(item.oa&&item.oaUrl?'<a class="btn-lib-action" href="'+esc(item.oaUrl)+'" target="_blank">\u2193 PDF</a>':'')+'<button class="btn-lib-action" onclick="shareLibItem('+ri+')">&#8599; Partilhar</button><button class="btn-lib-action btn-lib-delete" onclick="deleteFromLibrary('+ri+')">\u2715 Remover</button></div></div>';}).join('');}
 function toggleLibAnalysis(el){var txt=el.querySelector('.lib-analysis-text');var tog=el.querySelector('.lib-analysis-toggle');if(txt.style.display==='none'){txt.style.display='block';tog.innerHTML='\uD83E\uDDE0 Esconder';}else{txt.style.display='none';tog.innerHTML='\uD83E\uDDE0 Ver an\u00e1lise';}}
 function shareLibItem(i){var lib=getLibrary();var item=lib[i];if(!item)return;var text=item.title+'\n'+(item.journal||'')+(item.year?' \u00b7 '+item.year:'')+(item.doi?'\nhttps://doi.org/'+item.doi:'');if(navigator.share)navigator.share({title:item.title,text:text});else{navigator.clipboard.writeText(text);showToast('\u2713 Copiado!');}}
 function deleteFromLibrary(i){showConfirm('Remover da biblioteca?',function(){var lib=getLibrary();lib.splice(i,1);saveLibraryData(lib);renderLibrary();});}
 function clearLibrary(){showConfirm('Limpar toda a biblioteca?',function(){try{localStorage.removeItem('pq_library');}catch(e){}renderLibrary();});}
+function loadFromLibrary(i){
+  var lib=getLibrary();
+  var item=lib[i];
+  if(!item)return;
+  currentArticle={title:item.title,journal:item.journal,year:item.year,doi:item.doi,oa:item.oa,oaUrl:item.oaUrl||'',authorName:item.author||''};
+  currentAbstract='';
+  showArticleCard(currentArticle,item.oa);
+  if(item.oa&&item.oaUrl){show('oaLink');g('oaLink').href=item.oaUrl;g('emailSection').style.display='none';}
+  else{hide('oaLink');g('emailSection').style.display='block';var req={name:g('nameInput').value.trim(),role:g('roleInput').value.trim(),inst:g('instInput').value.trim()};g('emailAuthor').textContent=item.author||'';g('emailBody').value=generateEmail(currentArticle,item.author||'Author',req);setAuthorLinks(item.author||'');updateMailto('');}
+  show('resetBtn');
+  switchTab('search');
+  showToast('\u2713 Artigo carregado da biblioteca');
+}
 function getJclubSessions(){try{return JSON.parse(localStorage.getItem('pq_jclub')||'[]');}catch(e){return[];}}
 function saveJclubSessions(s){try{localStorage.setItem('pq_jclub',JSON.stringify(s));}catch(e){}}
 function createSession(){var def='Journal Club '+new Date().toLocaleDateString('pt-PT',{month:'long',year:'numeric'});showModal('Nova sess\u00e3o','Nome:',def,function(name){if(!name)return;var sessions=getJclubSessions();sessions.unshift({id:Date.now(),name:name,date:new Date().toISOString().split('T')[0],papers:[],analysis:''});saveJclubSessions(sessions);renderJclub();});}
@@ -668,13 +682,34 @@ function switchMode(mode){if(currentMode===mode)return;currentMode=mode;if(analy
 function runAnalysisMode(){if(!currentArticle)return;if(analysisAbortController)analysisAbortController.abort();analysisAbortController=new AbortController();var signal=analysisAbortController.signal;g('analysisSummaryLoading').style.display='flex';g('analysisSummaryText').style.display='none';g('analysisSummaryText').innerHTML='';if(!getActiveKey()){g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">&#128161; Adiciona a tua API Key nas defini\u00e7\u00f5es para activar a IA.</span>';return;}if(currentMode==='infografia'){g('analysisLoadingText').textContent='A gerar infografia\u2026';var usrP=INFOGRAFIA_PROMPT+'\n\nArticle: '+currentArticle.title+'\nJournal: '+(currentArticle.journal||'')+'\nYear: '+(currentArticle.year||'')+'\n'+(currentAbstract?'Abstract: '+currentAbstract:'');var fj='';streamLLM('Return only valid JSON.',usrP,1200,function(chunk){if(!signal.aborted)fj=chunk;},function(status){if(signal.aborted||status==='aborted')return;g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';if(status==='ok'){try{var data=JSON.parse(fj.replace(/```json|```/g,'').trim());g('analysisSummaryText').innerHTML=renderInfografia(data);}catch(e){g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">Erro ao gerar infografia.</span>';}}else{g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">Infografia n\u00e3o dispon\u00edvel.</span>';}},signal);return;}var isDeep=currentMode==='deep';g('analysisLoadingText').textContent=isDeep?'Painel de revisores a analisar\u2026':'A gerar resumo cl\u00ednico\u2026';var sysP=emailLang==='pt'?(isDeep?'\u00c9s um painel de revisores cient\u00edficos especializados em medicina intensiva pedi\u00e1trica. Responde em Portugu\u00eas.':'\u00c9s um especialista cl\u00ednico em medicina intensiva pedi\u00e1trica. Gera resumos concisos. Responde em Portugu\u00eas.'):(isDeep?'You are a panel of expert reviewers specialised in paediatric intensive care. Conduct deep peer reviews. Respond in English.':'You are a clinical expert in paediatric intensive care. Generate concise clinical summaries. Respond in English.');var prompt=isDeep?DEEP_REVIEW:QUICK_RESUME;var usrP2=prompt+'\n\nArticle: '+currentArticle.title+'\n'+(currentAbstract?'Abstract: '+currentAbstract:'(No abstract available)');var maxTok=isDeep?4000:800;streamLLM(sysP,usrP2,maxTok,function(full){if(signal.aborted)return;g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';g('analysisSummaryText').innerHTML=formatAIOutput(full);},function(status){if(signal.aborted||status==='aborted')return;if(status!=='ok'){g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">An\u00e1lise n\u00e3o dispon\u00edvel.</span>';}},signal);}
 async function startAnalysis(){if(!currentArticle)return;currentMode='resume';if(analysisAbortController){analysisAbortController.abort();analysisAbortController=null;}var btnR=g('btnModeResume');if(btnR)btnR.classList.add('btn-mode-active');var btnD=g('btnModeDeep');if(btnD)btnD.classList.remove('btn-mode-active');var btnI=g('btnModeInfografia');if(btnI)btnI.classList.remove('btn-mode-active');chatHistory=[];g('chatMessages').innerHTML='<div class="chat-empty">Faz uma pergunta sobre o artigo \u2193</div>';g('analysisTitleFull').textContent=currentArticle.title;g('analysisMetaFull').textContent=(currentArticle.journal||'')+(currentArticle.year?' \u00b7 '+currentArticle.year:'')+(currentArticle.doi?' \u00b7 '+currentArticle.doi:'');g('analysisHeaderTitle').textContent=currentArticle.title.substring(0,40)+'\u2026';g('relatedCard').style.display='none';if(g('recentCard'))g('recentCard').style.display='none';clearPdf();if(!currentAbstract&&currentArticle.doi)currentAbstract=await fetchAbstract(currentArticle.doi,null)||'';runAnalysisMode();fetchRelated(currentArticle.doi,currentArticle.title).then(function(related){
   if(!related.length)return;
+  window._related=related;
   g('relatedCard').style.display='block';
-  g('relatedItems').innerHTML=related.map(function(r){
-    return '<div class="related-item" onclick="loadRelated(\''+esc(r.pmid)+'\')">'
+  renderRelatedItems(4);
+});fetchRecentArticles(currentArticle.title);}
+function renderRelatedItems(n){
+  var related=window._related||[];
+  if(!related.length)return;
+  var html='';
+  related.slice(0,n).forEach(function(r){
+    html+='<div class="related-item" onclick="loadRelated(\''+esc(r.pmid)+'\')">'
       +'<div class="related-title">'+esc(r.title)+'</div>'
       +'<div class="related-meta">'+esc(r.journal||'')+(r.year?' \u00b7 '+r.year:'')+'</div></div>';
-  }).join('');
-});fetchRecentArticles(currentArticle.title);}
+  });
+  if(related.length>n){
+    html+='<button class="btn-ver-mais" onclick="renderRelatedItems(999)">+ Ver mais '+(related.length-n)+' artigos</button>';
+  }
+  g('relatedItems').innerHTML=html;
+}
+function renderRecentItems(n){
+  var items=window._recentItems||[];
+  if(!items.length)return;
+  var el=g('recentItems');
+  if(!el)return;
+  el.innerHTML=items.slice(0,n).join('');
+  if(items.length>n){
+    el.innerHTML+='<button class="btn-ver-mais" onclick="renderRecentItems(999)">+ Ver mais '+(items.length-n)+' artigos</button>';
+  }
+}
 async function fetchRecentArticles(title){
   var el=g('recentCard'),listEl=g('recentItems');
   if(!el||!listEl)return;
@@ -703,7 +738,11 @@ async function fetchRecentArticles(title){
         +(isNew?'<span style="font-size:9px;background:#dcfce7;color:#16a34a;border-radius:6px;padding:1px 5px;font-weight:600;margin-left:4px">Novo</span>':'')
         +'</div><div class="related-meta">'+esc(a.fulljournalname||a.source||'')+(y?' \u00b7 '+y:'')+'</div></div>';
     }).filter(Boolean).join('');
-    if(items){el.style.display='block';listEl.innerHTML=items;}
+    if(items){
+      el.style.display='block';
+      window._recentItems=items.split('</div>').filter(function(x){return x.trim();}).map(function(x){return x+'</div>';});
+      renderRecentItems(4);
+    }
   }catch(e){}
 }
 function onDragOver(e){e.preventDefault();g('pdfDrop').classList.add('dragover');}
@@ -727,7 +766,43 @@ async function fetchByTitle(title){var r=await fetch('https://api.crossref.org/w
 async function checkOA(doi){try{var r=await fetch('https://api.unpaywall.org/v2/'+doi+'?email=pedrossnunes@gmail.com');if(!r.ok)return null;var d=await r.json();if(d.is_oa&&d.best_oa_location&&d.best_oa_location.url_for_pdf)return d.best_oa_location.url_for_pdf;if(d.is_oa&&d.best_oa_location&&d.best_oa_location.url)return d.best_oa_location.url;return null;}catch(e){return null;}}
 async function findEmailPubMed(doi){try{var r1=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(doi)+'[doi]&retmode=json');var d1=await r1.json();var pmid=d1.esearchresult&&d1.esearchresult.idlist&&d1.esearchresult.idlist[0];if(!pmid)return null;var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id='+pmid+'&retmode=xml');var xml=await r2.text();var emailMatch=xml.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);return emailMatch?emailMatch[0]:null;}catch(e){return null;}}
 async function fetchAbstract(doi,pmid){try{var id=pmid;if(!id&&doi){var r=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(doi)+'[doi]&retmode=json');var d=await r.json();id=d.esearchresult&&d.esearchresult.idlist&&d.esearchresult.idlist[0];}if(!id)return null;var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id='+id+'&retmode=xml');var xml=await r2.text();var abs=xml.match(/<AbstractText[^>]*>([\s\S]*?)<\/AbstractText>/g);if(!abs)return null;return abs.map(function(a){return a.replace(/<[^>]+>/g,'');}).join(' ');}catch(e){return null;}}
-async function fetchRelated(doi,title){try{var query=doi?doi+'[doi]':title;var r1=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(query)+'&retmode=json');var d1=await r1.json();var pmid=d1.esearchresult&&d1.esearchresult.idlist&&d1.esearchresult.idlist[0];if(!pmid)return[];var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&db=pubmed&id='+pmid+'&cmd=neighbor_score&retmode=json');var d2=await r2.json();var links=d2.linksets&&d2.linksets[0]&&d2.linksets[0].linksetdbs&&d2.linksets[0].linksetdbs[0]&&d2.linksets[0].linksetdbs[0].links;if(!links||!links.length)return[];var relIds=links.slice(0,10).join(',');var r3=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+relIds+'&retmode=json');var d3=await r3.json();return(d3.result&&d3.result.uids||[]).map(function(uid){var a=d3.result[uid];if(!a)return null;return{pmid:uid,title:a.title||'',journal:a.fulljournalname||a.source||'',year:a.pubdate?a.pubdate.substring(0,4):''};}).filter(Boolean);}catch(e){return[];}}
+async function fetchRelated(doi,title){
+  try{
+    var sw='with from after before during using about their these those that this into have been were than and the for are but not all can had was one our out get has him his how its may new now old see two who did let put say she too use'.split(' ');
+    var words=title.split(/\s+/).map(function(w){return w.replace(/[^a-zA-Z0-9]/g,'');}).filter(function(w){return w.length>4&&sw.indexOf(w.toLowerCase())===-1;}).slice(0,5);
+    if(!words.length)return[];
+    var searchTerm=words.join(' ');
+    var r1=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(searchTerm)+'&retmax=8&sort=relevance&retmode=json');
+    var d1=await r1.json();
+    var ids=d1.esearchresult&&d1.esearchresult.idlist;
+    if(!ids||!ids.length)return[];
+    var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+ids.join(',')+'&retmode=json');
+    var d2=await r2.json();
+    return(d2.result&&d2.result.uids||[]).map(function(uid){
+      var a=d2.result[uid];
+      if(!a)return null;
+      return{pmid:uid,title:a.title||'',journal:a.fulljournalname||a.source||'',year:a.pubdate?a.pubdate.substring(0,4):''};
+    }).filter(Boolean);
+  }catch(e){return[];}
+}
+function exportPDF(){
+  if(!currentArticle){showToast('Sem artigo para exportar.');return;}
+  var title=currentArticle.title||'Artigo';
+  var meta=(currentArticle.journal||'')+(currentArticle.year?' \u00b7 '+currentArticle.year:'')+(currentArticle.doi?' \u00b7 DOI: '+currentArticle.doi:'');
+  var summary=g('analysisSummaryText').innerHTML||'<p>Sem an\u00e1lise gerada.</p>';
+  var oaBadge=currentArticle.oa?'<span style="background:#d1fae5;color:#1a7a4a;padding:3px 10px;border-radius:20px;font-size:11px">\u2713 Acesso Livre</span>':'';
+  var w=window.open('','_blank');
+  if(!w){showToast('Activa popups para exportar PDF.');return;}
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>'+title.replace(/</g,'&lt;')+'</title><style>body{font-family:Georgia,serif;max-width:780px;margin:40px auto;padding:0 24px;color:#1a1612;line-height:1.8;}h1{font-size:18px;font-weight:700;margin:0 0 6px;color:#1a1612;}h1+p{font-size:13px;color:#6b6358;margin:0 0 20px;border-bottom:1px solid #d8d2c4;padding-bottom:12px;}h2,h3{font-size:14px;font-weight:700;margin:16px 0 6px;color:#1a1612;border-bottom:1px solid #e8e3d8;padding-bottom:3px;}strong{font-weight:700;color:#1a1612;}li{margin-bottom:3px;}br{display:none;}.ai-output{font-size:13px;}.footer{margin-top:32px;padding-top:10px;border-top:1px solid #d8d2c4;font-size:11px;color:#9e9488;text-align:center;}@media print{body{margin:0;}}</style></head><body>'
+    +'<div style="font-size:10px;color:#c96442;font-weight:700;letter-spacing:1.5px;margin-bottom:12px">PAPERQUEST</div>'
+    +'<h1>'+title.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</h1>'
+    +'<p>'+meta.replace(/&/g,'&amp;')+' '+oaBadge+'</p>'
+    +'<div>'+summary+'</div>'
+    +'<div class="footer">Gerado por PaperQuest \u00b7 paperquest.org \u00b7 '+new Date().toLocaleDateString('pt-PT')+'</div>'
+    +'</body></html>');
+  w.document.close();
+  setTimeout(function(){w.print();},600);
+}
 async function processArticle(meta){var doi=meta.DOI||'';var title=Array.isArray(meta.title)?meta.title[0]:(meta.title||'Sem t\u00edtulo');var authors=meta.author||[];var journal=Array.isArray(meta['container-title'])?meta['container-title'][0]:(meta['container-title']||'');var year=meta.published&&meta.published['date-parts']&&meta.published['date-parts'][0]?meta.published['date-parts'][0][0]:'';var fa=authors[0];var authorName=fa?((fa.given||'')+' '+(fa.family||'')).trim():'Autor desconhecido';var pmid=meta['_pmid']||null;currentArticle={title:title,journal:journal,year:year,doi:doi,authorName:authorName,oa:false,oaUrl:''};var oaUrl=doi?await checkOA(doi):null;currentArticle.oa=!!oaUrl;currentArticle.oaUrl=oaUrl||'';showArticleCard(currentArticle,!!oaUrl);if(oaUrl){show('oaLink');g('oaLink').href=oaUrl;g('emailSection').style.display='none';addToHistory({title:title,journal:journal,year:year,doi:doi,oa:true});}else{hide('oaLink');var foundEmail=doi?await findEmailPubMed(doi):null;currentFoundEmail=foundEmail||'';var req={name:g('nameInput').value.trim(),role:g('roleInput').value.trim(),inst:g('instInput').value.trim()};g('emailAuthor').textContent=authorName;g('emailFound').textContent=foundEmail?'\u2709 '+foundEmail:'';g('emailBody').value=generateEmail(currentArticle,authorName,req);setAuthorLinks(authorName);updateMailto(foundEmail||'');g('emailSection').style.display='block';g('sentBtn').classList.remove('hidden');g('sentConfirm').style.display='none';addToHistory({title:title,journal:journal,year:year,doi:doi,oa:false});}show('resetBtn');setRunning(false);fetchAbstract(doi,pmid).then(function(abs){if(abs)currentAbstract=abs;});}
 async function runKeywordSearch(query){setRunning(true);g('articleCard').style.display='none';g('resultsList').style.display='none';g('resultsItems').innerHTML='';try{var r=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(query)+'&retmax=10&sort=relevance&retmode=json');var d=await r.json();var ids=d.esearchresult&&d.esearchresult.idlist;if(!ids||!ids.length){showToast('Sem resultados para: '+query);setRunning(false);show('resetBtn');return;}var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+ids.join(',')+'&retmode=json');var d2=await r2.json();var uids=d2.result&&d2.result.uids;if(!uids||!uids.length){setRunning(false);show('resetBtn');return;}setRunning(false);show('resetBtn');g('resultsList').style.display='block';var count=d.esearchresult.count||uids.length;g('resultsItems').innerHTML='<div style="font-size:11px;color:var(--text3);margin-bottom:8px">'+count+' resultados para <strong>'+esc(query)+'</strong></div>'+uids.map(function(uid){var a=d2.result[uid];if(!a)return'';var t=a.title||'Sem t\u00edtulo';var j=a.fulljournalname||a.source||'';var y=a.pubdate?a.pubdate.substring(0,4):'';return'<div class="result-item" onclick="loadFromPMID(\''+uid+'\')"><div class="result-item-title">'+esc(t.substring(0,100))+(t.length>100?'&hellip;':'')+'</div><div class="result-item-meta">'+esc(j)+(y?' \u00b7 '+y:'')+'</div></div>';}).filter(Boolean).join('');addToHistory({title:'Tema: '+query,journal:'PubMed',year:new Date().getFullYear(),doi:'',oa:false});}catch(e){showToast('Erro: '+e.message);setRunning(false);show('resetBtn');}}
 async function loadFromPMID(pmid){g('queryInput').value='PMID:'+pmid;setSearchMode('article');g('resultsList').style.display='none';await runAgent();}
