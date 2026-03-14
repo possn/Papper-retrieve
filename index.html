@@ -153,8 +153,9 @@
     .summary-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
     .ai-badge{font-size:10px;background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:2px 8px;}
     .summary-text{font-size:14px;line-height:1.9;color:var(--text2);}
-    .dot-pulse{display:flex;gap:4px;align-items:center;}
+    .dot-pulse{display:none;gap:4px;align-items:center;}
     .dot-pulse span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.2s infinite;}
+    [style*="display:flex"] > .dot-pulse, [style*="display: flex"] > .dot-pulse{display:flex;}
     .dot-pulse span:nth-child(2){animation-delay:0.2s;}
     .dot-pulse span:nth-child(3){animation-delay:0.4s;}
     @keyframes pulse{0%,100%{opacity:0.3;transform:scale(0.8);}50%{opacity:1;transform:scale(1);}}
@@ -1694,50 +1695,43 @@ async function fetchRecentArticles(title, journal) {
   var el = g('recentCard');
   var listEl = g('recentItems');
   if (!el || !listEl) return;
-  el.style.display = 'block';
-  listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">A carregar...</div>';
   try {
     var currentYear = new Date().getFullYear();
-    // Build clean keyword query from title
-    var stopwords = ['with','from','after','before','during','using','about','their','these','those','that','this','into','have','been','were','than','and','the','for','are','but','not','you','all','can','had','her','was','one','our','out','day','get','has','him','his','how','its','may','new','now','old','see','two','way','who','did','its','let','put','say','she','too','use'];
-    var keywords = title.split(/\s+/)
+    var stopwords = 'with from after before during using about their these those that this into have been were than and the for are but not all can had her was one our out get has him his how its may new now old see two who did let put say she too use children adults patients study review analysis clinical effects definitions criteria syndrome'.split(' ');
+    var words = title.split(/\s+/)
       .map(function(w) { return w.replace(/[^a-zA-Z0-9]/g,''); })
-      .filter(function(w) { return w.length > 4 && stopwords.indexOf(w.toLowerCase()) === -1; })
-      .slice(0, 4).join(' ');
-    // Use daterange filter in query term instead of mindate param (better CORS compatibility)
-    var dateFilter = (currentYear-1) + ':' + currentYear + '[pdat]';
+      .filter(function(w) { return w.length > 3 && stopwords.indexOf(w.toLowerCase()) === -1; })
+      .slice(0, 3);
+    if (!words.length) { el.style.display = 'none'; return; }
     var searchUrl = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed'
-      + '&term=' + encodeURIComponent(keywords + ' ' + dateFilter)
-      + '&retmax=6&sort=pub+date&retmode=json';
+      + '&term=' + encodeURIComponent(words.join(' '))
+      + '&reldate=730&datetype=pdat&retmax=5&sort=pub+date&retmode=json';
     var r = await fetch(searchUrl);
-    if (!r.ok) throw new Error('Search failed: ' + r.status);
+    if (!r.ok) { el.style.display = 'none'; return; }
     var d = await r.json();
     var ids = d.esearchresult && d.esearchresult.idlist;
-    if (!ids || !ids.length) {
-      el.style.display = 'none';
-      return;
-    }
-    var sumUrl = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=' + ids.join(',') + '&retmode=json';
-    var r2 = await fetch(sumUrl);
-    if (!r2.ok) throw new Error('Summary failed');
+    if (!ids || !ids.length) { el.style.display = 'none'; return; }
+    var r2 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=' + ids.join(',') + '&retmode=json');
+    if (!r2.ok) { el.style.display = 'none'; return; }
     var d2 = await r2.json();
     var uids = d2.result && d2.result.uids;
     if (!uids || !uids.length) { el.style.display = 'none'; return; }
-    listEl.innerHTML = uids.map(function(uid) {
+    var items = uids.map(function(uid) {
       var a = d2.result[uid];
       if (!a || !a.title) return '';
-      var t = a.title;
-      var j = a.fulljournalname || a.source || '';
       var y = a.pubdate ? a.pubdate.substring(0,4) : '';
       var isNew = parseInt(y) >= currentYear;
       return '<div class="related-item" onclick="loadRelated(\'' + uid + '\')">'
-        + '<div class="related-title">' + esc(t.substring(0,90)) + (t.length>90?'&hellip;':'')
+        + '<div class="related-title">' + esc(a.title.substring(0,90)) + (a.title.length > 90 ? '&hellip;' : '')
         + (isNew ? ' <span style="font-size:9px;background:#dcfce7;color:#16a34a;border-radius:6px;padding:1px 5px;font-weight:600;margin-left:4px;">Novo</span>' : '') + '</div>'
-        + '<div class="related-meta">' + esc(j) + (y ? ' \u00b7 ' + y : '') + '</div>'
+        + '<div class="related-meta">' + esc(a.fulljournalname || a.source || '') + (y ? ' \u00b7 ' + y : '') + '</div>'
         + '</div>';
     }).filter(Boolean).join('');
+    if (!items) { el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    listEl.innerHTML = items;
   } catch(e) {
-    if (g('recentCard')) g('recentCard').style.display = 'none';
+    if (el) el.style.display = 'none';
   }
 }
 
