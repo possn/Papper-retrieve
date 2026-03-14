@@ -67,10 +67,10 @@
     .article-title{font-family:'Fraunces',serif;font-size:16px;color:var(--text);line-height:1.4;margin-bottom:6px;}
     .article-meta{font-size:12px;color:var(--text2);line-height:1.6;}
     .article-divider{border:none;border-top:1px solid var(--sand);}
-    .article-actions{padding:14px 18px;display:flex;gap:8px;flex-wrap:wrap;}
+    .article-actions{padding:14px 18px;display:flex;gap:8px;align-items:center;}
     .btn-analyze{flex:1;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
     .btn-dl{flex:1;padding:12px;background:var(--green);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;}
-    .btn-sm{padding:10px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+    .btn-sm{width:44px;height:44px;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
     .email-section{padding:0 18px 18px;}
     .find-email-box{padding:13px;background:var(--blue-light);border:1px solid var(--blue);border-radius:12px;margin-bottom:10px;}
     .find-email-label{font-size:11px;font-weight:500;color:var(--blue);margin-bottom:9px;text-transform:uppercase;letter-spacing:0.5px;}
@@ -121,7 +121,7 @@
     .search-loading.active{display:flex;}
     .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
-    #articleIF{font-size:10px;color:var(--text3);margin-top:3px;background:var(--cream2);border-radius:6px;padding:2px 8px;display:none;}
+    #articleIF{font-size:10px;color:var(--text3);margin-top:4px;background:var(--cream2);border-radius:6px;padding:3px 8px;display:none;}
     .jclub-presentation{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
     .cl-section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;}
     .cl-entry{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);}
@@ -333,7 +333,7 @@
       <div class="article-status" id="articleStatus"></div>
       <div class="article-title" id="articleTitle"></div>
       <div class="article-meta" id="articleMeta"></div>
-    <div id="articleIF" style="display:none;font-size:10px;color:var(--text3);margin-top:3px;background:var(--cream2);border-radius:6px;padding:2px 8px;display:inline-block;"></div>
+    <div id="articleIF"></div>
     </div>
     <hr class="article-divider"/>
     <div class="article-actions">
@@ -1542,24 +1542,21 @@ function showArticleCard(article, isOA) {
 async function fetchImpactFactor(journal) {
   var ifEl = g('articleIF');
   if (!ifEl) return;
+  ifEl.style.display = 'none';
+  ifEl.textContent = '';
   try {
-    // Use CrossRef /journals endpoint to get impact factor hints
-    var q = encodeURIComponent(journal);
-    var r = await fetch('https://api.crossref.org/journals?query=' + q + '&rows=1');
+    var r = await fetch('https://api.crossref.org/journals?query=' + encodeURIComponent(journal) + '&rows=1');
+    if (!r.ok) return;
     var d = await r.json();
     var item = d.message && d.message.items && d.message.items[0];
     if (!item) return;
-    // CrossRef doesn't give IF directly but gives subject areas + publisher
-    var subjects = item.subjects && item.subjects.length ? item.subjects.map(function(s) { return s.name; }).slice(0,2) : [];
-    var publisher = item.publisher || '';
-    // Try to get SJR from Open Access journals API if available
-    var sjrR = await fetch('https://api.crossref.org/journals/' + encodeURIComponent(item.ISSN ? item.ISSN[0] : '') + '/works?rows=1&sort=published&order=desc');
-    var sjrD = await sjrR.json();
-    var latest = sjrD.message && sjrD.message.items && sjrD.message.items[0];
-    var latestYear = latest && latest.published && latest.published['date-parts'] && latest.published['date-parts'][0] ? latest.published['date-parts'][0][0] : '';
-    if (subjects.length || publisher) {
-      ifEl.style.display = 'inline-flex';
-      ifEl.innerHTML = (subjects.length ? subjects.join(' · ') : publisher) + (latestYear ? ' · \u00faltimo: ' + latestYear : '');
+    var subjects = item.subjects && item.subjects.length
+      ? item.subjects.map(function(s) { return s.name; }).slice(0,2)
+      : [];
+    var info = subjects.length ? subjects.join(' · ') : (item.publisher || '');
+    if (info) {
+      ifEl.style.display = 'block';
+      ifEl.textContent = info;
     }
   } catch(e) {}
 }
@@ -1698,39 +1695,49 @@ async function fetchRecentArticles(title, journal) {
   var listEl = g('recentItems');
   if (!el || !listEl) return;
   el.style.display = 'block';
-  listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">A carregar artigos recentes...</div>';
+  listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">A carregar...</div>';
   try {
-    // Extract keywords from title (first 4-5 meaningful words)
-    var keywords = title.split(' ')
-      .filter(function(w) { return w.length > 4 && !['with','from','after','before','during','using','about','their','these','those'].includes(w.toLowerCase()); })
-      .slice(0, 4).join(' ');
     var currentYear = new Date().getFullYear();
-    var minDate = (currentYear - 1) + '/01/01';
-    var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='
-      + encodeURIComponent(keywords) + '&mindate=' + minDate + '&datetype=pdat&retmax=5&sort=pub+date&retmode=json';
-    var r = await fetch(url);
+    // Build clean keyword query from title
+    var stopwords = ['with','from','after','before','during','using','about','their','these','those','that','this','into','have','been','were','than','and','the','for','are','but','not','you','all','can','had','her','was','one','our','out','day','get','has','him','his','how','its','may','new','now','old','see','two','way','who','did','its','let','put','say','she','too','use'];
+    var keywords = title.split(/\s+/)
+      .map(function(w) { return w.replace(/[^a-zA-Z0-9]/g,''); })
+      .filter(function(w) { return w.length > 4 && stopwords.indexOf(w.toLowerCase()) === -1; })
+      .slice(0, 4).join(' ');
+    // Use daterange filter in query term instead of mindate param (better CORS compatibility)
+    var dateFilter = (currentYear-1) + ':' + currentYear + '[pdat]';
+    var searchUrl = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed'
+      + '&term=' + encodeURIComponent(keywords + ' ' + dateFilter)
+      + '&retmax=6&sort=pub+date&retmode=json';
+    var r = await fetch(searchUrl);
+    if (!r.ok) throw new Error('Search failed: ' + r.status);
     var d = await r.json();
     var ids = d.esearchresult && d.esearchresult.idlist;
-    if (!ids || !ids.length) { listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">Sem artigos recentes encontrados.</div>'; return; }
-    var r2 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=' + ids.join(',') + '&retmode=json');
+    if (!ids || !ids.length) {
+      el.style.display = 'none';
+      return;
+    }
+    var sumUrl = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=' + ids.join(',') + '&retmode=json';
+    var r2 = await fetch(sumUrl);
+    if (!r2.ok) throw new Error('Summary failed');
     var d2 = await r2.json();
     var uids = d2.result && d2.result.uids;
-    if (!uids || !uids.length) { listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">Sem artigos recentes encontrados.</div>'; return; }
+    if (!uids || !uids.length) { el.style.display = 'none'; return; }
     listEl.innerHTML = uids.map(function(uid) {
       var a = d2.result[uid];
-      var t = a.title || 'Sem titulo';
+      if (!a || !a.title) return '';
+      var t = a.title;
       var j = a.fulljournalname || a.source || '';
       var y = a.pubdate ? a.pubdate.substring(0,4) : '';
-      var isNew = y >= currentYear;
+      var isNew = parseInt(y) >= currentYear;
       return '<div class="related-item" onclick="loadRelated(\'' + uid + '\')">'
         + '<div class="related-title">' + esc(t.substring(0,90)) + (t.length>90?'&hellip;':'')
-        + (isNew ? ' <span style="font-size:9px;background:#dcfce7;color:#16a34a;border-radius:6px;padding:1px 5px;font-weight:600;margin-left:4px;">2025</span>' : '') + '</div>'
+        + (isNew ? ' <span style="font-size:9px;background:#dcfce7;color:#16a34a;border-radius:6px;padding:1px 5px;font-weight:600;margin-left:4px;">Novo</span>' : '') + '</div>'
         + '<div class="related-meta">' + esc(j) + (y ? ' \u00b7 ' + y : '') + '</div>'
         + '</div>';
-    }).join('');
-    el.style.display = 'block';
+    }).filter(Boolean).join('');
   } catch(e) {
-    listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">Erro ao carregar.</div>';
+    if (g('recentCard')) g('recentCard').style.display = 'none';
   }
 }
 
