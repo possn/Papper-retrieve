@@ -121,7 +121,7 @@
     .search-loading.active{display:flex;}
     .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
-    #articleIF{font-size:10px;color:var(--text3);margin-top:4px;background:var(--cream2);border-radius:6px;padding:3px 8px;display:none;}
+    #articleIF{font-size:10px;color:var(--text3);margin-top:4px;background:var(--cream2);border-radius:6px;padding:3px 8px;display:none;width:auto;}
     .jclub-presentation{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
     .cl-section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;}
     .cl-entry{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);}
@@ -319,7 +319,7 @@
       <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
       <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
     </div>
-    <div class="search-loading" id="searchLoader">
+    <div class="search-loading" id="searchLoader" style="display:none;">
       <div class="spinner"></div>
       <span>A pesquisar em CrossRef, Unpaywall e PubMed&hellip;</span>
     </div>
@@ -569,15 +569,15 @@
       <div style="font-size:12px;color:var(--text2);" id="analysisMetaFull"></div>
     </div>
     <div class="summary-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-        <div class="summary-label" style="margin-bottom:0;">An&aacute;lise com IA <span class="ai-badge" id="aiBadgeMain"></span></div>
-        <div style="display:flex;gap:6px;">
-          <button class="btn-mode btn-mode-active" id="btnModeResume" onclick="switchMode('resume')">&#128203; Resumo</button>
-          <button class="btn-mode" id="btnModeDeep" onclick="switchMode('deep')">&#128300; An&aacute;lise</button>
-          <button class="btn-mode" id="btnModeInfografia" onclick="switchMode('infografia')">&#128202; Infografia</button>
+      <div style="margin-bottom:12px;">
+        <div class="summary-label" style="margin-bottom:8px;">An&aacute;lise com IA <span class="ai-badge" id="aiBadgeMain"></span></div>
+        <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;">
+          <button class="btn-mode btn-mode-active" id="btnModeResume" onclick="switchMode('resume')" style="white-space:nowrap;flex-shrink:0;">&#128203; Resumo</button>
+          <button class="btn-mode" id="btnModeDeep" onclick="switchMode('deep')" style="white-space:nowrap;flex-shrink:0;">&#128300; An&aacute;lise</button>
+          <button class="btn-mode" id="btnModeInfografia" onclick="switchMode('infografia')" style="white-space:nowrap;flex-shrink:0;">&#128202; Infografia</button>
         </div>
       </div>
-      <div id="analysisSummaryLoading" style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;">
+      <div id="analysisSummaryLoading" style="display:none;align-items:center;gap:8px;color:var(--text3);font-size:13px;">
         <div class="dot-pulse"><span></span><span></span><span></span></div>
         <span id="analysisLoadingText">A gerar resumo cl&iacute;nico&hellip;</span>
       </div>
