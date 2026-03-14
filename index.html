@@ -301,100 +301,99 @@
           <div class="lang-row" style="margin-bottom:10px;">
             <button class="btn-lang active" id="llmClaude" onclick="setLLM('claude')">&#129504; Claude</button>
             <button class="btn-lang" id="llmGemini" onclick="setLLM('gemini')">&#10024; Gemini</button>
+          </div>
+          <div class="profile-header" style="margin-bottom:6px;">
+            <div class="card-title" style="margin-bottom:0;" id="apiKeyLabel">Claude API Key</div>
+            <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">&#10003; Guardada</span>
+          </div>
+          <div class="field" style="margin-bottom:6px;">
+            <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
+          </div>
+          <div style="font-size:11px;color:var(--text3);line-height:1.6;" id="apiKeyHint">
+            Cria a tua chave em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> &rarr; API Keys.
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
+          <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
+        </div>
+        <div class="search-loading" id="searchLoader" style="display:none;">
+          <div class="spinner"></div>
+          <span>A pesquisar em CrossRef, Unpaywall e PubMed&hellip;</span>
+        </div>
+      </div>
+      <div class="results-list" id="resultsList">
+        <div class="results-label">Selecciona o artigo correcto</div>
+        <div id="resultsItems"></div>
+      </div>
+      <div class="article-card" id="articleCard">
+        <div class="article-header">
+          <div class="article-status" id="articleStatus"></div>
+          <div class="article-title" id="articleTitle"></div>
+          <div class="article-meta" id="articleMeta"></div>
+        <div id="articleIF"></div>
+        </div>
+        <hr class="article-divider"/>
+        <div class="article-actions">
+          <button class="btn-analyze" onclick="openAnalysis()">&#129504; Analisar com IA</button>
+          <a class="btn-dl hidden" id="oaLink" href="#" target="_blank">&#8595; PDF</a>
+          <button class="btn-sm" onclick="saveToLibrary()" title="Guardar na biblioteca">&#128278;</button>
+          <button class="btn-sm" onclick="addCurrentToJclub()" title="Adicionar ao Journal Club">&#127942;</button>
+          <button class="btn-sm" onclick="shareArticle()" title="Partilhar">&#8599;</button>
+        </div>
+        <div class="email-section" id="emailSection" style="display:none;">
+          <div class="find-email-box">
+            <div class="find-email-label">&#128231; Encontrar email do autor</div>
+            <div class="find-email-btns">
+              <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Scholar</a>
+              <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
+              <a class="btn-find btn-find-google" id="btnRgate" href="#" target="_blank">Google</a>
+              <a class="btn-find btn-find-linkedin" id="btnLinkedIn" href="#" target="_blank">LinkedIn</a>
+            </div>
+          </div>
+          <div>
+            <div class="email-header-row">
+              <div>
+                <div class="email-author" id="emailAuthor"></div>
+                <div class="email-found" id="emailFound"></div>
+              </div>
+              <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
+            </div>
+            <textarea class="email-body" id="emailBody"></textarea>
+            <div class="action-row">
+              <a class="btn-mail" id="btnMailto" href="#">&#9993;&#65039; Abrir no Mail</a>
+              <button class="btn-sent" id="sentBtn" onclick="markSent()">&#10003;</button>
+            </div>
+            <div class="sent-confirm" id="sentConfirm">&#10003; Enviado! Follow-up em 7 dias.</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">CrossRef &middot; Unpaywall &middot; PubMed &middot; Pedir artigos a autores &eacute; legal</div>
+    </div>
+    <div class="panel" id="panelLibrary">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">A minha biblioteca</div>
+        <button class="small-btn" onclick="clearLibrary()">Limpar tudo</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <select id="libFilter" onchange="renderLibrary()" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text1);font-size:12px;font-family:'DM Sans',sans-serif;">
+          <option value="recent">&#128336; Mais recentes</option>
+          <option value="year">&#128197; Ano de publica&ccedil;&atilde;o</option>
+          <option value="journal">&#128218; Journal (A-Z)</option>
+          <option value="analysis">&#129504; Com an&aacute;lise</option>
+        </select>
+      </div>
+      <div id="libraryContent"></div>
+    </div>
+    <div class="panel" id="panelHistory">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Hist&oacute;rico</div>
+        <button class="small-btn" onclick="clearHistory()">Limpar</button>
+      </div>
+      <div id="historyContent"></div>
+    </div>
 
 ```
-      </div>
-      <div class="profile-header" style="margin-bottom:6px;">
-        <div class="card-title" style="margin-bottom:0;" id="apiKeyLabel">Claude API Key</div>
-        <span id="apiKeySaved" style="font-size:11px;color:var(--accent);font-weight:500;display:none;">&#10003; Guardada</span>
-      </div>
-      <div class="field" style="margin-bottom:6px;">
-        <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
-      </div>
-      <div style="font-size:11px;color:var(--text3);line-height:1.6;" id="apiKeyHint">
-        Cria a tua chave em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a> &rarr; API Keys.
-      </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn-primary" id="runBtn" onclick="runAgent()">Pesquisar artigo</button>
-      <button class="btn-secondary hidden" id="resetBtn" onclick="reset()">Nova pesquisa</button>
-    </div>
-    <div class="search-loading" id="searchLoader" style="display:none;">
-      <div class="spinner"></div>
-      <span>A pesquisar em CrossRef, Unpaywall e PubMed&hellip;</span>
-    </div>
-  </div>
-  <div class="results-list" id="resultsList">
-    <div class="results-label">Selecciona o artigo correcto</div>
-    <div id="resultsItems"></div>
-  </div>
-  <div class="article-card" id="articleCard">
-    <div class="article-header">
-      <div class="article-status" id="articleStatus"></div>
-      <div class="article-title" id="articleTitle"></div>
-      <div class="article-meta" id="articleMeta"></div>
-    <div id="articleIF"></div>
-    </div>
-    <hr class="article-divider"/>
-    <div class="article-actions">
-      <button class="btn-analyze" onclick="openAnalysis()">&#129504; Analisar com IA</button>
-      <a class="btn-dl hidden" id="oaLink" href="#" target="_blank">&#8595; PDF</a>
-      <button class="btn-sm" onclick="saveToLibrary()" title="Guardar na biblioteca">&#128278;</button>
-      <button class="btn-sm" onclick="addCurrentToJclub()" title="Adicionar ao Journal Club">&#127942;</button>
-      <button class="btn-sm" onclick="shareArticle()" title="Partilhar">&#8599;</button>
-    </div>
-    <div class="email-section" id="emailSection" style="display:none;">
-      <div class="find-email-box">
-        <div class="find-email-label">&#128231; Encontrar email do autor</div>
-        <div class="find-email-btns">
-          <a class="btn-find btn-find-scholar" id="btnScholar" href="#" target="_blank">Scholar</a>
-          <a class="btn-find btn-find-pubmed" id="btnPubmed" href="#" target="_blank">PubMed</a>
-          <a class="btn-find btn-find-google" id="btnRgate" href="#" target="_blank">Google</a>
-          <a class="btn-find btn-find-linkedin" id="btnLinkedIn" href="#" target="_blank">LinkedIn</a>
-        </div>
-      </div>
-      <div>
-        <div class="email-header-row">
-          <div>
-            <div class="email-author" id="emailAuthor"></div>
-            <div class="email-found" id="emailFound"></div>
-          </div>
-          <button class="btn-copy" id="copyBtn" onclick="copyEmail()">Copiar</button>
-        </div>
-        <textarea class="email-body" id="emailBody"></textarea>
-        <div class="action-row">
-          <a class="btn-mail" id="btnMailto" href="#">&#9993;&#65039; Abrir no Mail</a>
-          <button class="btn-sent" id="sentBtn" onclick="markSent()">&#10003;</button>
-        </div>
-        <div class="sent-confirm" id="sentConfirm">&#10003; Enviado! Follow-up em 7 dias.</div>
-      </div>
-    </div>
-  </div>
-  <div class="footer">CrossRef &middot; Unpaywall &middot; PubMed &middot; Pedir artigos a autores &eacute; legal</div>
-</div>
-<div class="panel" id="panelLibrary">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">A minha biblioteca</div>
-    <button class="small-btn" onclick="clearLibrary()">Limpar tudo</button>
-  </div>
-  <div style="display:flex;gap:8px;margin-bottom:12px;">
-    <select id="libFilter" onchange="renderLibrary()" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text1);font-size:12px;font-family:'DM Sans',sans-serif;">
-      <option value="recent">&#128336; Mais recentes</option>
-      <option value="year">&#128197; Ano de publica&ccedil;&atilde;o</option>
-      <option value="journal">&#128218; Journal (A-Z)</option>
-      <option value="analysis">&#129504; Com an&aacute;lise</option>
-    </select>
-  </div>
-  <div id="libraryContent"></div>
-</div>
-<div class="panel" id="panelHistory">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-    <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Hist&oacute;rico</div>
-    <button class="small-btn" onclick="clearHistory()">Limpar</button>
-  </div>
-  <div id="historyContent"></div>
-</div>
-
 <div class="panel" id="panelJclub">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
     <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;">Journal Club</div>
@@ -845,7 +844,7 @@ function setLLM(llm) {
   g('apiKeyInput').value = saved;
   g('apiKeySaved').style.display = saved ? 'inline' : 'none';
   // Update badges
-  var labels = { claude: 'Claude AI', gemini: 'Gemini', openai: 'ChatGPT' };
+  var labels = { claude: 'Claude AI', gemini: 'Gemini' };
   var label = labels[llm] || 'IA';
   if (g('aiBadgeMain')) g('aiBadgeMain').textContent = label;
   if (g('aiBadgeChat')) g('aiBadgeChat').textContent = label;
@@ -853,6 +852,8 @@ function setLLM(llm) {
 }
 function loadLLM() {
   var llm = localStorage.getItem('pq_llm') || 'claude';
+  // Reset openai to claude since we removed that option
+  if (llm === 'openai') { llm = 'claude'; try { localStorage.setItem('pq_llm','claude'); } catch(e){} }
   currentLLM = llm;
   // Don't warn on load, just set silently
   ['claude','gemini'].forEach(function(l) {
@@ -868,7 +869,7 @@ function loadLLM() {
     if (g('apiKeyInput')) g('apiKeyInput').value = saved;
     if (g('apiKeySaved')) g('apiKeySaved').style.display = saved ? 'inline' : 'none';
   }
-  var labels = { claude: 'Claude AI', gemini: 'Gemini', openai: 'ChatGPT' };
+  var labels = { claude: 'Claude AI', gemini: 'Gemini' };
   var label = labels[llm] || 'IA';
   setTimeout(function() {
     if (g('aiBadgeMain')) g('aiBadgeMain').textContent = label;
@@ -915,7 +916,6 @@ function clearProfile() {
 function loadApiKey() {
   CLAUDE_KEY = localStorage.getItem('pq_apikey') || '';
   GEMINI_KEY = localStorage.getItem('pq_geminikey') || '';
-  OPENAI_KEY = localStorage.getItem('pq_openaikey') || '';
 }
 function saveApiKey() {
   var k = g('apiKeyInput').value.trim();
