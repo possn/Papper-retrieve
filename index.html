@@ -121,6 +121,8 @@
     .search-loading.active{display:flex;}
     .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
+    #articleIF{font-size:10px;color:var(--text3);margin-top:3px;background:var(--cream2);border-radius:6px;padding:2px 8px;display:none;}
+    .jclub-presentation{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
     .cl-section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;}
     .cl-entry{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);}
     .cl-entry:last-of-type{border-bottom:none;}
@@ -331,6 +333,7 @@
       <div class="article-status" id="articleStatus"></div>
       <div class="article-title" id="articleTitle"></div>
       <div class="article-meta" id="articleMeta"></div>
+    <div id="articleIF" style="display:none;font-size:10px;color:var(--text3);margin-top:3px;background:var(--cream2);border-radius:6px;padding:2px 8px;display:inline-block;"></div>
     </div>
     <hr class="article-divider"/>
     <div class="article-actions">
@@ -599,6 +602,11 @@
     <div class="related-card" id="relatedCard" style="display:none;">
       <div class="summary-label">Artigos relacionados <span class="ai-badge">PubMed</span></div>
       <div id="relatedItems"></div>
+    </div>
+    <div class="related-card" id="recentCard" style="display:none;">
+      <div class="summary-label">&#128313; Artigos recentes <span class="ai-badge">PubMed</span></div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Publicados nos últimos 12 meses sobre o mesmo tema</div>
+      <div id="recentItems"></div>
     </div>
     <div class="chat-card">
       <div class="summary-label" style="padding:16px 16px 0;">Perguntas ao artigo <span class="ai-badge" id="aiBadgeChat"></span></div>
@@ -1078,6 +1086,100 @@ async function analyzeSession(sessionId) {
     analysisEl.innerHTML = 'Erro: ' + esc(e.message);
   }
 }
+async function generatePresentation(sessionId) {
+  var key = getActiveKey();
+  if (!key) { showToast('Adiciona a tua API Key primeiro.'); return; }
+  var sessions = getJclubSessions();
+  var s = sessions.find(function(x) { return x.id === sessionId; });
+  if (!s || !s.papers.length) { showToast('Adiciona artigos \u00e0 sess\u00e3o primeiro.'); return; }
+  var presEl = g('jclub-presentation-' + sessionId);
+  if (!presEl) return;
+  presEl.style.display = 'block';
+  presEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text3);font-size:13px;">&#127916; A gerar apresenta\u00e7\u00e3o...</div>';
+  var paperList = s.papers.map(function(p, i) {
+    return (i+1) + '. ' + p.title + (p.journal ? ' [' + p.journal + ']' : '') + (p.year ? ' (' + p.year + ')' : '');
+  }).join('\n');
+  var sysP = 'You are a medical educator creating a structured Journal Club presentation. Return ONLY a JSON object, no markdown, no explanation.';
+  var usrP = 'Create a Journal Club presentation for these papers:\n\n' + paperList + '\n\n'
+    + 'Return JSON with this exact structure:\n'
+    + '{\n'
+    + '  "session": "' + s.name + '",\n'
+    + '  "date": "' + s.date + '",\n'
+    + '  "slides": [\n'
+    + '    {"type":"title","title":"session title","subtitle":"subtitle"},\n'
+    + '    {"type":"paper","number":1,"title":"paper title","authors":"first author et al","journal":"journal year","keypoints":["point1","point2","point3"],"clinical":"clinical relevance in 1 line","verdict":"positive|negative|neutral"},\n'
+    + '    {"type":"debate","title":"Debate","questions":["q1","q2","q3","q4","q5"]},\n'
+    + '    {"type":"conclusion","title":"Conclus\u00e3o","points":["takeaway1","takeaway2","takeaway3"]}\n'
+    + '  ]\n'
+    + '}\n'
+    + (emailLang === 'pt' ? 'Respond in Portuguese.' : 'Respond in English.');
+  var fullJson = '';
+  streamLLM(sysP, usrP, 2000, function(chunk) { fullJson = chunk; }, function(status) {
+    if (status !== 'ok') { presEl.innerHTML = '<div style="color:var(--text3);font-size:12px;padding:12px;">Erro ao gerar apresenta\u00e7\u00e3o.</div>'; return; }
+    try {
+      var clean = fullJson.replace(/```json|```/g, '').trim();
+      var data = JSON.parse(clean);
+      presEl.innerHTML = renderPresentation(data, sessionId);
+    } catch(e) {
+      presEl.innerHTML = '<div style="color:var(--text3);font-size:12px;padding:12px;">Erro ao processar JSON.</div>';
+    }
+  }, null);
+}
+
+function renderPresentation(data, sessionId) {
+  var slides = data.slides || [];
+  var html = '<div style="margin-top:12px;">'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">'
+    + '<div style="font-size:13px;font-weight:600;color:var(--text1);">&#127916; ' + esc(data.session||'') + '</div>'
+    + '<button onclick="exportPresentation(' + sessionId + ')" style="padding:6px 12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">&#8595; Exportar texto</button>'
+    + '</div>';
+  slides.forEach(function(slide, i) {
+    if (slide.type === 'title') {
+      html += '<div style="background:var(--accent);border-radius:12px;padding:18px;margin-bottom:8px;text-align:center;">'
+        + '<div style="font-family:Fraunces,serif;font-size:18px;font-weight:700;color:#fff;">' + esc(slide.title||'') + '</div>'
+        + '<div style="font-size:12px;color:rgba(255,255,255,0.8);margin-top:4px;">' + esc(slide.subtitle||'') + '</div>'
+        + '<div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:4px;">' + esc(data.date||'') + '</div>'
+        + '</div>';
+    } else if (slide.type === 'paper') {
+      var vColor = slide.verdict==='positive' ? '#16a34a' : slide.verdict==='negative' ? '#dc2626' : '#d97706';
+      var vBg = slide.verdict==='positive' ? '#dcfce7' : slide.verdict==='negative' ? '#fee2e2' : '#fef9c3';
+      var vIcon = slide.verdict==='positive' ? '&#9650;' : slide.verdict==='negative' ? '&#9660;' : '&#9644;';
+      html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;">'
+        + '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">'
+        + '<div style="font-size:10px;font-weight:700;background:var(--accent);color:#fff;border-radius:6px;padding:2px 8px;flex-shrink:0;">Slide ' + (i+1) + '</div>'
+        + '<div style="background:' + vBg + ';color:' + vColor + ';font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;">' + vIcon + ' ' + (slide.verdict||'') + '</div>'
+        + '</div>'
+        + '<div style="font-size:13px;font-weight:600;color:var(--text1);margin-bottom:2px;">' + esc(slide.title||'') + '</div>'
+        + '<div style="font-size:11px;color:var(--text3);margin-bottom:8px;">' + esc(slide.authors||'') + ' &middot; ' + esc(slide.journal||'') + '</div>'
+        + '<div style="display:flex;flex-direction:column;gap:3px;margin-bottom:8px;">'
+        + (slide.keypoints||[]).map(function(p) { return '<div style="font-size:12px;color:var(--text2);display:flex;gap:6px;"><span style="color:var(--accent);flex-shrink:0;">&#8226;</span>' + esc(p) + '</div>'; }).join('')
+        + '</div>'
+        + '<div style="font-size:11px;color:var(--accent);font-style:italic;">' + esc(slide.clinical||'') + '</div>'
+        + '</div>';
+    } else if (slide.type === 'debate') {
+      html += '<div style="background:#fff8f6;border:1px solid #fcd9d0;border-radius:12px;padding:14px;margin-bottom:8px;">'
+        + '<div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;">&#128172; ' + esc(slide.title||'Debate') + '</div>'
+        + (slide.questions||[]).map(function(q,i) { return '<div style="font-size:12px;color:var(--text1);padding:4px 0;border-bottom:1px solid var(--border);">' + (i+1) + '. ' + esc(q) + '</div>'; }).join('')
+        + '</div>';
+    } else if (slide.type === 'conclusion') {
+      html += '<div style="background:var(--card);border:2px solid var(--accent);border-radius:12px;padding:14px;margin-bottom:8px;">'
+        + '<div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;">&#127919; ' + esc(slide.title||'Conclusão') + '</div>'
+        + (slide.points||[]).map(function(p) { return '<div style="font-size:12px;color:var(--text1);display:flex;gap:6px;padding:3px 0;"><span style="color:var(--accent);">&#10003;</span>' + esc(p) + '</div>'; }).join('')
+        + '</div>';
+    }
+  });
+  html += '</div>';
+  return html;
+}
+
+function exportPresentation(sessionId) {
+  var presEl = g('jclub-presentation-' + sessionId);
+  if (!presEl) return;
+  var text = presEl.innerText || '';
+  if (navigator.share) { navigator.share({ title: 'Journal Club', text: text }); }
+  else { navigator.clipboard.writeText(text); showToast('\u2713 Apresenta\u00e7\u00e3o copiada!'); }
+}
+
 function shareSession(sessionId) {
   var sessions = getJclubSessions();
   var s = sessions.find(function(x) { return x.id === sessionId; });
@@ -1118,10 +1220,11 @@ function renderJclub() {
       + '<div class="jclub-add-row"><input class="jclub-add-input" id="jclub-input-' + s.id + '" placeholder="DOI, PMID ou t\u00edtulo\u2026"/>'
       + '<button class="btn-jclub-add" onclick="addPaperToSession(' + s.id + ')">+ Adicionar</button></div>'
       + '<div class="jclub-actions">'
-      + '<button class="btn-jclub-action btn-jclub-analyze" onclick="analyzeSession(' + s.id + ')">&#129504; Analisar</button>'
+      + '<button class="btn-jclub-action btn-jclub-analyze" onclick="analyzeSession(' + s.id + ')">&#129504; Analisar</button>'      + '<button class="btn-jclub-action" style="background:var(--accent);color:#fff;border-color:var(--accent);" onclick="generatePresentation(' + s.id + ')">&#127916; Apresenta\u00e7\u00e3o</button>'
       + '<button class="btn-jclub-action" onclick="shareSession(' + s.id + ')">&#8599; Partilhar</button></div>'
       + '<div class="jclub-analysis" id="jclub-analysis-' + s.id + '" style="display:' + (s.analysis ? 'block' : 'none') + ';">'
       + (s.analysis ? formatAIOutput(s.analysis) : '') + '</div>'
+      + '<div class="jclub-presentation" id="jclub-presentation-' + s.id + '" style="display:none;"></div>'
       + '</div>';
   });
   el.innerHTML = html;
@@ -1430,6 +1533,35 @@ function showArticleCard(article, isOA) {
   g('articleTitle').textContent = article.title;
   g('articleMeta').textContent = (article.journal || '') + (article.year ? ' \u00b7 ' + article.year : '') + (article.doi ? ' \u00b7 DOI: ' + article.doi : '');
   g('articleCard').style.display = 'block';
+  // Fetch impact factor
+  var ifEl = g('articleIF');
+  if (ifEl) { ifEl.style.display = 'none'; ifEl.textContent = ''; }
+  if (article.journal) fetchImpactFactor(article.journal);
+}
+
+async function fetchImpactFactor(journal) {
+  var ifEl = g('articleIF');
+  if (!ifEl) return;
+  try {
+    // Use CrossRef /journals endpoint to get impact factor hints
+    var q = encodeURIComponent(journal);
+    var r = await fetch('https://api.crossref.org/journals?query=' + q + '&rows=1');
+    var d = await r.json();
+    var item = d.message && d.message.items && d.message.items[0];
+    if (!item) return;
+    // CrossRef doesn't give IF directly but gives subject areas + publisher
+    var subjects = item.subjects && item.subjects.length ? item.subjects.map(function(s) { return s.name; }).slice(0,2) : [];
+    var publisher = item.publisher || '';
+    // Try to get SJR from Open Access journals API if available
+    var sjrR = await fetch('https://api.crossref.org/journals/' + encodeURIComponent(item.ISSN ? item.ISSN[0] : '') + '/works?rows=1&sort=published&order=desc');
+    var sjrD = await sjrR.json();
+    var latest = sjrD.message && sjrD.message.items && sjrD.message.items[0];
+    var latestYear = latest && latest.published && latest.published['date-parts'] && latest.published['date-parts'][0] ? latest.published['date-parts'][0][0] : '';
+    if (subjects.length || publisher) {
+      ifEl.style.display = 'inline-flex';
+      ifEl.innerHTML = (subjects.length ? subjects.join(' · ') : publisher) + (latestYear ? ' · \u00faltimo: ' + latestYear : '');
+    }
+  } catch(e) {}
 }
 
 // -- CLAUDE STREAMING --
@@ -1558,6 +1690,48 @@ async function sendSuggestion() {
     if (resp.ok) { showToast('\u2713 Sugest\u00e3o enviada! Obrigado.'); closeSuggestModal(); }
     else { showToast('Erro ao enviar. Tenta novamente.'); }
   } catch(e) { showToast('Erro: ' + e.message); }
+}
+
+// -- RECENT ARTICLES --
+async function fetchRecentArticles(title, journal) {
+  var el = g('recentCard');
+  var listEl = g('recentItems');
+  if (!el || !listEl) return;
+  el.style.display = 'block';
+  listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">A carregar artigos recentes...</div>';
+  try {
+    // Extract keywords from title (first 4-5 meaningful words)
+    var keywords = title.split(' ')
+      .filter(function(w) { return w.length > 4 && !['with','from','after','before','during','using','about','their','these','those'].includes(w.toLowerCase()); })
+      .slice(0, 4).join(' ');
+    var currentYear = new Date().getFullYear();
+    var minDate = (currentYear - 1) + '/01/01';
+    var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='
+      + encodeURIComponent(keywords) + '&mindate=' + minDate + '&datetype=pdat&retmax=5&sort=pub+date&retmode=json';
+    var r = await fetch(url);
+    var d = await r.json();
+    var ids = d.esearchresult && d.esearchresult.idlist;
+    if (!ids || !ids.length) { listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">Sem artigos recentes encontrados.</div>'; return; }
+    var r2 = await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=' + ids.join(',') + '&retmode=json');
+    var d2 = await r2.json();
+    var uids = d2.result && d2.result.uids;
+    if (!uids || !uids.length) { listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">Sem artigos recentes encontrados.</div>'; return; }
+    listEl.innerHTML = uids.map(function(uid) {
+      var a = d2.result[uid];
+      var t = a.title || 'Sem titulo';
+      var j = a.fulljournalname || a.source || '';
+      var y = a.pubdate ? a.pubdate.substring(0,4) : '';
+      var isNew = y >= currentYear;
+      return '<div class="related-item" onclick="loadRelated(\'' + uid + '\')">'
+        + '<div class="related-title">' + esc(t.substring(0,90)) + (t.length>90?'&hellip;':'')
+        + (isNew ? ' <span style="font-size:9px;background:#dcfce7;color:#16a34a;border-radius:6px;padding:1px 5px;font-weight:600;margin-left:4px;">2025</span>' : '') + '</div>'
+        + '<div class="related-meta">' + esc(j) + (y ? ' \u00b7 ' + y : '') + '</div>'
+        + '</div>';
+    }).join('');
+    el.style.display = 'block';
+  } catch(e) {
+    listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">Erro ao carregar.</div>';
+  }
 }
 
 // -- ABSTRACT --
@@ -1714,6 +1888,8 @@ async function startAnalysis() {
         + '</div>';
     }).join('');
   });
+  // Fetch recent articles on same topic
+  fetchRecentArticles(currentArticle.title, currentArticle.journal);
 }
 
 function loadRelated(pmid) { g('queryInput').value = 'PMID:' + pmid; closeAnalysis(); runAgent(); }
