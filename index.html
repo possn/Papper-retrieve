@@ -215,7 +215,24 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 .modal-ok{flex:1;padding:12px;background:var(--accent);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;}
 .modal-cancel{padding:12px 16px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
 #toastEl{position:fixed;bottom:120px;left:50%;transform:translateX(-50%) translateY(20px);background:#2c2820;color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-family:'DM Sans',sans-serif;opacity:0;transition:opacity 0.3s,transform 0.3s;z-index:600;white-space:nowrap;pointer-events:none;}
+
+.explorer-section{background:var(–card-bg);border:1px solid var(–border);border-radius:16px;padding:18px;margin-bottom:14px;}
+.explorer-section-title{font-size:11px;font-weight:700;color:var(–text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.cluster-card{background:var(–cream2);border:1.5px solid var(–border);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all 0.2s;}
+.cluster-card:active,.cluster-card.selected{border-color:var(–accent);background:var(–accent-light);}
+.cluster-title{font-size:13px;font-weight:600;color:var(–text);margin-bottom:4px;}
+.cluster-meta{font-size:11px;color:var(–text3);}
+.cluster-bar{height:4px;border-radius:2px;background:var(–accent);margin-top:8px;transition:width 0.5s;}
+.author-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(–cream2);border:1px solid var(–border);border-radius:20px;font-size:11px;color:var(–text2);margin:3px;cursor:pointer;}
+.author-chip:active{border-color:var(–accent);color:var(–accent);}
+.trend-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(–sand);}
+.trend-item:last-child{border-bottom:none;}
+.trend-year{font-size:11px;font-weight:600;color:var(–accent);min-width:36px;}
+.trend-bar-wrap{flex:1;height:8px;background:var(–sand);border-radius:4px;overflow:hidden;}
+.trend-bar-fill{height:100%;background:var(–accent);border-radius:4px;transition:width 0.6s;}
+.trend-count{font-size:11px;color:var(–text3);min-width:30px;text-align:right;}
 </style>
+
 </head>
 <body>
 <div class="page active" id="pageMain">
@@ -224,7 +241,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <img class="logo" src="icon.png" alt="PaperQuest" onclick="g('aboutOverlay').style.display='flex'" style="cursor:pointer"/>
 <div class="header-text">
 <div class="brand">PaperQuest</div>
-<div class="brand-sub">CrossRef &middot; Unpaywall &middot; Claude &middot; Gemini &middot; v3.6</div>
+<div class="brand-sub">CrossRef &middot; Unpaywall &middot; Claude &middot; Gemini &middot; v3.7</div>
 </div>
 <div style="display:flex;gap:6px;align-items:center">
 <button class="btn-icon" id="btnChangelog" onclick="showChangelog()" style="position:relative">&#128313;<span id="changelogDot" style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;background:#ef4444;border-radius:50%;border:2px solid var(--cream)"></span></button>
@@ -236,6 +253,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <button class="tab" id="tabLibrary" onclick="switchTab('library')"><span class="tab-label">&#128218; Biblioteca</span></button>
 <button class="tab" id="tabHistory" onclick="switchTab('history')">&#128336; Hist&oacute;rico</button>
 <button class="tab" id="tabJclub" onclick="switchTab('jclub')">&#127942; JClub</button>
+<button class="tab" id="tabExplorer" onclick="switchTab('explorer')">&#127757; Explorer</button>
 </div>
 <div class="panel active" id="panelSearch">
 <div class="restore-banner" id="restoreBanner">
@@ -379,6 +397,33 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div id="jclubContent"></div>
 </div>
 </div>
+<div class="panel" id="panelExplorer">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+<div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600">&#127757; Field Explorer</div>
+</div>
+<div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.6">Explora um campo cient&iacute;fico: clusters tem&aacute;ticos, principais autores, tend&ecirc;ncias de publica&ccedil;&atilde;o e resumo do estado da arte gerado por IA.</div>
+<div class="card">
+<div class="field">
+<label>Campo ou tema a explorar</label>
+<input type="text" id="explorerInput" placeholder="Ex: sepsis neonatal, ARDS pediatric, prone positioning..." onkeydown="if(event.key==='Enter')runExplorer()"/>
+</div>
+<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+<button class="btn-lang" onclick="setExplorerSuggestion('sepsis pediatric PICU')">Sepsis PICU</button>
+<button class="btn-lang" onclick="setExplorerSuggestion('neonatal respiratory distress syndrome')">RDS neonatal</button>
+<button class="btn-lang" onclick="setExplorerSuggestion('mechanical ventilation children')">VM pedi&aacute;trica</button>
+<button class="btn-lang" onclick="setExplorerSuggestion('ECMO pediatric')">ECMO</button>
+<button class="btn-lang" onclick="setExplorerSuggestion('vasopressor pediatric shock')">Vasopressores</button>
+</div>
+<div class="btn-row">
+<button class="btn-primary" id="explorerBtn" onclick="runExplorer()">&#127757; Explorar campo</button>
+</div>
+<div class="search-loading" id="explorerLoader">
+<div class="spinner"></div>
+<span id="explorerLoaderText">A recolher artigos do PubMed&hellip;</span>
+</div>
+</div>
+<div id="explorerResults"></div>
+</div>
 <div class="coffee-bar">
 <div class="coffee-text">Feito por <strong>um m&eacute;dico, para m&eacute;dicos</strong></div>
 <div style="display:flex;gap:8px;align-items:center">
@@ -436,7 +481,14 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div style="padding:20px 24px;max-height:70vh;overflow-y:auto">
 <div class="cl-section-title">&#128197; Changelog</div>
 <div class="cl-entry">
-<div class="cl-version">v3.6 <span class="cl-badge cl-badge-new">Novo</span></div>
+<div class="cl-version">v3.7 <span class="cl-badge cl-badge-new">Novo</span></div>
+<div class="cl-date">Mar&ccedil;o 2026</div>
+<div class="cl-items">
+<div class="cl-item">&#127757; Field Explorer &mdash; nova tab com clusters, autores, tend&ecirc;ncias e resumo IA</div>
+</div>
+</div>
+<div class="cl-entry">
+<div class="cl-version">v3.7 <span class="cl-badge cl-badge-new">Novo</span></div>
 <div class="cl-date">Mar&ccedil;o 2026</div>
 <div class="cl-items">
 <div class="cl-item">&#128313; "Ver mais" infinito &mdash; expande 5 artigos de cada vez</div>
@@ -489,7 +541,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div style="text-align:center;margin-bottom:20px">
 <img src="icon.png" style="width:64px;height:64px;border-radius:16px;margin-bottom:12px"/>
 <div style="font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:#1a1610">PaperQuest</div>
-<div style="font-size:12px;color:#6b5e4e;margin-top:4px">Vers&atilde;o 3.6 &mdash; Mar&ccedil;o 2026</div>
+<div style="font-size:12px;color:#6b5e4e;margin-top:4px">Vers&atilde;o 3.7 &mdash; Mar&ccedil;o 2026</div>
 </div>
 <div style="font-size:13px;color:#3d3128;line-height:1.7;margin-bottom:16px">Criado por <strong>Dr. Pedro Nunes</strong>, Intensivista Pedi&aacute;trico no Hospital Prof. Dr. Fernando Fonseca.<br/><br/>O PaperQuest surgiu da necessidade di&aacute;ria de pesquisar, analisar e partilhar literatura cient&iacute;fica de forma r&aacute;pida e eficaz &mdash; directamente do telemo&oacute;vel.</div>
 <div style="background:#f0ece6;border-radius:12px;padding:14px;margin-bottom:16px">
@@ -605,7 +657,7 @@ function openAnalysis(){g('pageMain').classList.remove('active');g('pageAnalysis
 function closeAnalysis(){g('pageAnalysis').classList.remove('active');g('pageMain').classList.add('active');}
 function initTheme(){var t=localStorage.getItem('pq_theme')||'light';document.body.setAttribute('data-theme',t);var b=g('btnTheme');if(b)b.textContent=t==='dark'?'\u2600\uFE0F':'\uD83C\uDF19';}
 function toggleTheme(){var t=document.body.getAttribute('data-theme')==='dark'?'light':'dark';document.body.setAttribute('data-theme',t);localStorage.setItem('pq_theme',t);var b=g('btnTheme');if(b)b.textContent=t==='dark'?'\u2600\uFE0F':'\uD83C\uDF19';}
-function switchTab(name){['search','library','history','jclub'].forEach(function(t){var p=g('panel'+t.charAt(0).toUpperCase()+t.slice(1));if(p)p.classList.toggle('active',t===name);});document.querySelectorAll('.tab').forEach(function(el){el.classList.remove('active');});var at=g('tab'+name.charAt(0).toUpperCase()+name.slice(1));if(at)at.classList.add('active');if(name==='library')renderLibrary();if(name==='history')renderHistory();if(name==='jclub')renderJclub();}
+function switchTab(name){['search','library','history','jclub','explorer'].forEach(function(t){var p=g('panel'+t.charAt(0).toUpperCase()+t.slice(1));if(p)p.classList.toggle('active',t===name);});document.querySelectorAll('.tab').forEach(function(el){el.classList.remove('active');});var at=g('tab'+name.charAt(0).toUpperCase()+name.slice(1));if(at)at.classList.add('active');if(name==='library')renderLibrary();if(name==='history')renderHistory();if(name==='jclub')renderJclub();if(name==='explorer')initExplorer();}
 function setLang(lang){emailLang=lang;g('langEN').classList.toggle('active',lang==='en');g('langPT').classList.toggle('active',lang==='pt');if(currentArticle)regenerateEmail();}
 var LLM_CONFIG={claude:{label:'Claude API Key',placeholder:'sk-ant-api03-...',hint:'Cria em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a>',storageKey:'pq_apikey'},gemini:{label:'Gemini API Key',placeholder:'AIza...',hint:'Cria em <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent)">aistudio.google.com</a> &mdash; Gr&aacute;tis!',storageKey:'pq_geminikey'}};
 function setLLM(llm){currentLLM=llm;try{localStorage.setItem('pq_llm',llm);}catch(e){}g('llmClaude').classList.toggle('active',llm==='claude');g('llmGemini').classList.toggle('active',llm==='gemini');var cfg=LLM_CONFIG[llm];if(!cfg)return;g('apiKeyLabel').textContent=cfg.label;g('apiKeyInput').placeholder=cfg.placeholder;g('apiKeyHint').innerHTML=cfg.hint;var s=localStorage.getItem(cfg.storageKey)||'';g('apiKeyInput').value=s;g('apiKeySaved').style.display=s?'inline':'none';var lbl={claude:'Claude AI',gemini:'Gemini'};if(g('aiBadgeMain'))g('aiBadgeMain').textContent=lbl[llm]||'IA';if(g('aiBadgeChat'))g('aiBadgeChat').textContent=lbl[llm]||'IA';}
@@ -648,9 +700,9 @@ var ROADMAP=[{id:'shared-lib',icon:'&#128101;',label:'Biblioteca partilhada com 
 function getRoadmapVotes(){try{return JSON.parse(localStorage.getItem('pq_votes')||'{}');}catch(e){return{};}}
 function toggleVote(id){var mv={};try{mv=JSON.parse(localStorage.getItem('pq_myvotes')||'{}');}catch(e){}var votes=getRoadmapVotes();if(mv[id]){delete mv[id];votes[id]=Math.max(0,(votes[id]||1)-1);}else{mv[id]=1;votes[id]=(votes[id]||0)+1;}try{localStorage.setItem('pq_myvotes',JSON.stringify(mv));localStorage.setItem('pq_votes',JSON.stringify(votes));}catch(e){}renderRoadmap();}
 function renderRoadmap(){var el=g('roadmapList');if(!el)return;var votes=getRoadmapVotes();var mv={};try{mv=JSON.parse(localStorage.getItem('pq_myvotes')||'{}');}catch(e){}var sorted=ROADMAP.slice().sort(function(a,b){return(votes[b.id]||0)-(votes[a.id]||0);});el.innerHTML=sorted.map(function(item){var v=votes[item.id]||0,voted=!!mv[item.id];var sl=item.status==='wip'?'Em desenvolvimento':'Planeado';var sc=item.status==='wip'?'roadmap-status-wip':'roadmap-status-planned';return'<div class="roadmap-item"><div style="font-size:18px">'+item.icon+'</div><div class="roadmap-label">'+item.label+'<div style="margin-top:3px"><span class="roadmap-status '+sc+'">'+sl+'</span></div></div><button class="roadmap-vote'+(voted?' voted':'')+'" onclick="toggleVote(\''+item.id+'\')">&#128077; '+(v||'')+'</button></div>';}).join('');}
-function showChangelog(){var el=g('changelogOverlay');if(!el)return;el.style.display='flex';renderRoadmap();try{localStorage.setItem('pq_changelog_seen','3.6');}catch(e){}var dot=g('changelogDot');if(dot)dot.style.display='none';}
+function showChangelog(){var el=g('changelogOverlay');if(!el)return;el.style.display='flex';renderRoadmap();try{localStorage.setItem('pq_changelog_seen','3.7');}catch(e){}var dot=g('changelogDot');if(dot)dot.style.display='none';}
 function closeChangelog(){var el=g('changelogOverlay');if(el)el.style.display='none';}
-function checkChangelogDot(){try{var seen=localStorage.getItem('pq_changelog_seen');var dot=g('changelogDot');if(dot&&seen!=='3.6')dot.style.display='block';}catch(e){}}
+function checkChangelogDot(){try{var seen=localStorage.getItem('pq_changelog_seen');var dot=g('changelogDot');if(dot&&seen!=='3.7')dot.style.display='block';}catch(e){}}
 function checkOnboarding(){try{if(!localStorage.getItem('pq_onboarding_seen')){var ov=g('onboardingOverlay');if(ov)ov.style.display='flex';}}catch(e){}}
 function closeOnboarding(){try{localStorage.setItem('pq_onboarding_seen','1');}catch(e){}var ov=g('onboardingOverlay');if(ov)ov.style.display='none';}
 function showSuggestModal(){var el=g('suggestOverlay');if(el)el.style.display='flex';}
@@ -829,6 +881,125 @@ window.addEventListener('pagehide',saveState);
 document.getElementById('apiKeyInput').addEventListener('input',saveApiKey);
 ['nameInput','roleInput','instInput'].forEach(function(id){document.getElementById(id).addEventListener('input',saveProfile);});
 initTheme();loadProfile();loadLLM();restoreState();checkOnboarding();checkChangelogDot();
+
+function setExplorerSuggestion(q){var el=g(‘explorerInput’);if(el)el.value=q;}
+function initExplorer(){}
+async function runExplorer(){
+var query=(g(‘explorerInput’)&&g(‘explorerInput’).value.trim())||’’;
+if(!query)return;
+var btn=g(‘explorerBtn’);
+var loader=g(‘explorerLoader’);
+var results=g(‘explorerResults’);
+var loaderText=g(‘explorerLoaderText’);
+if(btn)btn.disabled=true;
+if(loader)loader.style.display=‘flex’;
+if(results)results.innerHTML=’’;
+try{
+if(loaderText)loaderText.textContent=‘A recolher artigos do PubMed\u2026’;
+var r1=await fetch(‘https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=’+encodeURIComponent(query)+’&retmax=40&sort=relevance&retmode=json’);
+if(!r1.ok)throw new Error(‘PubMed search failed’);
+var d1=await r1.json();
+var ids=d1.esearchresult&&d1.esearchresult.idlist;
+var totalCount=parseInt((d1.esearchresult&&d1.esearchresult.count)||0);
+if(!ids||!ids.length){if(results)results.innerHTML=’<div class="lib-empty">Sem resultados para este tema.</div>’;return;}
+if(loaderText)loaderText.textContent=‘A processar ‘+ids.length+’ artigos\u2026’;
+var r2=await fetch(‘https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=’+ids.join(’,’)+’&retmode=json’);
+if(!r2.ok)throw new Error(‘PubMed summary failed’);
+var d2=await r2.json();
+var uids=d2.result&&d2.result.uids||[];
+var papers=uids.map(function(uid){
+var a=d2.result[uid];if(!a)return null;
+return{pmid:uid,title:a.title||’’,journal:a.fulljournalname||a.source||’’,year:a.pubdate?parseInt(a.pubdate.substring(0,4)):0,authors:(a.authors||[]).map(function(x){return x.name;}),mesh:(a.meshheadinglist||[]).map(function(m){return m.name;})};
+}).filter(Boolean);
+if(loaderText)loaderText.textContent=‘A construir clusters\u2026’;
+var sw=‘with from after before during using about their these those that this into have been were than and the for are but not all can had was one our out get has him his how its may new now old see two who did let put say she too use patients clinical study results treatment effects associated disease syndrome’.split(’ ‘);
+var clusterMap={};
+papers.forEach(function(p){
+var terms=p.mesh.length?p.mesh.slice(0,3):p.title.split(/\s+/).map(function(w){return w.replace(/[^a-zA-Z]/g,’’).toLowerCase();}).filter(function(w){return w.length>5&&sw.indexOf(w)===-1;}).slice(0,3);
+terms.forEach(function(t){if(!t)return;var key=t.toLowerCase();if(!clusterMap[key])clusterMap[key]={label:t,count:0,papers:[]};clusterMap[key].count++;clusterMap[key].papers.push(p.pmid);});
+});
+var clusters=Object.values(clusterMap).sort(function(a,b){return b.count-a.count;}).slice(0,8);
+var authorMap={};
+papers.forEach(function(p){(p.authors||[]).slice(0,3).forEach(function(name){if(!name)return;authorMap[name]=(authorMap[name]||0)+1;});});
+var topAuthors=Object.entries(authorMap).sort(function(a,b){return b[1]-a[1];}).slice(0,12);
+var yearMap={};
+papers.forEach(function(p){if(p.year>2000)yearMap[p.year]=(yearMap[p.year]||0)+1;});
+var years=Object.keys(yearMap).map(Number).sort().slice(-8);
+var maxY=Math.max.apply(null,years.map(function(y){return yearMap[y];}));
+var paperList=papers.slice(0,15).map(function(p,i){return(i+1)+’. ‘+p.title+(p.journal?’ [’+p.journal+’]’:’’)+(p.year?’ (’+p.year+’)’:’’);}).join(’\n’);
+var clusterList=clusters.slice(0,6).map(function(c){return c.label+’ (’+c.count+’ artigos)’;}).join(’, ‘);
+if(loader)loader.style.display=‘none’;
+var html=’’;
+html+=’<div style="background:var(--accent);border-radius:14px;padding:16px 18px;margin-bottom:14px;color:#fff">’;
+html+=’<div style="font-family:Fraunces,serif;font-size:17px;font-weight:700;margin-bottom:4px">’+esc(query)+’</div>’;
+html+=’<div style="font-size:12px;opacity:0.85">’+totalCount.toLocaleString()+’ artigos no PubMed · ‘+papers.length+’ analisados · ‘+topAuthors.length+’ autores identificados</div>’;
+html+=’</div>’;
+if(clusters.length){
+html+=’<div class="explorer-section">’;
+html+=’<div class="explorer-section-title">📊 Clusters temáticos <span class="ai-badge">PubMed · MeSH</span></div>’;
+var maxC=clusters[0].count;
+clusters.forEach(function(c){
+var pct=Math.round((c.count/maxC)*100);
+var safeLabel=c.label.replace(/\/g,’\\’).replace(/’/g,”\’”);
+html+=’<div class="cluster-card" onclick="explorerSearchCluster(\''+safeLabel+'\')">’;
+html+=’<div style="display:flex;justify-content:space-between;align-items:center">’;
+html+=’<div class="cluster-title">’+esc(c.label)+’</div>’;
+html+=’<div style="font-size:11px;background:var(--accent-light);color:var(--accent);border-radius:10px;padding:2px 8px;font-weight:600">’+c.count+’ artigos</div>’;
+html+=’</div><div class="cluster-bar" style="width:'+pct+'%"></div></div>’;
+});
+html+=’</div>’;
+}
+if(years.length>1){
+html+=’<div class="explorer-section">’;
+html+=’<div class="explorer-section-title">📈 Tendências de publicação</div>’;
+years.forEach(function(y){
+var count=yearMap[y]||0;var pct=Math.round((count/maxY)*100);
+html+=’<div class="trend-item"><div class="trend-year">’+y+’</div><div class="trend-bar-wrap"><div class="trend-bar-fill" style="width:'+pct+'%"></div></div><div class="trend-count">’+count+’</div></div>’;
+});
+html+=’</div>’;
+}
+if(topAuthors.length){
+html+=’<div class="explorer-section">’;
+html+=’<div class="explorer-section-title">👤 Principais autores</div>’;
+html+=’<div style="display:flex;flex-wrap:wrap;gap:4px">’;
+topAuthors.forEach(function(a){
+var name=a[0],count=a[1];
+var safeName=name.replace(/\/g,’\\’).replace(/’/g,”\’”);
+html+=’<div class="author-chip" onclick="explorerSearchAuthor(\''+safeName+'\')">’+esc(name)+’<span style="background:var(--accent);color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:600;margin-left:4px">’+count+’</span></div>’;
+});
+html+=’</div></div>’;
+}
+html+=’<div class="explorer-section">’;
+html+=’<div class="explorer-section-title">📄 Artigos mais relevantes</div>’;
+papers.slice(0,10).forEach(function(p){
+html+=’<div class="related-item" onclick="explorerLoadPaper(\''+p.pmid+'\')">’;
+html+=’<div class="related-title">’+esc(p.title.substring(0,90))+(p.title.length>90?’…’:’’)+’</div>’;
+html+=’<div class="related-meta">’+esc(p.journal)+(p.year?’ · ‘+p.year:’’)+’</div></div>’;
+});
+html+=’</div>’;
+html+=’<div class="explorer-section" id="explorerAiCard">’;
+html+=’<div class="explorer-section-title">🧠 Resumo do estado da arte <span class="ai-badge" id="explorerAiBadge">’+(getActiveKey()?‘A gerar\u2026’:‘Sem API Key’)+’</span></div>’;
+html+=’<div id="explorerAiText" class="summary-text ai-output" style="min-height:40px">’;
+if(!getActiveKey()){html+=’<span style="color:var(--text3);font-size:12px">💡 Adiciona a tua API Key para gerar o resumo com IA.</span>’;}
+else{html+=’<div class="spinner" style="width:14px;height:14px;border-width:2px;display:inline-block"></div>’;}
+html+=’</div></div>’;
+if(results)results.innerHTML=html;
+if(getActiveKey()){
+var sysP=emailLang===‘pt’?’\u00c9s um especialista em medicina intensiva pedi\u00e1trica e revis\u00e3o cient\u00edfica. Responde em Portugu\u00eas.’:‘You are an expert in paediatric intensive care and scientific review. Respond in English.’;
+var usrP=(emailLang===‘pt’?‘Com base nestes ‘+papers.length+’ artigos sobre “’+query+’”, gera um resumo estruturado do estado da arte:\n\n’:‘Based on these ‘+papers.length+’ papers about “’+query+’”, generate a structured state-of-the-art summary:\n\n’)+paperList+’\n\nClusters: ‘+clusterList+’\n\n’+(emailLang===‘pt’?‘Estrutura:\n**Estado actual:** (2-3 frases)\n**Tend\u00eancias emergentes:** (bullets)\n**Lacunas:** (2-3 pontos)\n**Implica\u00e7\u00f5es para UCIP:** (1-2 frases)\nM\u00e1x 300 palavras.’:‘Structure:\n**Current state:** (2-3 sentences)\n**Emerging trends:** (bullets)\n**Gaps:** (2-3 points)\n**PICU implications:** (1-2 sentences)\nMax 300 words.’);
+streamLLM(sysP,usrP,1000,function(full){var at=g(‘explorerAiText’);var ab=g(‘explorerAiBadge’);if(at)at.innerHTML=formatAIOutput(full);if(ab)ab.textContent=(currentLLM===‘gemini’?‘Gemini’:‘Claude AI’);},function(status){var ab=g(‘explorerAiBadge’);if(status!==‘ok’&&status!==‘aborted’){var at=g(‘explorerAiText’);if(at)at.innerHTML=’<span style="color:var(--text3);font-size:12px">Resumo n\u00e3o dispon\u00edvel.</span>’;}if(ab)ab.textContent=(currentLLM===‘gemini’?‘Gemini’:‘Claude AI’);},null);
+}
+}catch(err){
+if(loader)loader.style.display=‘none’;
+if(results)results.innerHTML=’<div class="lib-empty">Erro: ‘+esc(err.message)+’</div>’;
+}finally{
+if(btn)btn.disabled=false;
+}
+}
+function explorerLoadPaper(pmid){g(‘queryInput’).value=‘PMID:’+pmid;setSearchMode(‘article’);switchTab(‘search’);runAgent();}
+function explorerSearchCluster(label){g(‘explorerInput’).value=label;runExplorer();}
+function explorerSearchAuthor(name){g(‘queryInput’).value=name+’[Author]’;setSearchMode(‘keyword’);switchTab(‘search’);runKeywordSearch(name+’[Author]’);}
+
 </script>
 </body>
 </html>
