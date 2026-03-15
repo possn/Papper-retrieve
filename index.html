@@ -234,8 +234,8 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 .quiz-option{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:all 0.2s;background:var(--cream2);}
 .quiz-option:last-child{margin-bottom:0;}
 .quiz-option.selected{border-color:var(--accent);background:var(--accent-light);}
-.quiz-option.correct{border-color:var(--green);background:var(--green-light);color:var(--green);}
-.quiz-option.wrong{border-color:#dc2626;background:#fee2e2;color:#dc2626;}
+.quiz-option.correct{border-color:var(--green);background:var(--green-light);}
+.quiz-option.wrong{border-color:#dc2626;background:#fee2e2;}
 .quiz-option-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--text2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
 .quiz-option.selected .quiz-option-letter{background:var(--accent);color:#fff;}
 .quiz-option.correct .quiz-option-letter{background:var(--green);color:#fff;}
@@ -497,11 +497,21 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div class="cl-version">v3.7 <span class="cl-badge cl-badge-new">Novo</span></div>
 <div class="cl-date">Mar&ccedil;o 2026</div>
 <div class="cl-items">
-<div class="cl-item">&#127757; Field Explorer &mdash; nova tab com clusters tem&aacute;ticos, autores, tend&ecirc;ncias e resumo IA</div>
+<div class="cl-item">&#127757; Field Explorer &mdash; clusters, autores, tend&ecirc;ncias e resumo IA</div>
+<div class="cl-item">&#129504; Quiz cl&iacute;nico &mdash; 5 perguntas sobre o artigo com pontua&ccedil;&atilde;o</div>
+<div class="cl-item">&#128279; Gerar post &mdash; publica o artigo no X e LinkedIn</div>
 </div>
 </div>
 <div class="cl-entry">
 <div class="cl-version">v3.6</div>
+<div class="cl-date">Mar&ccedil;o 2026</div>
+<div class="cl-items">
+<div class="cl-item">&#128313; "Ver mais" infinito &mdash; expande 5 artigos de cada vez</div>
+<div class="cl-item">&#127993; Artigos relacionados via MeSH terms</div>
+</div>
+</div>
+<div class="cl-entry">
+<div class="cl-version">v3.7 <span class="cl-badge cl-badge-new">Novo</span></div>
 <div class="cl-date">Mar&ccedil;o 2026</div>
 <div class="cl-items">
 <div class="cl-item">&#128313; "Ver mais" infinito &mdash; expande 5 artigos de cada vez</div>
@@ -568,7 +578,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div class="analysis-header">
 <button class="btn-back" onclick="closeAnalysis()">&#8592; Voltar</button>
 <div class="analysis-header-title" id="analysisHeaderTitle">An&aacute;lise do artigo</div>
-<button class="btn-icon" onclick="saveToLibrary()">&#128278;</button><button class="btn-icon" onclick="exportPDF()" title="Exportar PDF">&#128196;</button><button class="btn-icon" onclick="openSharePost()" title="Gerar post para redes sociais">&#128279;</button>
+<button class="btn-icon" onclick="saveToLibrary()">&#128278;</button><button class="btn-icon" onclick="exportPDF()" title="Exportar PDF">&#128196;</button><button class="btn-icon" onclick="openSharePost()" title="Gerar post">&#128279;</button>
 </div>
 <div class="analysis-body">
 <div class="summary-card" style="margin-bottom:14px">
@@ -665,11 +675,11 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div style="padding:18px 20px">
 <div id="sharePostLoading" style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;margin-bottom:12px">
 <div class="spinner" style="width:14px;height:14px;border-width:2px"></div>
-<span>A gerar posts com IA&#8230;</span>
+<span>A gerar posts com IA&hellip;</span>
 </div>
 <div id="sharePostContent" style="display:none">
 <div style="margin-bottom:14px">
-<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:flex;align-items:center;gap:6px">&#10006; Post para X / Twitter</div>
+<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">&#10006; Post para X / Twitter</div>
 <textarea id="sharePostX" style="width:100%;min-height:110px;border:1.5px solid var(--border);border-radius:10px;padding:10px;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--cream2);color:var(--text);resize:vertical;box-sizing:border-box;line-height:1.6"></textarea>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
 <span id="shareXCount" style="font-size:11px;color:var(--text3)">0 / 280</span>
@@ -683,9 +693,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <button onclick="copySharePost('sharePostLI','copyBtnLI')" id="copyBtnLI" style="padding:5px 12px;background:var(--cream2);border:1.5px solid var(--border);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;cursor:pointer">Copiar</button>
 </div>
 </div>
-<div style="margin-top:12px;padding:10px;background:var(--accent-light);border:1px solid var(--accent);border-radius:10px;font-size:11px;color:var(--accent);line-height:1.6">
-&#128161; Copia o texto, abre a rede social e publica. Podes editar antes de publicar.
-</div>
+<div style="margin-top:12px;padding:10px;background:var(--accent-light);border:1px solid var(--accent);border-radius:10px;font-size:11px;color:var(--accent);line-height:1.6">&#128161; Copia o texto, abre a rede social e publica.</div>
 </div>
 </div>
 </div>
@@ -944,7 +952,7 @@ async function runExplorer(){
     var totalCount=parseInt((d1.esearchresult&&d1.esearchresult.count)||0);
     if(!ids||!ids.length){if(results)results.innerHTML='<div class="lib-empty">Sem resultados para este tema.</div>';return;}
     if(loaderText)loaderText.textContent='A processar '+ids.length+' artigos…';
-    var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+ids.join(',')+' &retmode=json');
+    var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+ids.join(',')+'&retmode=json');
     if(!r2.ok)throw new Error('PubMed summary failed');
     var d2=await r2.json();
     var uids=d2.result&&d2.result.uids||[];
@@ -990,10 +998,10 @@ async function runExplorer(){
     if(results)results.innerHTML=html;
     if(hasKey){
       var sysP=emailLang==='pt'?'És um especialista em medicina intensiva pediátrica. Responde em Português.':'You are an expert in paediatric intensive care. Respond in English.';
-      var usrLang=emailLang==='pt';
-      var usrP=(usrLang?'Com base nestes artigos sobre "'+query+'", gera um resumo do estado da arte:':'Based on these papers about "'+query+'", generate a state-of-the-art summary:')
+      var isPT=emailLang==='pt';
+      var usrP=(isPT?'Com base nestes artigos sobre "'+query+'", gera um resumo do estado da arte:':'Based on these papers about "'+query+'", generate a state-of-the-art summary:')
         +'\n\n'+paperList+'\n\nClusters: '+clusterList+'\n\n'
-        +(usrLang?'Estrutura:\n**Estado actual:** (2-3 frases)\n**Tendências emergentes:** (bullets)\n**Lacunas:** (2-3 pontos)\n**Implicações para UCIP:** (1-2 frases)\nMáx 300 palavras.':'Structure:\n**Current state:** (2-3 sentences)\n**Emerging trends:** (bullets)\n**Research gaps:** (2-3 points)\n**PICU implications:** (1-2 sentences)\nMax 300 words.');
+        +(isPT?'Estrutura:\n**Estado actual:** (2-3 frases)\n**Tendências emergentes:** (bullets)\n**Lacunas:** (2-3 pontos)\n**Implicações para UCIP:** (1-2 frases)\nMáx 300 palavras.':'Structure:\n**Current state:** (2-3 sentences)\n**Emerging trends:** (bullets)\n**Research gaps:** (2-3 points)\n**PICU implications:** (1-2 sentences)\nMax 300 words.');
       streamLLM(sysP,usrP,1000,
         function(full){var at=g('explorerAiText');var ab=g('explorerAiBadge');if(at)at.innerHTML=formatAIOutput(full);if(ab)ab.textContent=(currentLLM==='gemini'?'Gemini':'Claude AI');},
         function(status){var ab=g('explorerAiBadge');if(status!=='ok'&&status!=='aborted'){var at=g('explorerAiText');if(at)at.innerHTML='<span style="color:var(--text3);font-size:12px">Resumo não disponível.</span>';}if(ab)ab.textContent=(currentLLM==='gemini'?'Gemini':'Claude AI');},
@@ -1002,170 +1010,141 @@ async function runExplorer(){
   }catch(err){if(loader)loader.style.display='none';if(results)results.innerHTML='<div class="lib-empty">Erro: '+esc(err.message)+'</div>';}
   finally{if(btn)btn.disabled=false;}
 }
-
 function openSharePost(){
-if(!currentArticle){showToast(‘Pesquisa um artigo primeiro.’);return;}
-var overlay=g(‘sharePostOverlay’);
-var loading=g(‘sharePostLoading’);
-var postContent=g(‘sharePostContent’);
-if(!overlay)return;
-overlay.style.display=‘flex’;
-if(loading)loading.style.display=‘flex’;
-if(postContent)postContent.style.display=‘none’;
-if(!getActiveKey()){
-if(loading)loading.style.display=‘none’;
-if(postContent){
-postContent.style.display=‘block’;
-var xEl=g(‘sharePostX’);var liEl=g(‘sharePostLI’);
-if(xEl)xEl.value=‘Adiciona a tua API Key para gerar posts com IA.’;
-if(liEl)liEl.value=‘Adiciona a tua API Key para gerar posts com IA.’;
-}
-return;
-}
-var doi=currentArticle.doi?‘https://doi.org/’+currentArticle.doi:’’;
-var sysP=‘You are a medical social media expert specialising in paediatric critical care. Generate engaging, accurate social media posts.’;
-var usrP=‘Generate two social media posts about this scientific article for a medical audience.’
-+’\n\nArticle: ‘+currentArticle.title
-+’\nJournal: ‘+(currentArticle.journal||’’)
-+(currentArticle.year?’ (’+currentArticle.year+’)’:’’)
-+(doi?’\nDOI: ‘+doi:’’)
-+(currentAbstract?’\nAbstract: ‘+currentAbstract.substring(0,500):’’)+’\n\n’
-+‘Return ONLY valid JSON (no markdown):\n’
-+’{“twitter”:“Post for X/Twitter: max 250 chars, 2-3 relevant hashtags from #FOAMed #PedsICU #MedTwitter #CriticalCare #Pediatrics #PICU, end with via @PaperQuestApp’+(doi?’ ‘+doi:’’)+’”,’
-+’“linkedin”:“Post for LinkedIn: 3-4 sentences, clinical relevance for intensivists, professional tone, end with via PaperQuest (paperquest.org)’+(doi?’ | ‘+doi:’’)+’”}’
-+(emailLang===‘pt’?’\n\nWrite both posts in Portuguese.’:’\n\nWrite both posts in English.’);
-var fullJson=’’;
-streamLLM(sysP,usrP,600,
-function(chunk){fullJson=chunk;},
-function(status){
-if(loading)loading.style.display=‘none’;
-if(postContent)postContent.style.display=‘block’;
-if(status===‘ok’){
-try{
-var data=JSON.parse(fullJson.replace(/`json|`/g,’’).trim());
-var xEl=g(‘sharePostX’);var liEl=g(‘sharePostLI’);var xCount=g(‘shareXCount’);
-if(xEl){xEl.value=data.twitter||’’;xEl.oninput=function(){if(xCount)xCount.textContent=xEl.value.length+’ / 280’;};}
-if(liEl)liEl.value=data.linkedin||’’;
-if(xCount)xCount.textContent=(data.twitter||’’).length+’ / 280’;
-}catch(e){
-var xEl=g(‘sharePostX’);var liEl=g(‘sharePostLI’);
-if(xEl)xEl.value=‘Erro ao processar. Tenta novamente.’;
-if(liEl)liEl.value=‘Erro ao processar. Tenta novamente.’;
-}
-} else {
-var xEl=g(‘sharePostX’);var liEl=g(‘sharePostLI’);
-if(xEl)xEl.value=‘Erro ao gerar post.’;
-if(liEl)liEl.value=‘Erro ao gerar post.’;
-}
-},
-null);
+  if(!currentArticle){showToast('Pesquisa um artigo primeiro.');return;}
+  var overlay=g('sharePostOverlay');var loading=g('sharePostLoading');var postContent=g('sharePostContent');
+  if(!overlay)return;
+  overlay.style.display='flex';
+  if(loading)loading.style.display='flex';
+  if(postContent)postContent.style.display='none';
+  if(!getActiveKey()){
+    if(loading)loading.style.display='none';
+    if(postContent){postContent.style.display='block';var xEl=g('sharePostX');var liEl=g('sharePostLI');if(xEl)xEl.value='Adiciona a tua API Key para gerar posts.';if(liEl)liEl.value='Adiciona a tua API Key para gerar posts.';}
+    return;
+  }
+  var doi=currentArticle.doi?'https://doi.org/'+currentArticle.doi:'';
+  var isEN=emailLang!=='pt';
+  var usrP='Generate two social media posts about this scientific article for a medical audience.'
+    +'\n\nArticle: '+currentArticle.title
+    +'\nJournal: '+(currentArticle.journal||'')+(currentArticle.year?' ('+currentArticle.year+')':'')
+    +(doi?'\nDOI: '+doi:'')+(currentAbstract?'\nAbstract: '+currentAbstract.substring(0,400):'')+'\n\n'
+    +'Return ONLY valid JSON (no markdown):'
+    +'{"twitter":"max 250 chars, hashtags #FOAMed #PedsICU #MedTwitter, end with: via @PaperQuestApp'+(doi?' '+doi:'')+'",'
+    +'"linkedin":"3-4 sentences, clinical relevance, professional tone, end with: via PaperQuest paperquest.org'+(doi?' '+doi:'')+'"}\n'
+    +(isEN?'Write both posts in English.':'Write both posts in Portuguese.');
+  var fullJson='';
+  streamLLM('Return only valid JSON, no markdown.',usrP,600,
+    function(chunk){fullJson=chunk;},
+    function(status){
+      if(loading)loading.style.display='none';
+      if(postContent)postContent.style.display='block';
+      if(status==='ok'){
+        try{
+          var data=JSON.parse(fullJson.replace(/```json|```/g,'').trim());
+          var xEl=g('sharePostX');var liEl=g('sharePostLI');var xCount=g('shareXCount');
+          if(xEl){xEl.value=data.twitter||'';xEl.oninput=function(){if(xCount)xCount.textContent=xEl.value.length+' / 280';};}
+          if(liEl)liEl.value=data.linkedin||'';
+          if(xCount)xCount.textContent=(data.twitter||'').length+' / 280';
+        }catch(e){var xEl=g('sharePostX');if(xEl)xEl.value='Erro ao processar. Tenta novamente.';}
+      } else {var xEl=g('sharePostX');if(xEl)xEl.value='Erro ao gerar post.';}
+    },null);
 }
 function copySharePost(textareaId,btnId){
-var el=g(textareaId);var btn=g(btnId);
-if(!el)return;
-navigator.clipboard.writeText(el.value).catch(function(){el.select();document.execCommand(‘copy’);});
-if(btn){btn.textContent=’\u2713 Copiado!’;btn.style.borderColor=‘var(–accent)’;btn.style.color=‘var(–accent)’;}
-setTimeout(function(){if(btn){btn.textContent=‘Copiar’;btn.style.borderColor=’’;btn.style.color=’’;}},2000);
+  var el=g(textareaId);var btn=g(btnId);
+  if(!el)return;
+  navigator.clipboard.writeText(el.value).catch(function(){el.select();document.execCommand('copy');});
+  if(btn){btn.textContent='✓ Copiado!';btn.style.borderColor='var(--accent)';btn.style.color='var(--accent)';}
+  setTimeout(function(){if(btn){btn.textContent='Copiar';btn.style.borderColor='';btn.style.color='';}},2000);
 }
-
 var _quizData=null;var _quizAnswers={};var _quizSubmitted=false;
 function runQuizMode(){
-if(!currentArticle)return;
-g(‘analysisSummaryLoading’).style.display=‘flex’;
-g(‘analysisSummaryText’).style.display=‘none’;
-g(‘analysisSummaryText’).innerHTML=’’;
-g(‘analysisLoadingText’).textContent=‘A gerar quiz clínico…’;
-_quizData=null;_quizAnswers={};_quizSubmitted=false;
-if(!getActiveKey()){
-g(‘analysisSummaryLoading’).style.display=‘none’;
-g(‘analysisSummaryText’).style.display=‘block’;
-g(‘analysisSummaryText’).innerHTML=’<span style="color:var(--text3);font-size:12px">💡 Adiciona a tua API Key para gerar o quiz.</span>’;
-return;
-}
-var lang=emailLang===‘pt’;
-var qPrompt=‘You are a medical educator in critical care. Analyse this article and return ONLY valid JSON (no markdown):\n’
-+’{“questions”:[{“q”:“Question?”,“options”:[“A. …”,“B. …”,“C. …”,“D. …”],“answer”:0,“explanation”:“Why A is correct…”}]}’
-+’\n\n’+(lang?‘Generate 5 multiple-choice questions in Portuguese. Test methodology, results, PICU applicability and limitations.’:‘Generate 5 multiple-choice questions in English. Test methodology, results, PICU applicability and limitations.’);
-var usrP=qPrompt+’\n\nArticle: ‘+currentArticle.title+’\n’+(currentAbstract?‘Abstract: ‘+currentAbstract.substring(0,800):’(No abstract)’);
-var fj=’’;
-streamLLM(‘Return only valid JSON, no markdown.’,usrP,1500,
-function(chunk){fj=chunk;},
-function(status){
-g(‘analysisSummaryLoading’).style.display=‘none’;
-g(‘analysisSummaryText’).style.display=‘block’;
-if(status===‘ok’){
-try{
-var data=JSON.parse(fj.replace(/`json|`/g,’’).trim());
-_quizData=data;renderQuiz(data);
-}catch(e){
-g(‘analysisSummaryText’).innerHTML=’<span style="color:var(--text3);font-size:12px">Erro ao gerar quiz. Tenta novamente.</span>’;
-}
-} else {
-g(‘analysisSummaryText’).innerHTML=’<span style="color:var(--text3);font-size:12px">Quiz não disponível.</span>’;
-}
-},null);
+  if(!currentArticle)return;
+  g('analysisSummaryLoading').style.display='flex';
+  g('analysisSummaryText').style.display='none';
+  g('analysisSummaryText').innerHTML='';
+  g('analysisLoadingText').textContent='A gerar quiz clínico…';
+  _quizData=null;_quizAnswers={};_quizSubmitted=false;
+  if(!getActiveKey()){
+    g('analysisSummaryLoading').style.display='none';
+    g('analysisSummaryText').style.display='block';
+    g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">&#128161; Adiciona a tua API Key para gerar o quiz.</span>';
+    return;
+  }
+  var isLangPT=emailLang==='pt';
+  var qPrompt='Analyse this article and return ONLY valid JSON (no markdown, no extra text):\n'
+    +'{"questions":[{"q":"Question text?","options":["A. option","B. option","C. option","D. option"],"answer":0,"explanation":"Explanation here."}]}'
+    +'\n\n'+(isLangPT?'Generate 5 questions in Portuguese. Test methodology, results, PICU applicability and limitations.':'Generate 5 questions in English. Test methodology, results, PICU applicability and limitations.');
+  var usrP=qPrompt+'\n\nArticle: '+currentArticle.title+'\n'+(currentAbstract?'Abstract: '+currentAbstract.substring(0,800):'(No abstract available)');
+  var fj='';
+  streamLLM('Return only valid JSON, no markdown.',usrP,1500,
+    function(chunk){fj=chunk;},
+    function(status){
+      g('analysisSummaryLoading').style.display='none';
+      g('analysisSummaryText').style.display='block';
+      if(status==='ok'){
+        try{var data=JSON.parse(fj.replace(/```json|```/g,'').trim());_quizData=data;renderQuiz(data);}
+        catch(e){g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">Erro ao gerar quiz. Tenta novamente.</span>';}
+      } else {
+        g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">Quiz não disponível.</span>';
+      }
+    },null);
 }
 function renderQuiz(data){
-var questions=data.questions||[];
-if(!questions.length){g(‘analysisSummaryText’).innerHTML=’<span style="color:var(--text3)">Sem perguntas geradas.</span>’;return;}
-var letters=[‘A’,‘B’,‘C’,‘D’,‘E’];
-var html=’<div><div style="font-size:12px;color:var(--text3);margin-bottom:14px">Responde às ‘+questions.length+’ perguntas e carrega em <strong>Submeter</strong> para ver o resultado.</div>’;
-questions.forEach(function(q,qi){
-html+=’<div class="quiz-question" id="quiz-q-'+qi+'">’;
-html+=’<div class="quiz-question-text">’+(qi+1)+’. ‘+esc(q.q)+’</div>’;
-(q.options||[]).forEach(function(opt,oi){
-html+=’<div class="quiz-option" id="quiz-opt-'+qi+'-'+oi+'" onclick="selectQuizOption('+qi+','+oi+')"><div class="quiz-option-letter">’+letters[oi]+’</div><div class="quiz-option-text">’+esc(opt.replace(/^[A-E]. */,’’))+’</div></div>’;
-});
-html+=’<div class="quiz-explanation" id="quiz-exp-'+qi+'">💡 ‘+esc(q.explanation||’’)+’</div>’;
-html+=’</div>’;
-});
-html+=’<button onclick="submitQuiz()" id="quizSubmitBtn" style="width:100%;padding:13px;background:var(--accent);border:none;border-radius:12px;color:#fff;font-family:sans-serif;font-size:15px;font-weight:500;cursor:pointer;margin-top:4px">Submeter respostas</button>’;
-html+=’</div>’;
-g(‘analysisSummaryText’).innerHTML=html;
+  var questions=data.questions||[];
+  if(!questions.length){g('analysisSummaryText').innerHTML='<span style="color:var(--text3)">Sem perguntas geradas.</span>';return;}
+  var letters=['A','B','C','D','E'];
+  var html='<div><div style="font-size:12px;color:var(--text3);margin-bottom:14px">Responde às '+questions.length+' perguntas e carrega em <strong>Submeter</strong> para ver o resultado.</div>';
+  questions.forEach(function(q,qi){
+    html+='<div class="quiz-question"><div class="quiz-question-text">'+(qi+1)+'. '+esc(q.q)+'</div>';
+    (q.options||[]).forEach(function(opt,oi){
+      html+='<div class="quiz-option" id="quiz-opt-'+qi+'-'+oi+'" onclick="selectQuizOption('+qi+','+oi+')"><div class="quiz-option-letter">'+letters[oi]+'</div><div class="quiz-option-text">'+esc(opt.replace(/^[A-E]\. */,''))+'</div></div>';
+    });
+    html+='<div class="quiz-explanation" id="quiz-exp-'+qi+'">&#128161; '+esc(q.explanation||'')+'</div></div>';
+  });
+  html+='<button onclick="submitQuiz()" id="quizSubmitBtn" style="width:100%;padding:13px;background:var(--accent);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:500;cursor:pointer;margin-top:4px">Submeter respostas</button></div>';
+  g('analysisSummaryText').innerHTML=html;
 }
 function selectQuizOption(qi,oi){
-if(_quizSubmitted)return;
-_quizAnswers[qi]=oi;
-var q=_quizData&&_quizData.questions&&_quizData.questions[qi];
-if(!q)return;
-(q.options||[]).forEach(function(opt,idx){
-var el=document.getElementById(‘quiz-opt-’+qi+’-’+idx);
-if(el)el.className=‘quiz-option’+(idx===oi?’ selected’:’’);
-});
+  if(_quizSubmitted)return;
+  _quizAnswers[qi]=oi;
+  var q=_quizData&&_quizData.questions&&_quizData.questions[qi];
+  if(!q)return;
+  (q.options||[]).forEach(function(opt,idx){
+    var el=document.getElementById('quiz-opt-'+qi+'-'+idx);
+    if(el)el.className='quiz-option'+(idx===oi?' selected':'');
+  });
 }
 function submitQuiz(){
-if(!_quizData)return;
-_quizSubmitted=true;
-var questions=_quizData.questions||[];
-var correct=0;
-questions.forEach(function(q,qi){
-var chosen=_quizAnswers[qi];
-var right=q.answer;
-(q.options||[]).forEach(function(opt,oi){
-var el=document.getElementById(‘quiz-opt-’+qi+’-’+oi);
-if(!el)return;
-el.style.cursor=‘default’;
-if(oi===right){el.className=‘quiz-option correct’;}
-else if(oi===chosen&&chosen!==right){el.className=‘quiz-option wrong’;}
-else{el.className=‘quiz-option’;}
-});
-if(chosen===right)correct++;
-var exp=document.getElementById(‘quiz-exp-’+qi);
-if(exp)exp.style.display=‘block’;
-});
-var btn=document.getElementById(‘quizSubmitBtn’);
-if(btn)btn.style.display=‘none’;
-var pct=Math.round((correct/questions.length)*100);
-var medal=pct>=80?’🏆’:pct>=60?’👍’:’📚’;
-var msg=pct>=80?(emailLang===‘pt’?‘Excelente!’:‘Excellent!’):pct>=60?(emailLang===‘pt’?‘Bom trabalho!’:‘Good work!’):(emailLang===‘pt’?‘Continua a estudar!’:‘Keep studying!’);
-var scoreHtml=’<div class="quiz-score"><div style="font-size:28px;margin-bottom:4px">’+medal+’</div><div class="quiz-score-num">’+correct+’/’+questions.length+’</div><div class="quiz-score-label">’+pct+’% · ‘+msg+’</div></div>’;
-var container=g(‘analysisSummaryText’);
-if(container)container.innerHTML=scoreHtml+container.innerHTML;
-var retryBtn=document.createElement(‘button’);
-retryBtn.textContent=emailLang===‘pt’?‘Repetir quiz’:‘Try again’;
-retryBtn.style.cssText=‘width:100%;padding:12px;background:var(–cream2);border:1.5px solid var(–border);border-radius:12px;color:var(–text2);font-family:sans-serif;font-size:14px;cursor:pointer;margin-top:8px’;
-retryBtn.onclick=function(){_quizAnswers={};_quizSubmitted=false;runQuizMode();};
-if(container)container.appendChild(retryBtn);
+  if(!_quizData)return;
+  _quizSubmitted=true;
+  var questions=_quizData.questions||[];
+  var correct=0;
+  questions.forEach(function(q,qi){
+    var chosen=_quizAnswers[qi];var right=q.answer;
+    (q.options||[]).forEach(function(opt,oi){
+      var el=document.getElementById('quiz-opt-'+qi+'-'+oi);
+      if(!el)return;
+      el.style.cursor='default';
+      if(oi===right){el.className='quiz-option correct';}
+      else if(oi===chosen&&chosen!==right){el.className='quiz-option wrong';}
+      else{el.className='quiz-option';}
+    });
+    if(chosen===right)correct++;
+    var exp=document.getElementById('quiz-exp-'+qi);
+    if(exp)exp.style.display='block';
+  });
+  var btn=document.getElementById('quizSubmitBtn');if(btn)btn.style.display='none';
+  var pct=Math.round((correct/questions.length)*100);
+  var medal=pct>=80?'&#127942;':pct>=60?'&#128077;':'&#128218;';
+  var msg=pct>=80?(emailLang==='pt'?'Excelente!':'Excellent!'):pct>=60?(emailLang==='pt'?'Bom trabalho!':'Good work!'):(emailLang==='pt'?'Continua a estudar!':'Keep studying!');
+  var scoreHtml='<div class="quiz-score"><div style="font-size:28px;margin-bottom:4px">'+medal+'</div><div class="quiz-score-num">'+correct+'/'+questions.length+'</div><div class="quiz-score-label">'+pct+'% &middot; '+msg+'</div></div>';
+  var container=g('analysisSummaryText');
+  if(container)container.innerHTML=scoreHtml+container.innerHTML;
+  var retryBtn=document.createElement('button');
+  retryBtn.textContent=emailLang==='pt'?'Repetir quiz':'Try again';
+  retryBtn.style.cssText='width:100%;padding:12px;background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-size:14px;cursor:pointer;margin-top:8px';
+  retryBtn.onclick=function(){_quizAnswers={};_quizSubmitted=false;runQuizMode();};
+  if(container)container.appendChild(retryBtn);
 }
 
 initTheme();loadProfile();loadLLM();restoreState();checkOnboarding();checkChangelogDot();
