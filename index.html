@@ -229,6 +229,22 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 .trend-bar-wrap{flex:1;height:8px;background:var(--sand);border-radius:4px;overflow:hidden;}
 .trend-bar-fill{height:100%;background:var(--accent);border-radius:4px;}
 .trend-count{font-size:11px;color:var(--text3);min-width:30px;text-align:right;}
+.quiz-question{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;}
+.quiz-question-text{font-size:13px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:12px;}
+.quiz-option{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:all 0.2s;background:var(--cream2);}
+.quiz-option:last-child{margin-bottom:0;}
+.quiz-option.selected{border-color:var(--accent);background:var(--accent-light);}
+.quiz-option.correct{border-color:var(--green);background:var(--green-light);}
+.quiz-option.wrong{border-color:#dc2626;background:#fee2e2;}
+.quiz-option-letter{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--text2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.quiz-option.selected .quiz-option-letter{background:var(--accent);color:#fff;}
+.quiz-option.correct .quiz-option-letter{background:var(--green);color:#fff;}
+.quiz-option.wrong .quiz-option-letter{background:#dc2626;color:#fff;}
+.quiz-option-text{font-size:12px;color:var(--text);line-height:1.5;flex:1;}
+.quiz-explanation{margin-top:10px;padding:10px;background:var(--cream2);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.6;display:none;}
+.quiz-score{background:var(--accent);border-radius:14px;padding:20px;text-align:center;color:#fff;margin-bottom:14px;}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;}
+.quiz-score-label{font-size:13px;opacity:0.85;margin-top:4px;}
 </style>
 </head>
 <body>
@@ -483,8 +499,19 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div class="cl-version">v3.8 <span class="cl-badge cl-badge-new">Novo</span></div>
 <div class="cl-date">Mar&ccedil;o 2026</div>
 <div class="cl-items">
-<div class="cl-item">&#128313; "Ver mais" infinito &mdash; expande 5 artigos de cada vez</div>
-<div class="cl-item">&#127993; Artigos relacionados via MeSH terms &mdash; relev&acirc;ncia melhorada</div>
+<div class="cl-item">&#127757; Field Explorer &mdash; clusters, autores, tend&ecirc;ncias, guidelines e artigos recentes</div>
+<div class="cl-item">&#129504; Quiz cl&iacute;nico &mdash; 5 perguntas MCQ com pontua&ccedil;&atilde;o</div>
+<div class="cl-item">&#127466;&#127480; Suporte Espa&ntilde;ol</div>
+<div class="cl-item">&#128279; Gerar post X / LinkedIn</div>
+<div class="cl-item">&#10024; Gemini corrigido</div>
+</div>
+</div>
+<div class="cl-entry">
+<div class="cl-version">v3.7</div>
+<div class="cl-date">Mar&ccedil;o 2026</div>
+<div class="cl-items">
+<div class="cl-item">&#127757; Field Explorer (vers&atilde;o inicial)</div>
+<div class="cl-item">&#128313; "Ver mais" infinito + MeSH terms</div>
 </div>
 </div>
 <div class="cl-entry">
@@ -561,6 +588,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <button class="btn-mode btn-mode-active" id="btnModeResume" onclick="switchMode('resume')">&#128203; Resumo</button>
 <button class="btn-mode" id="btnModeDeep" onclick="switchMode('deep')">&#128300; An&aacute;lise</button>
 <button class="btn-mode" id="btnModeInfografia" onclick="switchMode('infografia')">&#128202; Infografia</button>
+<button class="btn-mode" id="btnModeQuiz" onclick="switchMode('quiz')">&#129504; Quiz</button>
 </div>
 </div>
 <div id="analysisSummaryLoading" style="display:none;align-items:center;gap:8px;color:var(--text3);font-size:13px">
@@ -781,8 +809,8 @@ function streamLLM(sysP,usrP,maxTok,onChunk,onDone,signal){if(currentLLM==='gemi
 var DEEP_REVIEW='You are conducting a deep multidisciplinary scientific review.\n\nSimulate a panel of expert reviewers:\n1. Domain Specialist\n2. Methodology / Biostatistics expert\n3. Preclinical model expert\n4. Pharmacology / drug mechanism expert\n5. Clinical translation expert\n6. Skeptical peer reviewer\n\nStructure the output:\n\nSECTION 1 - Technical Summary\n\nSECTION 2 - Independent Expert Reviews\nFor each expert: scientific validity, key strengths, major concerns.\n\nSECTION 3 - Cross-Expert Debate\n\nSECTION 4 - Robustness Assessment\nScore 1-5 for: methodological rigour, novelty, reproducibility, translational potential.\n\nSECTION 5 - Future Research Directions\n\nBe intellectually rigorous. Avoid polite or superficial praise.';
 var QUICK_RESUME='You are a clinical expert in paediatric intensive care. Generate a concise, structured clinical summary.\n\nStructure:\n**Study type:** (one line)\n**Objective:** (one line)\n**Methods:** (2-3 lines)\n**Main findings:** (bullet points with numbers where available)\n**Clinical bottom line:** (1-2 sentences)\n**Limitations:** (2-3 key points)\n**Applicability to PICU:** (one line)\n\nMax 350 words. No preamble.';
 var INFOGRAFIA_PROMPT='You are a medical data extractor. Analyse this article and return ONLY valid JSON (no markdown, no text before or after):\n{"title":"short title max 8 words","type":"RCT|SR|Meta|Cohort|Case|Review","year":"year","journal":"journal","pico":{"P":"population","I":"intervention","C":"comparator","O":"outcome"},"keyfindings":["finding1","finding2","finding3"],"numbers":[{"label":"metric","value":"value+unit"}],"bottomline":"one sentence conclusion","verdict":"positive|negative|neutral","limitations":["limit1","limit2"]}';
-function switchMode(mode){if(currentMode===mode)return;currentMode=mode;if(analysisAbortController){analysisAbortController.abort();analysisAbortController=null;}['Resume','Deep','Infografia'].forEach(function(m){var btn=g('btnMode'+m);if(btn)btn.classList.toggle('btn-mode-active',mode===m.toLowerCase());});g('analysisSummaryText').style.display='none';g('analysisSummaryText').innerHTML='';runAnalysisMode();}
-function runAnalysisMode(){if(!currentArticle)return;if(analysisAbortController)analysisAbortController.abort();analysisAbortController=new AbortController();var signal=analysisAbortController.signal;g('analysisSummaryLoading').style.display='flex';g('analysisSummaryText').style.display='none';g('analysisSummaryText').innerHTML='';if(!getActiveKey()){g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">&#128161; Adiciona a tua API Key nas defini\u00e7\u00f5es para activar a IA.</span>';return;}if(currentMode==='infografia'){g('analysisLoadingText').textContent='A gerar infografia\u2026';var usrP=INFOGRAFIA_PROMPT+'\n\nArticle: '+currentArticle.title+'\nJournal: '+(currentArticle.journal||'')+'\nYear: '+(currentArticle.year||'')+'\n'+(currentAbstract?'Abstract: '+currentAbstract:'');var fj='';streamLLM('Return only valid JSON.',usrP,1200,function(chunk){if(!signal.aborted)fj=chunk;},function(status){if(signal.aborted||status==='aborted')return;g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';if(status==='ok'){try{var data=JSON.parse(fj.replace(/```json|```/g,'').trim());g('analysisSummaryText').innerHTML=renderInfografia(data);}catch(e){g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">Erro ao gerar infografia.</span>';}}else{g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">Infografia n\u00e3o dispon\u00edvel.</span>';}},signal);return;}var isDeep=currentMode==='deep';g('analysisLoadingText').textContent=isDeep?'Painel de revisores a analisar\u2026':'A gerar resumo cl\u00ednico\u2026';var sysP=emailLang==='pt'?(isDeep?'\u00c9s um painel de revisores cient\u00edficos especializados em medicina intensiva pedi\u00e1trica. Responde em Portugu\u00eas.':'\u00c9s um especialista cl\u00ednico em medicina intensiva pedi\u00e1trica. Gera resumos concisos. Responde em Portugu\u00eas.'):(isDeep?'You are a panel of expert reviewers specialised in paediatric intensive care. Conduct deep peer reviews. Respond in English.':'You are a clinical expert in paediatric intensive care. Generate concise clinical summaries. Respond in English.');var prompt=isDeep?DEEP_REVIEW:QUICK_RESUME;var usrP2=prompt+'\n\nArticle: '+currentArticle.title+'\n'+(currentAbstract?'Abstract: '+currentAbstract:'(No abstract available)');var maxTok=isDeep?4000:800;streamLLM(sysP,usrP2,maxTok,function(full){if(signal.aborted)return;g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';g('analysisSummaryText').innerHTML=formatAIOutput(full);},function(status){if(signal.aborted||status==='aborted')return;if(status!=='ok'){g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">An\u00e1lise n\u00e3o dispon\u00edvel.</span>';}},signal);}
+function switchMode(mode){if(currentMode===mode)return;currentMode=mode;if(analysisAbortController){analysisAbortController.abort();analysisAbortController=null;}['Resume','Deep','Infografia','Quiz'].forEach(function(m){var btn=g('btnMode'+m);if(btn)btn.classList.toggle('btn-mode-active',mode===m.toLowerCase());});g('analysisSummaryText').style.display='none';g('analysisSummaryText').innerHTML='';runAnalysisMode();}
+function runAnalysisMode(){if(!currentArticle)return;if(analysisAbortController)analysisAbortController.abort();analysisAbortController=new AbortController();var signal=analysisAbortController.signal;g('analysisSummaryLoading').style.display='flex';g('analysisSummaryText').style.display='none';g('analysisSummaryText').innerHTML='';if(!getActiveKey()){g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">&#128161; Adiciona a tua API Key nas defini\u00e7\u00f5es para activar a IA.</span>';return;}if(currentMode==='quiz'){runQuizMode();return;}if(currentMode==='infografia'){g('analysisLoadingText').textContent='A gerar infografia\u2026';var usrP=INFOGRAFIA_PROMPT+'\n\nArticle: '+currentArticle.title+'\nJournal: '+(currentArticle.journal||'')+'\nYear: '+(currentArticle.year||'')+'\n'+(currentAbstract?'Abstract: '+currentAbstract:'');var fj='';streamLLM('Return only valid JSON.',usrP,1200,function(chunk){if(!signal.aborted)fj=chunk;},function(status){if(signal.aborted||status==='aborted')return;g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';if(status==='ok'){try{var data=JSON.parse(fj.replace(/```json|```/g,'').trim());g('analysisSummaryText').innerHTML=renderInfografia(data);}catch(e){g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">Erro ao gerar infografia.</span>';}}else{g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">Infografia n\u00e3o dispon\u00edvel.</span>';}},signal);return;}var isDeep=currentMode==='deep';g('analysisLoadingText').textContent=isDeep?'Painel de revisores a analisar\u2026':'A gerar resumo cl\u00ednico\u2026';var sysP=emailLang==='pt'?(isDeep?'\u00c9s um painel de revisores cient\u00edficos especializados em medicina intensiva pedi\u00e1trica. Responde em Portugu\u00eas.':'\u00c9s um especialista cl\u00ednico em medicina intensiva pedi\u00e1trica. Gera resumos concisos. Responde em Portugu\u00eas.'):(isDeep?'You are a panel of expert reviewers specialised in paediatric intensive care. Conduct deep peer reviews. Respond in English.':'You are a clinical expert in paediatric intensive care. Generate concise clinical summaries. Respond in English.');var prompt=isDeep?DEEP_REVIEW:QUICK_RESUME;var usrP2=prompt+'\n\nArticle: '+currentArticle.title+'\n'+(currentAbstract?'Abstract: '+currentAbstract:'(No abstract available)');var maxTok=isDeep?4000:800;streamLLM(sysP,usrP2,maxTok,function(full){if(signal.aborted)return;g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';g('analysisSummaryText').innerHTML=formatAIOutput(full);},function(status){if(signal.aborted||status==='aborted')return;if(status!=='ok'){g('analysisSummaryLoading').style.display='none';g('analysisSummaryText').style.display='block';g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">An\u00e1lise n\u00e3o dispon\u00edvel.</span>';}},signal);}
 async function startAnalysis(){if(!currentArticle)return;currentMode='resume';if(analysisAbortController){analysisAbortController.abort();analysisAbortController=null;}var btnR=g('btnModeResume');if(btnR)btnR.classList.add('btn-mode-active');var btnD=g('btnModeDeep');if(btnD)btnD.classList.remove('btn-mode-active');var btnI=g('btnModeInfografia');if(btnI)btnI.classList.remove('btn-mode-active');chatHistory=[];g('chatMessages').innerHTML='<div class="chat-empty">Faz uma pergunta sobre o artigo \u2193</div>';g('analysisTitleFull').textContent=currentArticle.title;g('analysisMetaFull').textContent=(currentArticle.journal||'')+(currentArticle.year?' \u00b7 '+currentArticle.year:'')+(currentArticle.doi?' \u00b7 '+currentArticle.doi:'');g('analysisHeaderTitle').textContent=currentArticle.title.substring(0,40)+'\u2026';g('relatedCard').style.display='none';if(g('recentCard'))g('recentCard').style.display='none';clearPdf();if(!currentAbstract&&currentArticle.doi)currentAbstract=await fetchAbstract(currentArticle.doi,null)||'';runAnalysisMode();fetchRelated(currentArticle.doi,currentArticle.title).then(function(related){if(!related.length)return;window._related=related;g('relatedCard').style.display='block';renderRelatedItems(4);});fetchRecentArticles(currentArticle.title);}
 function renderRelatedItems(n){
   var related=window._related||[];
@@ -1073,7 +1101,11 @@ async function runExplorer(){
     html+='<div class="explorer-section-title">&#129504; Resumo do estado da arte <span class="ai-badge" id="explorerAiBadge">'+(hasKey?'A gerar…':'Sem API Key')+'</span></div>';
     html+='<div id="explorerAiText" class="summary-text ai-output">'+(hasKey?'<div class="spinner" style="width:14px;height:14px;border-width:2px;display:inline-block"></div>':'<span style="color:var(--text3);font-size:12px">&#128161; Adiciona a API Key.</span>')+'</div>';
     html+='</div>';
+    html+='<div class="explorer-section" id="explorerRecentSection" style="display:none"><div class="explorer-section-title">&#128313; Artigos recentes <span class="ai-badge">2 anos</span></div><div id="explorerRecentItems"></div></div>';
+    html+='<div class="explorer-section" id="explorerGuidelinesSection" style="display:none"><div class="explorer-section-title">&#128218; Guidelines <span class="ai-badge">PubMed</span></div><div id="explorerGuidelinesItems"></div></div>';
     if(results)results.innerHTML=html;
+    fetchExplorerRecent(query);
+    fetchExplorerGuidelines(query);
     results.addEventListener('click',function(e){
       var card=e.target.closest('[data-ci]');
       if(card){var ci=parseInt(card.getAttribute('data-ci'));if(clusters[ci])explorerOpenCluster(clusters[ci].label);return;}
@@ -1118,6 +1150,172 @@ async function runExplorer(){
   }finally{
     if(btn)btn.disabled=false;
   }
+}
+
+var _quizData=null;
+var _quizAnswers={};
+var _quizSubmitted=false;
+function runQuizMode(){
+if(!currentArticle)return;
+g(‘analysisSummaryLoading’).style.display=‘flex’;
+g(‘analysisSummaryText’).style.display=‘none’;
+g(‘analysisSummaryText’).innerHTML=’’;
+g(‘analysisLoadingText’).textContent=‘A gerar quiz clínico…’;
+_quizData=null;_quizAnswers={};_quizSubmitted=false;
+if(!getActiveKey()){
+g(‘analysisSummaryLoading’).style.display=‘none’;
+g(‘analysisSummaryText’).style.display=‘block’;
+g(‘analysisSummaryText’).innerHTML=’<span style="color:var(--text3);font-size:12px">💡 Adiciona a API Key para o quiz.</span>’;
+return;
+}
+var qPrompt=‘Analyse this article and return ONLY valid JSON (no markdown):\n’
++’{“questions”:[{“q”:”?”,“options”:[“A. “,“B. “,“C. “,“D. “],“answer”:0,“explanation”:””}]}’
++’\n\nGenerate 5 multiple-choice questions’+(emailLang===‘pt’?’ in Portuguese’:emailLang===‘es’?’ in Spanish’:’ in English’)+’.’
++’\nTest methodology, results, PICU applicability and limitations.’;
+var usrP=qPrompt+’\n\nArticle: ‘+currentArticle.title+’\n’+(currentAbstract?‘Abstract: ‘+currentAbstract.substring(0,800):’(No abstract)’);
+var fj=’’;
+streamLLM(‘Return only valid JSON.’,usrP,1500,
+function(chunk){fj=chunk;},
+function(status){
+g(‘analysisSummaryLoading’).style.display=‘none’;
+g(‘analysisSummaryText’).style.display=‘block’;
+if(status===‘ok’){
+try{var data=JSON.parse(fj.replace(/`json|`/g,’’).trim());_quizData=data;renderQuiz(data);}
+catch(e){g(‘analysisSummaryText’).innerHTML=’<span style="color:var(--text3);font-size:12px">Erro ao gerar quiz.</span>’;}
+}else{
+g(‘analysisSummaryText’).innerHTML=’<span style="color:var(--text3);font-size:12px">Quiz não disponível.</span>’;
+}
+},null);
+}
+function renderQuiz(data){
+var questions=data.questions||[];
+if(!questions.length){g(‘analysisSummaryText’).innerHTML=’<span style="color:var(--text3)">Sem perguntas geradas.</span>’;return;}
+var letters=[‘A’,‘B’,‘C’,‘D’,‘E’];
+var submitLabel=emailLang===‘pt’?‘Submeter respostas’:emailLang===‘es’?‘Enviar respuestas’:‘Submit answers’;
+var instrLabel=emailLang===‘pt’?‘Responde às ‘+questions.length+’ perguntas e carrega em <strong>Submeter</strong>.’:emailLang===‘es’?‘Responde las ‘+questions.length+’ preguntas y pulsa <strong>Enviar</strong>.’:‘Answer the ‘+questions.length+’ questions and press <strong>Submit</strong>.’;
+var html=’<div><div style="font-size:12px;color:var(--text3);margin-bottom:14px">’+instrLabel+’</div>’;
+questions.forEach(function(q,qi){
+html+=’<div class="quiz-question"><div class="quiz-question-text">’+(qi+1)+’. ‘+esc(q.q)+’</div>’;
+(q.options||[]).forEach(function(opt,oi){
+html+=’<div class="quiz-option" id="quiz-opt-'+qi+'-'+oi+'" onclick="selectQuizOption('+qi+','+oi+')"><div class="quiz-option-letter">’+letters[oi]+’</div><div class="quiz-option-text">’+esc(opt.replace(/^[A-E]. */,’’))+’</div></div>’;
+});
+html+=’<div class="quiz-explanation" id="quiz-exp-'+qi+'">💡 ‘+esc(q.explanation||’’)+’</div></div>’;
+});
+html+=’<button onclick="submitQuiz()" id="quizSubmitBtn" style="width:100%;padding:13px;background:var(--accent);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:500;cursor:pointer;margin-top:4px">’+submitLabel+’</button></div>’;
+g(‘analysisSummaryText’).innerHTML=html;
+}
+function selectQuizOption(qi,oi){
+if(_quizSubmitted)return;
+_quizAnswers[qi]=oi;
+var q=_quizData&&_quizData.questions&&_quizData.questions[qi];
+if(!q)return;
+(q.options||[]).forEach(function(opt,idx){
+var el=document.getElementById(‘quiz-opt-’+qi+’-’+idx);
+if(el)el.className=‘quiz-option’+(idx===oi?’ selected’:’’);
+});
+}
+function submitQuiz(){
+if(!_quizData)return;
+_quizSubmitted=true;
+var questions=_quizData.questions||[];
+var correct=0;
+questions.forEach(function(q,qi){
+var chosen=_quizAnswers[qi];var right=q.answer;
+(q.options||[]).forEach(function(opt,oi){
+var el=document.getElementById(‘quiz-opt-’+qi+’-’+oi);
+if(!el)return;
+el.style.cursor=‘default’;
+if(oi===right){el.className=‘quiz-option correct’;}
+else if(oi===chosen&&chosen!==right){el.className=‘quiz-option wrong’;}
+else{el.className=‘quiz-option’;}
+});
+if(chosen===right)correct++;
+var exp=document.getElementById(‘quiz-exp-’+qi);
+if(exp)exp.style.display=‘block’;
+});
+var btn=document.getElementById(‘quizSubmitBtn’);if(btn)btn.style.display=‘none’;
+var pct=Math.round((correct/questions.length)*100);
+var medal=pct>=80?’🏆’:pct>=60?’👍’:’📚’;
+var msg=pct>=80?(emailLang===‘pt’?‘Excelente!’:emailLang===‘es’?‘Excelente!’:‘Excellent!’):pct>=60?(emailLang===‘pt’?‘Bom trabalho!’:emailLang===‘es’?‘Buen trabajo!’:‘Good work!’):(emailLang===‘pt’?‘Continua a estudar!’:emailLang===‘es’?‘Sigue estudiando!’:‘Keep studying!’);
+var scoreHtml=’<div class="quiz-score"><div style="font-size:28px;margin-bottom:4px">’+medal+’</div><div class="quiz-score-num">’+correct+’/’+questions.length+’</div><div class="quiz-score-label">’+pct+’% · ‘+msg+’</div></div>’;
+var container=g(‘analysisSummaryText’);
+if(container)container.innerHTML=scoreHtml+container.innerHTML;
+var retryBtn=document.createElement(‘button’);
+retryBtn.textContent=emailLang===‘pt’?‘Repetir quiz’:emailLang===‘es’?‘Repetir quiz’:‘Try again’;
+retryBtn.style.cssText=‘width:100%;padding:12px;background:var(–cream2);border:1.5px solid var(–border);border-radius:12px;color:var(–text2);font-size:14px;cursor:pointer;margin-top:8px’;
+retryBtn.onclick=function(){_quizAnswers={};_quizSubmitted=false;runQuizMode();};
+if(container)container.appendChild(retryBtn);
+}
+async function fetchExplorerRecent(query){
+try{
+var r=await fetch(‘https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=’+encodeURIComponent(query)+’&reldate=730&datetype=pdat&retmax=8&sort=pub+date&retmode=json’);
+if(!r.ok)return;
+var d=await r.json();
+var ids=d.esearchresult&&d.esearchresult.idlist;
+if(!ids||!ids.length)return;
+var r2=await fetch(‘https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=’+ids.join(’,’)+’&retmode=json’);
+if(!r2.ok)return;
+var d2=await r2.json();
+var uids=d2.result&&d2.result.uids||[];
+var currentYear=new Date().getFullYear();
+var html=uids.map(function(uid){
+var a=d2.result[uid];if(!a||!a.title)return’’;
+var y=a.pubdate?a.pubdate.substring(0,4):’’;
+var isNew=parseInt(y)>=currentYear;
+return’<div class="related-item" data-pi="r'+uid+'">’
++’<div class="related-title">’+esc(a.title.substring(0,90))+(a.title.length>90?’…’:’’)
++(isNew?’<span style="font-size:9px;background:#dcfce7;color:#16a34a;border-radius:6px;padding:1px 5px;font-weight:600;margin-left:4px">Novo</span>’:’’)
++’</div><div class="related-meta">’+esc(a.fulljournalname||a.source||’’)+(y?’ · ‘+y:’’)+’</div></div>’;
+}).filter(Boolean).join(’’);
+if(html){
+var sec=g(‘explorerRecentSection’);
+var items=g(‘explorerRecentItems’);
+if(sec)sec.style.display=‘block’;
+if(items)items.innerHTML=html;
+// Add click handler for recent items
+if(items)items.addEventListener(‘click’,function(e){
+var item=e.target.closest(’[data-pi]’);
+if(!item)return;
+var uid=item.getAttribute(‘data-pi’).replace(‘r’,’’);
+g(‘queryInput’).value=‘PMID:’+uid;
+setSearchMode(‘article’);switchTab(‘search’);runAgent();
+});
+}
+}catch(e){}
+}
+async function fetchExplorerGuidelines(query){
+try{
+var guideQuery=query+’ AND (guideline[pt] OR practice guideline[pt] OR consensus[ti] OR recommendation[ti] OR statement[ti])’;
+var r=await fetch(‘https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=’+encodeURIComponent(guideQuery)+’&retmax=6&sort=relevance&retmode=json’);
+if(!r.ok)return;
+var d=await r.json();
+var ids=d.esearchresult&&d.esearchresult.idlist;
+if(!ids||!ids.length)return;
+var r2=await fetch(‘https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=’+ids.join(’,’)+’&retmode=json’);
+if(!r2.ok)return;
+var d2=await r2.json();
+var uids=d2.result&&d2.result.uids||[];
+var html=uids.map(function(uid){
+var a=d2.result[uid];if(!a||!a.title)return’’;
+var y=a.pubdate?a.pubdate.substring(0,4):’’;
+return’<div class="related-item" data-pi="g'+uid+'">’
++’<div class="related-title">’+esc(a.title.substring(0,90))+(a.title.length>90?’…’:’’)+’</div>’
++’<div class="related-meta">’+esc(a.fulljournalname||a.source||’’)+(y?’ · ‘+y:’’)+’</div></div>’;
+}).filter(Boolean).join(’’);
+if(html){
+var sec=g(‘explorerGuidelinesSection’);
+var items=g(‘explorerGuidelinesItems’);
+if(sec)sec.style.display=‘block’;
+if(items)items.innerHTML=html;
+if(items)items.addEventListener(‘click’,function(e){
+var item=e.target.closest(’[data-pi]’);
+if(!item)return;
+var uid=item.getAttribute(‘data-pi’).replace(‘g’,’’);
+g(‘queryInput’).value=‘PMID:’+uid;
+setSearchMode(‘article’);switchTab(‘search’);runAgent();
+});
+}
+}catch(e){}
 }
 
 initTheme();loadProfile();loadLLM();restoreState();checkOnboarding();checkChangelogDot();
