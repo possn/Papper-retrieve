@@ -261,6 +261,14 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <button class="btn-icon" id="btnTheme" onclick="toggleTheme()">&#127769;</button>
 </div>
 </div>
+<div style="margin-bottom:14px">
+<div style="font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">&#129504; Idioma das an&aacute;lises IA</div>
+<div style="display:flex;gap:6px;align-items:center">
+<button class="btn-lang" id="topLangEN" onclick="setLang('en')" style="font-size:12px;padding:6px 14px">&#127468;&#127463; English</button>
+<button class="btn-lang" id="topLangPT" onclick="setLang('pt')" style="font-size:12px;padding:6px 14px">&#127477;&#127481; Portugu&ecirc;s</button>
+<button class="btn-lang" id="topLangES" onclick="setLang('es')" style="font-size:12px;padding:6px 14px">&#127466;&#127480; Espa&ntilde;ol</button>
+</div>
+</div>
 <div class="tabs">
 <button class="tab active" id="tabSearch" onclick="switchTab('search')">&#128269; Pesquisa</button>
 <button class="tab" id="tabLibrary" onclick="switchTab('library')"><span class="tab-label">&#128218; Biblioteca</span></button>
@@ -717,7 +725,19 @@ function closeAnalysis(){g('pageAnalysis').classList.remove('active');g('pageMai
 function initTheme(){var t=localStorage.getItem('pq_theme')||'light';document.body.setAttribute('data-theme',t);var b=g('btnTheme');if(b)b.textContent=t==='dark'?'\u2600\uFE0F':'\uD83C\uDF19';}
 function toggleTheme(){var t=document.body.getAttribute('data-theme')==='dark'?'light':'dark';document.body.setAttribute('data-theme',t);localStorage.setItem('pq_theme',t);var b=g('btnTheme');if(b)b.textContent=t==='dark'?'\u2600\uFE0F':'\uD83C\uDF19';}
 function switchTab(name){['search','library','history','jclub','explorer'].forEach(function(t){var p=g('panel'+t.charAt(0).toUpperCase()+t.slice(1));if(p)p.classList.toggle('active',t===name);});document.querySelectorAll('.tab').forEach(function(el){el.classList.remove('active');});var at=g('tab'+name.charAt(0).toUpperCase()+name.slice(1));if(at)at.classList.add('active');if(name==='library')renderLibrary();if(name==='history')renderHistory();if(name==='jclub')renderJclub();if(name==='explorer')initExplorer();}
-function setLang(lang){emailLang=lang;g('langEN').classList.toggle('active',lang==='en');g('langPT').classList.toggle('active',lang==='pt');var es=g('langES');if(es)es.classList.toggle('active',lang==='es');if(currentArticle)regenerateEmail();}
+function setLang(lang){
+  emailLang=lang;
+  try{localStorage.setItem('pq_lang',lang);}catch(e){}
+  var pairs=[['langEN','topLangEN'],['langPT','topLangPT'],['langES','topLangES']];
+  var langs=['en','pt','es'];
+  pairs.forEach(function(p,i){
+    var el1=g(p[0]);var el2=g(p[1]);
+    var active=lang===langs[i];
+    if(el1)el1.classList.toggle('active',active);
+    if(el2)el2.classList.toggle('active',active);
+  });
+  if(currentArticle)regenerateEmail();
+}
 var LLM_CONFIG={claude:{label:'Claude API Key',placeholder:'sk-ant-api03-...',hint:'Cria em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a>',storageKey:'pq_apikey'},gemini:{label:'Gemini API Key',placeholder:'AIza...',hint:'Cria em <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent)">aistudio.google.com</a> &mdash; Gr&aacute;tis!',storageKey:'pq_geminikey'}};
 function setLLM(llm){currentLLM=llm;try{localStorage.setItem('pq_llm',llm);}catch(e){}g('llmClaude').classList.toggle('active',llm==='claude');g('llmGemini').classList.toggle('active',llm==='gemini');var cfg=LLM_CONFIG[llm];if(!cfg)return;g('apiKeyLabel').textContent=cfg.label;g('apiKeyInput').placeholder=cfg.placeholder;g('apiKeyHint').innerHTML=cfg.hint;var s=localStorage.getItem(cfg.storageKey)||'';g('apiKeyInput').value=s;g('apiKeySaved').style.display=s?'inline':'none';var lbl={claude:'Claude AI',gemini:'Gemini'};if(g('aiBadgeMain'))g('aiBadgeMain').textContent=lbl[llm]||'IA';if(g('aiBadgeChat'))g('aiBadgeChat').textContent=lbl[llm]||'IA';}
 function loadLLM(){var llm=localStorage.getItem('pq_llm')||'claude';if(llm==='openai'){llm='claude';try{localStorage.setItem('pq_llm','claude');}catch(e){}}currentLLM=llm;CLAUDE_KEY=localStorage.getItem('pq_apikey')||'';GEMINI_KEY=localStorage.getItem('pq_geminikey')||'';var cfg=LLM_CONFIG[llm];if(cfg){if(g('apiKeyLabel'))g('apiKeyLabel').textContent=cfg.label;if(g('apiKeyInput')){g('apiKeyInput').placeholder=cfg.placeholder;var s=localStorage.getItem(cfg.storageKey)||'';g('apiKeyInput').value=s;}if(g('apiKeyHint'))g('apiKeyHint').innerHTML=cfg.hint;if(g('apiKeySaved'))g('apiKeySaved').style.display=(localStorage.getItem(cfg.storageKey)||'')?'inline':'none';}g('llmClaude').classList.toggle('active',llm==='claude');g('llmGemini').classList.toggle('active',llm==='gemini');setTimeout(function(){var lbl={claude:'Claude AI',gemini:'Gemini'};if(g('aiBadgeMain'))g('aiBadgeMain').textContent=lbl[llm]||'IA';if(g('aiBadgeChat'))g('aiBadgeChat').textContent=lbl[llm]||'IA';},50);}
@@ -1102,7 +1122,14 @@ function submitQuiz(){
   if(container)container.appendChild(retryBtn);
 }
 
-initTheme();loadProfile();loadLLM();restoreState();checkOnboarding();checkChangelogDot();
+initTheme();
+var _savedLang=localStorage.getItem(“pq_lang”)||“en”;
+loadProfile();
+setLang(_savedLang);
+loadLLM();
+restoreState();
+checkOnboarding();
+checkChangelogDot();
 </script>
 
 </body>
