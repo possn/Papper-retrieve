@@ -954,14 +954,14 @@ async function runExplorer(){
   if(loader)loader.style.display='flex';
   if(results)results.innerHTML='';
   try{
-    if(loaderText)loaderText.textContent='A recolher artigos do PubMed…';
+    if(loaderText)loaderText.textContent='A recolher artigos do PubMed...';
     var r1=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+encodeURIComponent(query)+'&retmax=40&sort=relevance&retmode=json');
     if(!r1.ok)throw new Error('PubMed search failed');
     var d1=await r1.json();
     var ids=d1.esearchresult&&d1.esearchresult.idlist;
     var totalCount=parseInt((d1.esearchresult&&d1.esearchresult.count)||0);
     if(!ids||!ids.length){if(results)results.innerHTML='<div class="lib-empty">Sem resultados para este tema.</div>';return;}
-    if(loaderText)loaderText.textContent='A processar '+ids.length+' artigos…';
+    if(loaderText)loaderText.textContent='A processar '+ids.length+' artigos...';
     var r2=await fetch('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+ids.join(',')+'&retmode=json');
     if(!r2.ok)throw new Error('PubMed summary failed');
     var d2=await r2.json();
@@ -971,7 +971,7 @@ async function runExplorer(){
       if(!a)return null;
       return{pmid:uid,title:a.title||'',journal:a.fulljournalname||a.source||'',year:a.pubdate?parseInt(a.pubdate.substring(0,4)):0,authors:(a.authors||[]).map(function(x){return x.name;}),mesh:(a.meshheadinglist||[]).map(function(m){return m.name;})};
     }).filter(Boolean);
-    if(loaderText)loaderText.textContent='A construir clusters…';
+    if(loaderText)loaderText.textContent='A construir clusters...';
     var sw='with from after before during using about their these those that this into have been were than and the for are but not all can had was one our out get has him his how its may new now old see two who did let put say she too use patients clinical study results treatment effects associated disease syndrome'.split(' ');
     var clusterMap={};
     papers.forEach(function(p){
@@ -1057,20 +1057,20 @@ async function runExplorer(){
     html+='</div>';
     var hasKey=getActiveKey();
     html+='<div class="explorer-section">';
-    html+='<div class="explorer-section-title">&#129504; Resumo do estado da arte <span class="ai-badge" id="explorerAiBadge">'+(hasKey?'A gerar…':'Sem API Key')+'</span></div>';
+    html+='<div class="explorer-section-title">&#129504; Resumo do estado da arte <span class="ai-badge" id="explorerAiBadge">'+(hasKey?'A gerar...':'Sem API Key')+'</span></div>';
     html+='<div id="explorerAiText" class="summary-text ai-output">'+(hasKey?'<div class="spinner" style="width:14px;height:14px;border-width:2px;display:inline-block"></div>':'<span style="color:var(--text3);font-size:12px">&#128161; Adiciona a API Key.</span>')+'</div>';
     html+='</div>';
     if(results)results.innerHTML=html;
     fetchExplorerRecent(query);
     fetchExplorerGuidelines(query);
     if(hasKey){
-      var sysP=emailLang==='pt'?'És um especialista em medicina intensiva pediátrica. Responde em Português.':'You are an expert in paediatric intensive care. Respond in English.';
+      var sysP=emailLang==='pt'?'\u00c9s um especialista em medicina intensiva pedi\u00e1trica. Responde em Portugu\u00eas.':'You are an expert in paediatric intensive care. Respond in English.';
       var usrP=(emailLang==='pt'?'Com base nestes artigos sobre "'+query+'", gera um resumo:':'Based on these papers about "'+query+'", generate a summary:')
         +'\n\n'+paperList+'\n\nClusters: '+clusterList+'\n\n'
-        +(emailLang==='pt'?'Estrutura:\n**Estado actual:** (2-3 frases)\n**Tendências:** (bullets)\n**Lacunas:** (2-3)\n**UCIP:** (1-2 frases)\nMáx 300 palavras.':'Structure:\n**Current state:** (2-3 sentences)\n**Trends:** (bullets)\n**Gaps:** (2-3)\n**PICU:** (1-2 sentences)\nMax 300 words.');
+        +(emailLang==='pt'?'Estrutura:\n**Estado actual:** (2-3 frases)\n**Tend\u00eancias:** (bullets)\n**Lacunas:** (2-3)\n**UCIP:** (1-2 frases)\nM\u00e1x 300 palavras.':'Structure:\n**Current state:** (2-3 sentences)\n**Trends:** (bullets)\n**Gaps:** (2-3)\n**PICU:** (1-2 sentences)\nMax 300 words.');
       streamLLM(sysP,usrP,1000,
         function(full){var at=g('explorerAiText');var ab=g('explorerAiBadge');if(at)at.innerHTML=formatAIOutput(full);if(ab)ab.textContent=(currentLLM==='gemini'?'Gemini':'Claude AI');},
-        function(status){var ab=g('explorerAiBadge');if(status!=='ok'&&status!=='aborted'){var at=g('explorerAiText');if(at)at.innerHTML='<span style="color:var(--text3);font-size:12px">Resumo não disponível.</span>';}if(ab)ab.textContent=(currentLLM==='gemini'?'Gemini':'Claude AI');},
+        function(status){var ab=g('explorerAiBadge');if(status!=='ok'&&status!=='aborted'){var at=g('explorerAiText');if(at)at.innerHTML='<span style="color:var(--text3);font-size:12px">Resumo n\u00e3o dispon\u00edvel.</span>';}if(ab)ab.textContent=(currentLLM==='gemini'?'Gemini':'Claude AI');},
         null);
     }
   }catch(err){
@@ -1136,7 +1136,7 @@ function runQuizMode(){
   g('analysisSummaryLoading').style.display='flex';
   g('analysisSummaryText').style.display='none';
   g('analysisSummaryText').innerHTML='';
-  g('analysisLoadingText').textContent='A gerar quiz clínico…';
+  g('analysisLoadingText').textContent='A gerar quiz cl\u00ednico...';
   _quizData=null;_quizAnswers={};_quizSubmitted=false;
   if(!getActiveKey()){
     g('analysisSummaryLoading').style.display='none';
@@ -1159,7 +1159,7 @@ function runQuizMode(){
         try{var data=JSON.parse(fj.replace(/```json|```/g,'').trim());_quizData=data;renderQuiz(data);}
         catch(e){g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">Erro ao gerar quiz.</span>';}
       }else{
-        g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">Quiz não disponível.</span>';
+        g('analysisSummaryText').innerHTML='<span style="color:var(--text3);font-size:12px">Quiz n\u00e3o dispon\u00edvel.</span>';
       }
     },null);
 }
@@ -1217,12 +1217,12 @@ var step=5;
 var header=’<div style="font-size:11px;color:var(--text3);margin-bottom:8px">’+count+’ resultados para <strong>’+esc(query)+’</strong></div>’;
 var items=uids.slice(0,n).map(function(uid){
 var a=d2.result[uid];if(!a)return’’;
-var t=a.title||‘Sem título’;
+var t=a.title||‘Sem t\u00edtulo’;
 var j=a.fulljournalname||a.source||’’;
 var y=a.pubdate?a.pubdate.substring(0,4):’’;
 return’<div class="result-item" onclick="loadFromPMID(\''+uid+'\')">’
 +’<div class="result-item-title">’+esc(t.substring(0,100))+(t.length>100?’…’:’’)+’</div>’
-+’<div class="result-item-meta">’+esc(j)+(y?’ · ‘+y:’’)+’</div></div>’;
++’<div class="result-item-meta">’+esc(j)+(y?’ \u00b7 ‘+y:’’)+’</div></div>’;
 }).filter(Boolean).join(’’);
 var verMais=’’;
 if(uids.length>n){
