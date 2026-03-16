@@ -499,10 +499,9 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div class="cl-version">v3.8 <span class="cl-badge cl-badge-new">Novo</span></div>
 <div class="cl-date">Mar&ccedil;o 2026</div>
 <div class="cl-items">
-<div class="cl-item">&#127757; Field Explorer &mdash; clusters, autores, tend&ecirc;ncias, guidelines e artigos recentes</div>
-<div class="cl-item">&#129504; Quiz cl&iacute;nico &mdash; 5 perguntas MCQ com pontua&ccedil;&atilde;o</div>
+<div class="cl-item">&#127757; Field Explorer &mdash; clusters, autores, tend&ecirc;ncias, guidelines</div>
+<div class="cl-item">&#129504; Quiz cl&iacute;nico &mdash; 5 perguntas MCQ</div>
 <div class="cl-item">&#127466;&#127480; Suporte Espa&ntilde;ol</div>
-<div class="cl-item">&#128279; Gerar post X / LinkedIn</div>
 <div class="cl-item">&#10024; Gemini corrigido</div>
 </div>
 </div>
@@ -510,7 +509,6 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div class="cl-version">v3.7</div>
 <div class="cl-date">Mar&ccedil;o 2026</div>
 <div class="cl-items">
-<div class="cl-item">&#127757; Field Explorer (vers&atilde;o inicial)</div>
 <div class="cl-item">&#128313; "Ver mais" infinito + MeSH terms</div>
 </div>
 </div>
@@ -1152,9 +1150,7 @@ async function runExplorer(){
   }
 }
 
-var _quizData=null;
-var _quizAnswers={};
-var _quizSubmitted=false;
+var _quizData=null;var _quizAnswers={};var _quizSubmitted=false;
 function runQuizMode(){
 if(!currentArticle)return;
 g(‘analysisSummaryLoading’).style.display=‘flex’;
@@ -1165,12 +1161,13 @@ _quizData=null;_quizAnswers={};_quizSubmitted=false;
 if(!getActiveKey()){
 g(‘analysisSummaryLoading’).style.display=‘none’;
 g(‘analysisSummaryText’).style.display=‘block’;
-g(‘analysisSummaryText’).innerHTML=’<span style="color:var(--text3);font-size:12px">💡 Adiciona a API Key para o quiz.</span>’;
+var km=currentLLM===‘gemini’?’💡 Adiciona a tua <strong>Gemini API Key</strong> (gratuito em aistudio.google.com).’:’💡 Adiciona a tua <strong>Claude API Key</strong>.’;
+g(‘analysisSummaryText’).innerHTML=’<span style="color:var(--text3);font-size:12px">’+km+’</span>’;
 return;
 }
 var qPrompt=‘Analyse this article and return ONLY valid JSON (no markdown):\n’
 +’{“questions”:[{“q”:”?”,“options”:[“A. “,“B. “,“C. “,“D. “],“answer”:0,“explanation”:””}]}’
-+’\n\nGenerate 5 multiple-choice questions’+(emailLang===‘pt’?’ in Portuguese’:emailLang===‘es’?’ in Spanish’:’ in English’)+’.’
++’\n\nGenerate 5 questions’+(emailLang===‘pt’?’ in Portuguese’:emailLang===‘es’?’ in Spanish’:’ in English’)+’.’
 +’\nTest methodology, results, PICU applicability and limitations.’;
 var usrP=qPrompt+’\n\nArticle: ‘+currentArticle.title+’\n’+(currentAbstract?‘Abstract: ‘+currentAbstract.substring(0,800):’(No abstract)’);
 var fj=’’;
@@ -1191,9 +1188,8 @@ function renderQuiz(data){
 var questions=data.questions||[];
 if(!questions.length){g(‘analysisSummaryText’).innerHTML=’<span style="color:var(--text3)">Sem perguntas geradas.</span>’;return;}
 var letters=[‘A’,‘B’,‘C’,‘D’,‘E’];
-var submitLabel=emailLang===‘pt’?‘Submeter respostas’:emailLang===‘es’?‘Enviar respuestas’:‘Submit answers’;
-var instrLabel=emailLang===‘pt’?‘Responde às ‘+questions.length+’ perguntas e carrega em <strong>Submeter</strong>.’:emailLang===‘es’?‘Responde las ‘+questions.length+’ preguntas y pulsa <strong>Enviar</strong>.’:‘Answer the ‘+questions.length+’ questions and press <strong>Submit</strong>.’;
-var html=’<div><div style="font-size:12px;color:var(--text3);margin-bottom:14px">’+instrLabel+’</div>’;
+var submitLabel=emailLang===‘pt’?‘Submeter’:emailLang===‘es’?‘Enviar’:‘Submit’;
+var html=’<div><div style="font-size:12px;color:var(--text3);margin-bottom:14px">Responde e carrega em <strong>’+submitLabel+’</strong>.</div>’;
 questions.forEach(function(q,qi){
 html+=’<div class="quiz-question"><div class="quiz-question-text">’+(qi+1)+’. ‘+esc(q.q)+’</div>’;
 (q.options||[]).forEach(function(opt,oi){
@@ -1209,37 +1205,24 @@ if(_quizSubmitted)return;
 _quizAnswers[qi]=oi;
 var q=_quizData&&_quizData.questions&&_quizData.questions[qi];
 if(!q)return;
-(q.options||[]).forEach(function(opt,idx){
-var el=document.getElementById(‘quiz-opt-’+qi+’-’+idx);
-if(el)el.className=‘quiz-option’+(idx===oi?’ selected’:’’);
-});
+(q.options||[]).forEach(function(opt,idx){var el=document.getElementById(‘quiz-opt-’+qi+’-’+idx);if(el)el.className=‘quiz-option’+(idx===oi?’ selected’:’’);});
 }
 function submitQuiz(){
 if(!_quizData)return;
 _quizSubmitted=true;
-var questions=_quizData.questions||[];
-var correct=0;
+var questions=_quizData.questions||[];var correct=0;
 questions.forEach(function(q,qi){
 var chosen=_quizAnswers[qi];var right=q.answer;
-(q.options||[]).forEach(function(opt,oi){
-var el=document.getElementById(‘quiz-opt-’+qi+’-’+oi);
-if(!el)return;
-el.style.cursor=‘default’;
-if(oi===right){el.className=‘quiz-option correct’;}
-else if(oi===chosen&&chosen!==right){el.className=‘quiz-option wrong’;}
-else{el.className=‘quiz-option’;}
-});
+(q.options||[]).forEach(function(opt,oi){var el=document.getElementById(‘quiz-opt-’+qi+’-’+oi);if(!el)return;el.style.cursor=‘default’;if(oi===right){el.className=‘quiz-option correct’;}else if(oi===chosen&&chosen!==right){el.className=‘quiz-option wrong’;}else{el.className=‘quiz-option’;}});
 if(chosen===right)correct++;
-var exp=document.getElementById(‘quiz-exp-’+qi);
-if(exp)exp.style.display=‘block’;
+var exp=document.getElementById(‘quiz-exp-’+qi);if(exp)exp.style.display=‘block’;
 });
 var btn=document.getElementById(‘quizSubmitBtn’);if(btn)btn.style.display=‘none’;
 var pct=Math.round((correct/questions.length)*100);
 var medal=pct>=80?’🏆’:pct>=60?’👍’:’📚’;
 var msg=pct>=80?(emailLang===‘pt’?‘Excelente!’:emailLang===‘es’?‘Excelente!’:‘Excellent!’):pct>=60?(emailLang===‘pt’?‘Bom trabalho!’:emailLang===‘es’?‘Buen trabajo!’:‘Good work!’):(emailLang===‘pt’?‘Continua a estudar!’:emailLang===‘es’?‘Sigue estudiando!’:‘Keep studying!’);
 var scoreHtml=’<div class="quiz-score"><div style="font-size:28px;margin-bottom:4px">’+medal+’</div><div class="quiz-score-num">’+correct+’/’+questions.length+’</div><div class="quiz-score-label">’+pct+’% · ‘+msg+’</div></div>’;
-var container=g(‘analysisSummaryText’);
-if(container)container.innerHTML=scoreHtml+container.innerHTML;
+var container=g(‘analysisSummaryText’);if(container)container.innerHTML=scoreHtml+container.innerHTML;
 var retryBtn=document.createElement(‘button’);
 retryBtn.textContent=emailLang===‘pt’?‘Repetir quiz’:emailLang===‘es’?‘Repetir quiz’:‘Try again’;
 retryBtn.style.cssText=‘width:100%;padding:12px;background:var(–cream2);border:1.5px solid var(–border);border-radius:12px;color:var(–text2);font-size:14px;cursor:pointer;margin-top:8px’;
@@ -1257,36 +1240,19 @@ var r2=await fetch(‘https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcg
 if(!r2.ok)return;
 var d2=await r2.json();
 var uids=d2.result&&d2.result.uids||[];
-var currentYear=new Date().getFullYear();
+var cy=new Date().getFullYear();
 var html=uids.map(function(uid){
 var a=d2.result[uid];if(!a||!a.title)return’’;
 var y=a.pubdate?a.pubdate.substring(0,4):’’;
-var isNew=parseInt(y)>=currentYear;
-return’<div class="related-item" data-pi="r'+uid+'">’
-+’<div class="related-title">’+esc(a.title.substring(0,90))+(a.title.length>90?’…’:’’)
-+(isNew?’<span style="font-size:9px;background:#dcfce7;color:#16a34a;border-radius:6px;padding:1px 5px;font-weight:600;margin-left:4px">Novo</span>’:’’)
-+’</div><div class="related-meta">’+esc(a.fulljournalname||a.source||’’)+(y?’ · ‘+y:’’)+’</div></div>’;
+return’<div class="related-item" data-ruid="'+uid+'"><div class="related-title">’+esc(a.title.substring(0,90))+(a.title.length>90?’…’:’’)+(parseInt(y)>=cy?’<span style="font-size:9px;background:#dcfce7;color:#16a34a;border-radius:6px;padding:1px 5px;font-weight:600;margin-left:4px">Novo</span>’:’’)+’</div><div class="related-meta">’+esc(a.fulljournalname||a.source||’’)+(y?’ · ‘+y:’’)+’</div></div>’;
 }).filter(Boolean).join(’’);
-if(html){
-var sec=g(‘explorerRecentSection’);
-var items=g(‘explorerRecentItems’);
-if(sec)sec.style.display=‘block’;
-if(items)items.innerHTML=html;
-// Add click handler for recent items
-if(items)items.addEventListener(‘click’,function(e){
-var item=e.target.closest(’[data-pi]’);
-if(!item)return;
-var uid=item.getAttribute(‘data-pi’).replace(‘r’,’’);
-g(‘queryInput’).value=‘PMID:’+uid;
-setSearchMode(‘article’);switchTab(‘search’);runAgent();
-});
-}
+if(html){var sec=g(‘explorerRecentSection’);var items=g(‘explorerRecentItems’);if(sec)sec.style.display=‘block’;if(items){items.innerHTML=html;items.onclick=function(e){var item=e.target.closest(’[data-ruid]’);if(!item)return;g(‘queryInput’).value=‘PMID:’+item.getAttribute(‘data-ruid’);setSearchMode(‘article’);switchTab(‘search’);runAgent();};}}
 }catch(e){}
 }
 async function fetchExplorerGuidelines(query){
 try{
-var guideQuery=query+’ AND (guideline[pt] OR practice guideline[pt] OR consensus[ti] OR recommendation[ti] OR statement[ti])’;
-var r=await fetch(‘https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=’+encodeURIComponent(guideQuery)+’&retmax=6&sort=relevance&retmode=json’);
+var gq=query+’ AND (guideline[pt] OR practice guideline[pt] OR consensus[ti] OR recommendation[ti])’;
+var r=await fetch(‘https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=’+encodeURIComponent(gq)+’&retmax=6&sort=relevance&retmode=json’);
 if(!r.ok)return;
 var d=await r.json();
 var ids=d.esearchresult&&d.esearchresult.idlist;
@@ -1298,23 +1264,9 @@ var uids=d2.result&&d2.result.uids||[];
 var html=uids.map(function(uid){
 var a=d2.result[uid];if(!a||!a.title)return’’;
 var y=a.pubdate?a.pubdate.substring(0,4):’’;
-return’<div class="related-item" data-pi="g'+uid+'">’
-+’<div class="related-title">’+esc(a.title.substring(0,90))+(a.title.length>90?’…’:’’)+’</div>’
-+’<div class="related-meta">’+esc(a.fulljournalname||a.source||’’)+(y?’ · ‘+y:’’)+’</div></div>’;
+return’<div class="related-item" data-guid="'+uid+'"><div class="related-title">’+esc(a.title.substring(0,90))+(a.title.length>90?’…’:’’)+’</div><div class="related-meta">’+esc(a.fulljournalname||a.source||’’)+(y?’ · ‘+y:’’)+’</div></div>’;
 }).filter(Boolean).join(’’);
-if(html){
-var sec=g(‘explorerGuidelinesSection’);
-var items=g(‘explorerGuidelinesItems’);
-if(sec)sec.style.display=‘block’;
-if(items)items.innerHTML=html;
-if(items)items.addEventListener(‘click’,function(e){
-var item=e.target.closest(’[data-pi]’);
-if(!item)return;
-var uid=item.getAttribute(‘data-pi’).replace(‘g’,’’);
-g(‘queryInput’).value=‘PMID:’+uid;
-setSearchMode(‘article’);switchTab(‘search’);runAgent();
-});
-}
+if(html){var sec=g(‘explorerGuidelinesSection’);var items=g(‘explorerGuidelinesItems’);if(sec)sec.style.display=‘block’;if(items){items.innerHTML=html;items.onclick=function(e){var item=e.target.closest(’[data-guid]’);if(!item)return;g(‘queryInput’).value=‘PMID:’+item.getAttribute(‘data-guid’);setSearchMode(‘article’);switchTab(‘search’);runAgent();};}}
 }catch(e){}
 }
 
