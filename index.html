@@ -264,7 +264,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div style="margin-bottom:14px">
 <div style="font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">&#129504; Idioma das an&aacute;lises IA</div>
 <div style="display:flex;gap:6px;align-items:center">
-<button class="btn-lang" id="topLangEN" onclick="setLang('en')" style="font-size:12px;padding:6px 14px">&#127468;&#127463; English</button>
+<button class="btn-lang active" id="topLangEN" onclick="setLang('en')" style="font-size:12px;padding:6px 14px">&#127468;&#127463; English</button>
 <button class="btn-lang" id="topLangPT" onclick="setLang('pt')" style="font-size:12px;padding:6px 14px">&#127477;&#127481; Portugu&ecirc;s</button>
 <button class="btn-lang" id="topLangES" onclick="setLang('es')" style="font-size:12px;padding:6px 14px">&#127466;&#127480; Espa&ntilde;ol</button>
 </div>
@@ -730,12 +730,7 @@ function setLang(lang){
   try{localStorage.setItem('pq_lang',lang);}catch(e){}
   var pairs=[['langEN','topLangEN'],['langPT','topLangPT'],['langES','topLangES']];
   var langs=['en','pt','es'];
-  pairs.forEach(function(p,i){
-    var el1=g(p[0]);var el2=g(p[1]);
-    var active=lang===langs[i];
-    if(el1)el1.classList.toggle('active',active);
-    if(el2)el2.classList.toggle('active',active);
-  });
+  pairs.forEach(function(p,i){var a=lang===langs[i];var e1=g(p[0]);var e2=g(p[1]);if(e1)e1.classList.toggle('active',a);if(e2)e2.classList.toggle('active',a);});
   if(currentArticle)regenerateEmail();
 }
 var LLM_CONFIG={claude:{label:'Claude API Key',placeholder:'sk-ant-api03-...',hint:'Cria em <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a>',storageKey:'pq_apikey'},gemini:{label:'Gemini API Key',placeholder:'AIza...',hint:'Cria em <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent)">aistudio.google.com</a> &mdash; Gr&aacute;tis!',storageKey:'pq_geminikey'}};
@@ -801,7 +796,7 @@ function generateEmail(article,authorName,req){
       +' para solicitar una copia de su art\u00edculo:\n\n'
       +'"'+article.title+'"\n'
       +(article.journal||'')+(article.year?' ('+article.year+')':'')+'\n\n'
-      +'Este trabajo es de gran relevancia para mi pr\u00e1ctica cl\u00ednica e investigaci\u00f3n.\n\n'
+      +'Este trabajo es de gran relevancia para mi pr\u00e1ctica cl\u00ednica.\n\n'
       +'Atentamente,\n'+sig;
   }
   if(emailLang==='pt'){
@@ -1122,8 +1117,8 @@ function submitQuiz(){
   if(container)container.appendChild(retryBtn);
 }
 
+var _savedLang=localStorage.getItem(‘pq_lang’)||‘en’;
 initTheme();
-var _savedLang=localStorage.getItem(“pq_lang”)||“en”;
 loadProfile();
 setLang(_savedLang);
 loadLLM();
