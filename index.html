@@ -21,9 +21,9 @@
 :root{--cream:#f8f6f1;--cream2:#f0ede6;--sand:#e8e3d8;--border:#d8d2c4;--text:#2c2820;--text2:#6b6358;--text3:#9e9488;--accent:#c96442;--accent2:#cc785c;--accent-light:#fdf0eb;--blue:#1d6fa4;--blue-light:#dbeafe;--green:#1a7a4a;--green-light:#d1fae5;--warn:#92400e;--card-bg:#ffffff;--body-bg:#f8f6f1;}
 [data-theme="dark"]{--cream:#1a1612;--cream2:#22201c;--sand:#2e2b26;--border:#3d3930;--text:#f0ede6;--text2:#b8b0a4;--text3:#7a7368;--accent:#e07a56;--accent-light:#2d1f18;--blue:#4a9fd4;--blue-light:#1a2a38;--green:#2ecc71;--green-light:#1a2e22;--card-bg:#22201c;--body-bg:#1a1612;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{background:var(--body-bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;transition:background 0.3s,color 0.3s;overflow-x:hidden;}
+body{background:var(--body-bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;transition:background 0.3s,color 0.3s;}
 .page{display:none;min-height:100vh;}.page.active{display:block;}
-#pageMain{padding:env(safe-area-inset-top,0) 0 80px;}
+#pageMain{padding:env(safe-area-inset-top,0) 0 90px;}
 .container{max-width:600px;margin:0 auto;padding:0 16px;}
 .header{display:flex;align-items:center;gap:12px;padding:24px 0 20px;border-bottom:1px solid var(--border);margin-bottom:20px;}
 .logo{width:42px;height:42px;border-radius:10px;}
@@ -136,7 +136,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 .hidden{display:none!important;}
 .small-btn{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;padding:0;}
 .profile-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-#pageAnalysis{padding:env(safe-area-inset-top,0) 0 40px;background:var(--body-bg);}
+#pageAnalysis{padding:env(safe-area-inset-top,0) 0 40px;background:var(--body-bg);padding-bottom:90px;}
 .analysis-header{background:var(--card-bg);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
 .btn-back{background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:14px;color:var(--text2);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:6px;}
 .analysis-header-title{flex:1;font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
