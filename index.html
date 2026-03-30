@@ -23,7 +23,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--body-bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;transition:background 0.3s,color 0.3s;}
 .page{display:none;min-height:100vh;}.page.active{display:block;}
-#pageMain{padding:env(safe-area-inset-top,0) 0 90px;}
+#pageMain{padding:env(safe-area-inset-top,0) 0 0;}
 .container{max-width:600px;margin:0 auto;padding:0 16px;}
 .header{display:flex;align-items:center;gap:12px;padding:24px 0 20px;border-bottom:1px solid var(--border);margin-bottom:20px;}
 .logo{width:42px;height:42px;border-radius:10px;}
@@ -136,7 +136,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 .hidden{display:none!important;}
 .small-btn{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;padding:0;}
 .profile-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-#pageAnalysis{padding:env(safe-area-inset-top,0) 0 40px;background:var(--body-bg);padding-bottom:90px;}
+#pageAnalysis{padding:env(safe-area-inset-top,0) 0 0;background:var(--body-bg);padding-bottom:120px;}
 .analysis-header{background:var(--card-bg);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
 .btn-back{background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:14px;color:var(--text2);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:6px;}
 .analysis-header-title{flex:1;font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
@@ -327,7 +327,7 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <div>
 <div class="card-title" style="margin-bottom:6px" data-i18n="langLabel">Idioma do email e resumo</div>
 <div class="lang-row">
-<button class="btn-lang active" id="langEN" onclick="setLang('en')">&#127468;&#127463; English</button>
+<button class="btn-lang" id="langEN" onclick="setLang('en')">&#127468;&#127463; English</button>
 <button class="btn-lang" id="langPT" onclick="setLang('pt')">&#127477;&#127481; Portugu&ecirc;s</button>
 <button class="btn-lang" id="langES" onclick="setLang('es')">&#127466;&#127480; Espa&ntilde;ol</button>
 </div>
@@ -604,7 +604,8 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 </div>
 <button onclick="g('aboutOverlay').style.display='none'" style="width:100%;padding:12px;background:#c96442;color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">Fechar</button>
 </div>
-</div>
+
+<div style="height:80px" aria-hidden="true"></div></div>
 <div class="page" id="pageAnalysis">
 <div class="analysis-header">
 <button class="btn-back" onclick="closeAnalysis()">&#8592; <span data-i18n="back">Voltar</span></button>
@@ -696,7 +697,8 @@ textarea.email-body{min-height:180px;resize:vertical;font-size:13px;line-height:
 <button class="modal-ok" id="confirmOk">OK</button>
 </div>
 </div>
-</div>
+
+<div style="height:80px;flex-shrink:0" aria-hidden="true"></div></div>
 <div class="coffee-bar">
 <div class="coffee-text" data-i18n="footer">Feito por <strong>um m&eacute;dico, para m&eacute;dicos</strong></div>
 <div style="display:flex;gap:8px;align-items:center">
